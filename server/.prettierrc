@@ -1,0 +1,21 @@
+{
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": false,
+    "printWidth": 100,
+    "overrides": [
+        {
+            "files": "**/*.ts",
+            "options": {
+                "singleQuote": true
+            }
+        },
+        {
+            "files": "**/*.Routes.ts",
+            "options": {
+                "printWidth": 150,
+                "singleQuote": true
+            }
+        }
+    ]
+}
