@@ -20,7 +20,7 @@ app=Flask(__name__)
 def app298(event=None):
     request_data = request.get_json()
     #client.publish('app298',json.dumps(request_data))
-    sock.sendto(bytes(json.dumps(request_data),'UTF-8'),('127.0.0.1',5010))
+    sock.sendto(bytes(json.dumps(request_data),'UTF-8'),('127.0.0.1',8080))
     print('Event type: {}'.format(event))
     print('Msg:')
     print(request_data)
@@ -30,4 +30,4 @@ def app298(event=None):
 def test():
     return str(json)
     
-app.run(host='0.0.0.0',port=5000)
+app.run(host='0.0.0.0',port=8081)
