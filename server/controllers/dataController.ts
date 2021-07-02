@@ -8,9 +8,12 @@ export class DataController {
 
     getAlertData = async (req: Request, res: Response) => {
         try {
+            logger.info('in controller now');
             const dataResult = await this.dataService.getAlertData();
 
             res.json({data: dataResult, message: 'handbrake data get'});
+            logger.info('res json data');
+            return;
         } catch (err) {
             logger.error(err);
             res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
@@ -20,7 +23,10 @@ export class DataController {
 
     postAlertData = async (req: Request, res: Response) => {//not finish
         try {
-            await this.dataService.postAlertData();
+            const test = req.query;
+            console.log(test);
+            const {device_name, dev_eui, data, date, time, latitude, longitude, battery} = req.body;
+            await this.dataService.postAlertData(device_name, dev_eui, data, date, time, latitude, longitude, battery);
 
             res.status(httpStatusCodes.CREATED).json({ message: 'created'});
         } catch (err) {

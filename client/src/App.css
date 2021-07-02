@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.fixOnPage{
+  position:-webkit-sticky;
+  position: sticky;
+  top:0px;
+  padding-bottom: 15px;
+  background-color: white;
+  z-index: 15;
+}

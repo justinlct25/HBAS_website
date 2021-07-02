@@ -1,20 +1,24 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
+import { Route, Switch } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
-import socketClient  from "socket.io-client";
-
-const SERVER = "http://127.0.0.1:8080";
+import AlertDataPage from './pages/AlertDataPage';
+import NavBar from './components/NavBar';
+import { ConnectedRouter } from 'connected-react-router';
+import { history } from './redux/store';
+// import { useDispatch } from 'react-redux';
 
 function App() {
-  useEffect(() => {
-    const socket = socketClient(SERVER);
-    socket.on('connection', ()=>{
-      console.log(`I'm connected with the back-end`);
-    });   
-  }, [])
   return (
     <div className="App">
-    <LandingPage />
+      <ConnectedRouter history={history}>
+        <div className="fixOnPage"><NavBar /></div>
+        <Switch>
+          <Route path="/" exact={true} component={LandingPage} />
+          <Route path="/alertData" exact={true} component={AlertDataPage} />
+        </Switch>
+      </ConnectedRouter>
+      
     </div>
   );
 }

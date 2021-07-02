@@ -1,12 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import http from 'http';
-import {Server as SocketIO} from 'socket.io';
+// import http from 'http';
+// import {Server as SocketIO} from 'socket.io';
 import { logger } from './utils/logger';
 import cors from 'cors';
 import Knex from 'knex';
 import * as knexConfig from './knexfile';
+// var url = require('url');
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
@@ -14,31 +15,67 @@ const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
 //app
 const app = express();
 app.use(cors());
-app.use(function(req, res, next){
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+// app.use(function(req, res, next){
+//     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//     next();
+// });
 
 // info
 app.use((req, res, next) => {
-    logger.info(`method: [${req.method}] path: [${req.path}] params: [${JSON.stringify(req.params)}] [${JSON.stringify(req.query)}] body: [${JSON.stringify(req.body)}]`);
+    console.log(req.headers);
+    logger.info(`method: [${req.method}] path: [${req.path}] ${JSON.stringify(req.params)} ${JSON.stringify(req.headers)} ${JSON.stringify(req.query)} ${req.body} ${req.url} ${req.originalUrl} `);
     next();
 });
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-//socket.io
-const server = new http.Server(app);
-const io = new SocketIO(server);
-//const STATIC_CHANNELS = ['global_notifications', 'global_chat'];
-
-io.on('connection', function(socket){
-    logger.info(socket);
-    socket.emit('connection', null);
+app.use((req, res, next) => {
+    if(JSON.stringify(req.query).match('up')){ console.log('correct')}
+    const applicationID = req.query;
+    const bb = JSON.stringify(applicationID);
+    const cc = bb.replace(/\'/gi,`"`);
+    const dd = cc.replace(/None/gi, `null`);
+    const ee = dd.replace(/False/gi, `false`);
+    const ff = ee.replace(/True/gi, `true`);
+    // const gg = JSON.parse(ff);
+    logger.info(ff.match('up'));
+    // console.log(JSON.parse(JSON.stringify(applicationID)));
+    //console.log(bb);
+    // const texta = [{"applicationID": "298", "applicationName": "VTC_HandBrakeAlertSystem_2021", "deviceName": "ramp_meter_000", "devEUI": "RzrIaAAqADc=", "devAddr": "Ac4oSg==", "rxInfo": [{"gatewayID": "rB8J//4ATng=", "time": null, "timeSinceGPSEpoch": null, "rssi": -64, "loRaSNR": 12.3, "channel": 6, "rfChain": 1, "board": 0, "antenna": 0, "location": {"latitude": 0, "longitude": 0, "altitude": 0, "source": "UNKNOWN", "accuracy": 0}, "fineTimestampType": "NONE", "context": "CO1dpA==", "uplinkID": "PEpY6ueqSUeFee2UH5aYTg==", "crcStatus": "CRC_OK"}], "txInfo": {"frequency": 923400000, "modulation": "LORA", "loRaModulationInfo": {"bandwidth": 125, "spreadingFactor": 10, "codeRate": "4/5", "polarizationInversion": false}}, "dr": 2, "tags": {}}, {"applicationID": "298", "applicationName": "VTC_HandBrakeAlertSystem_2021", "deviceName": "ramp_meter_000", "devEUI": "RzrIaAAqADc=", "rxInfo": [{"gatewayID": "rB8J//4ATng=", "time": null, "timeSinceGPSEpoch": null, "rssi": -63, "loRaSNR": 8.5, "channel": 5, "rfChain": 1, "board": 0, "antenna": 0, "location": {"latitude": 0, "longitude": 0, "altitude": 0, "source": "UNKNOWN", "accuracy": 0}, "fineTimestampType": "NONE", "context": 
+    // "7giTDA==", "uplinkID": "buVmAweHTd kmGh6xeM GA==", "crcStatus": "CRC_OK"}], "txInfo": {"frequency": 923200000, "modulation": "LORA", "loRaModulationInfo": {"bandwidth": 125, "spreadingFactor": 10, "codeRate": "4/5", "polarizationInversion": false}}, "adr": true, "dr": 2, "fCnt": 83, "fPort": 8, "data": "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw", "objectJSON": [{"date": "2020-06-03", "time": "05:19:53", "latitude": "22.123456", "longitude": "114.12346", "battery": "1.95"}], "tags": {}, "confirmedUplink": false, "devAddr": "ACXnlQ=="}, {"applicationID": "298", "applicationName": "VTC_HandBrakeAlertSystem_2021", "deviceName": "ramp_meter_000", "devEUI": "RzrIaAAqADc=", "rxInfo": [{"gatewayID": "rB8J//4ATng=", "time": null, "timeSinceGPSEpoch": null, "rssi": -63, "loRaSNR": 8.5, "channel": 5, "rfChain": 1, "board": 0, "antenna": 0, "location": {"latitude": 0, "longitude": 0, "altitude": 0, "source": "UNKNOWN", "accuracy": 0}, "fineTimestampType": "NONE", "context": "7giTDA==", "uplinkID": "buVmAweHTd kmGh6xeM GA==", "crcStatus": "CRC_OK"}], "txInfo": {"frequency": 923200000, "modulation": "LORA", "loRaModulationInfo": {"bandwidth": 125, "spreadingFactor": 10, "codeRate": "4/5", "polarizationInversion": false}}, "adr": true, "dr": 2, "fCnt": 83, "fPort": 8, "data": "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw", "objectJSON": [{"date": "2020-06-03", "time": "05:19:53", "latitude": "22.123456", "longitude": "114.12346", "battery": "1.95"}], "tags": {}, "confirmedUplink": false, "devAddr": "ACXnlQ=="}, {"applicationID": "298", "applicationName": "VTC_HandBrakeAlertSystem_2021", "deviceName": "ramp_meter_000", "devEUI": "RzrIaAAqADc=", "rxInfo": [{"gatewayID": "rB8J//4ATng=", "time": null, "timeSinceGPSEpoch": null, "rssi": -63, "loRaSNR": 8.5, "channel": 5, "rfChain": 1, "board": 0, "antenna": 0, "location": {"latitude": 0, "longitude": 0, "altitude": 0, "source": "UNKNOWN", "accuracy": 0}, "fineTimestampType": "NONE", "context": "7giTDA==", "uplinkID": "buVmAweHTd kmGh6xeM GA==", "crcStatus": "CRC_OK"}], "txInfo": {"frequency": 923200000, "modulation": "LORA", "loRaModulationInfo": {"bandwidth": 125, "spreadingFactor": 10, "codeRate": "4/5", "polarizationInversion": false}}, "adr": true, "dr": 2, "fCnt": 83, "fPort": 8, "data": "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw", "objectJSON": [{"date": "2020-06-03", "time": "05:19:53", "latitude": "22.123456", "longitude": "114.12346", "battery": "1.95"}], "tags": {}, "confirmedUplink": false, "devAddr": "ACXnlQ=="}];
+    //     console.log(texta[0].objectJSON);
+    //     console.log(texta[1].objectJSON);
+    //     console.log(texta[2].objectJSON);
+    //     console.log(texta[3].objectJSON);
+        //const query = url.parse(req.url).query;
+        ////logger.info(query);
+        console.log('-----');
+        //const obj = (decodeURIComponent(query));
+        // const testa = JSON.parse(JSON.stringify(obj));
+        // logger.info(testa.event[0]);
+        //res.send(obj);
+        
+    
+    next();
 });
+// app.post('/app298', (req, res)=>{
+//     try {
+//         const queryA = url.parse(req.url).query;
+    
+//         if(queryA){
+//             const obj = JSON.parse(decodeURIComponent(queryA))
+//             logger.info(obj);
+//         }
+//         //const jsona = req.query.event;
+//         //logger.info(jsona);
+//         res.json({ message:'hi'});
+//     } catch (err) {
+//         logger.error(err);
+//         res.status(500).json({message:'hi'});
+//     }
+    
+// })
 
-//service
 import {DataService} from './services/dataService';
 const dataService = new DataService(knex);
 
@@ -52,10 +89,7 @@ app.use(dataRoutes);
 
 
 const PORT = process.env.PORT || 8080;
-// const socketPort = 8081;
-server.listen(PORT, ()=>{
-    logger.info(`Socket.io listening at http://localhost:${PORT}/`);
+
+app.listen(PORT, ()=> {
+    logger.info(`listening to PORT: [${PORT}]`);
 });
-// app.listen(PORT, ()=> {
-//     logger.info(`listening to PORT: [${PORT}]`);
-// });
