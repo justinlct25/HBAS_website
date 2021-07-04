@@ -15,10 +15,10 @@ function ShowRecord(props: TestNum) {
     }
     return (
         <div>
-            <h1>This is show record component.</h1>
-            <h2>{countNum}</h2>
+            <hr />
             <button onClick={addNum}>Click me to add 1</button>
             <button onClick={decreaseNum}>Click me to decrease 1</button>
+            <h2>{countNum}</h2>
         </div>
     )
 }

@@ -45,3 +45,9 @@
   background-color: white;
   z-index: 15;
 }
+
+.dataContainer{
+  display: flex;
+  justify-content:center;
+  align-items: center;
+}

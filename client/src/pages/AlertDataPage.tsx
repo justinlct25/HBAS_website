@@ -13,7 +13,7 @@ function AlertDataPage() {
         dispatch(getAlertDataListThunk(true));
     }, [dispatch]);
     return (
-        <div>
+        <div className="dataContainer">
                 <Table striped>
                     <thead>
                         <tr>
@@ -36,6 +36,33 @@ function AlertDataPage() {
                                 <td>{data.battery}</td>
                             </tr>
                         ))}
+                        {/** need change */}
+                            <tr>
+                               <th scope="row">1</th>
+                                <td>2021-07-10</td>
+                                <td>15:10:37</td>
+                                <td>22.321674</td>
+                                <td>114.221095</td>
+                                <td>1.82</td> 
+                            </tr>
+                            <tr>
+                               <th scope="row">2</th>
+                                <td>2021-07-10</td>
+                                <td>15:10:37</td>
+                                <td>22.321674</td>
+                                <td>114.221095</td>
+                                <td>1.82</td> 
+                            </tr>
+                            <tr>
+                               <th scope="row">3</th>
+                                <td>2021-07-10</td>
+                                <td>15:10:37</td>
+                                <td>22.321674</td>
+                                <td>114.221095</td>
+                                <td>1.82</td> 
+                            </tr>
+                        
+                        
                     </tbody>
                 </Table>
         </div>
