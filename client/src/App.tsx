@@ -6,7 +6,6 @@ import AlertDataPage from './pages/AlertDataPage';
 import NavBar from './components/NavBar';
 import { ConnectedRouter } from 'connected-react-router';
 import { history } from './redux/store';
-// import { useDispatch } from 'react-redux';
 
 function App() {
   return (

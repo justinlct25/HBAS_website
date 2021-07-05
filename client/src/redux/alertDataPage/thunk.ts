@@ -1,27 +1,23 @@
 import { Dispatch } from 'redux';
-import { IRootState } from '../store';
 import { IAlertDataPageActions, resetAlertDataList, setAlertDataList } from './action';
 
 const { REACT_APP_API_SERVER } = process.env;
 //  need pageNum, wait to add
-export function getAlertDataListThunk( isInit: boolean){
-    return async (dispatch: Dispatch<IAlertDataPageActions>, getState:()=> IRootState)=>{
+export function getAlertDataListThunk(activePage:number, isInit: boolean){
+    return async (dispatch: Dispatch<IAlertDataPageActions>)=>{
         try {
             if(isInit){
                 dispatch(resetAlertDataList());
+                console.log('test');
             }
-            console.log('test');
-            const res = await fetch(`${REACT_APP_API_SERVER}/alertData`);
+            console.log(activePage);
+            const res = await fetch(`${REACT_APP_API_SERVER}/alertData?page=${activePage}`)
             
             if(res.status === 200){
-                console.log('before data');
-                const data = await res.clone().json();
-                console.log('after data');
-                //const concatData = getState().alertDataPage.alertDataList.concat(data.data);
-                dispatch(setAlertDataList(data));
-                console.log(data);
+                const data = await res.json();
+                dispatch(setAlertDataList(data.alertData, activePage));
             }
-            return;
+            return ;
         } catch (err) {
             console.error(err);
             // handle error

@@ -12,12 +12,12 @@ export interface IAlertDataPage {
 
 export interface IAlertDataPageState{
     alertDataList: Array<IAlertDataPage>;
-    //activePage: number;
+    activePage: number;
     //nextPage: number;
 }
 
 export const initAlertDataPageState: IAlertDataPageState={
     alertDataList: [],
-    //activePage: 1,
+    activePage: 1,
     //nextPage: 2,
 }

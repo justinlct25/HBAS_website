@@ -1,19 +1,28 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table } from 'reactstrap';
+import { Button, Container, Table } from 'reactstrap';
+import AlertDataTable from '../components/AlertDataTable';
 import { getAlertDataListThunk } from '../redux/alertDataPage/thunk';
 import { IRootState } from '../redux/store';
 
 function AlertDataPage() {
     const alertDataList = useSelector((state:IRootState)=> state.alertDataPage.alertDataList);
+    const activePage = useSelector((state:IRootState)=> state.alertDataPage.activePage);
     const dispatch = useDispatch();
-    // page, useState
+    // page, useState 
     
     useEffect(() => {
-        dispatch(getAlertDataListThunk(true));
+        dispatch(getAlertDataListThunk(1, true));
+        console.log('reload');
     }, [dispatch]);
+
+    console.log(alertDataList);
+    const refreshButton = () =>{
+        dispatch(getAlertDataListThunk((activePage+1) ,false));
+    }
+
     return (
-        <div className="dataContainer">
+        <Container>
                 <Table striped>
                     <thead>
                         <tr>
@@ -26,46 +35,26 @@ function AlertDataPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {alertDataList.length > 0 && alertDataList.map((data, idx)=>(
-                            <tr>
-                                <th scope="row">{idx}</th>
-                                <td>{data.date}</td>
-                                <td>{data.time}</td>
-                                <td>{data.latitude}</td>
-                                <td>{data.longitude}</td>
-                                <td>{data.battery}</td>
-                            </tr>
-                        ))}
-                        {/** need change */}
-                            <tr>
-                               <th scope="row">1</th>
-                                <td>2021-07-10</td>
-                                <td>15:10:37</td>
-                                <td>22.321674</td>
-                                <td>114.221095</td>
-                                <td>1.82</td> 
-                            </tr>
-                            <tr>
-                               <th scope="row">2</th>
-                                <td>2021-07-10</td>
-                                <td>15:10:37</td>
-                                <td>22.321674</td>
-                                <td>114.221095</td>
-                                <td>1.82</td> 
-                            </tr>
-                            <tr>
-                               <th scope="row">3</th>
-                                <td>2021-07-10</td>
-                                <td>15:10:37</td>
-                                <td>22.321674</td>
-                                <td>114.221095</td>
-                                <td>1.82</td> 
-                            </tr>
-                        
-                        
+                        {alertDataList && alertDataList.length > 0 && (
+                            alertDataList.map((data, idx)=> (
+                            <AlertDataTable 
+                                key={idx + 1}
+                                id={idx + 1}
+                                date={data.date}
+                                time={data.time}
+                                latitude={data.latitude}
+                                longitude={data.longitude}
+                                battery={data.battery}
+                            />   
+                        )))}
                     </tbody>
                 </Table>
-        </div>
+                
+                        
+                { <Button className="refreshButton" onClick={refreshButton}>Refresh</Button>}        
+                
+
+        </Container>
     )
 }
 

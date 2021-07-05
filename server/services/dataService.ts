@@ -3,8 +3,8 @@ import * as Knex from 'knex';
 export class DataService {
     constructor(private knex:Knex){}
 
-    async getAlertData(){
-        return await this.knex.select("*").from("device");
+    async getAlertData(offset:number, limit:number):Promise<any>{
+        return await this.knex.select("*").from("device").limit(limit).offset(offset);
     }
 
     async postAlertData(

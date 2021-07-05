@@ -8,11 +8,15 @@ export class DataController {
 
     getAlertData = async (req: Request, res: Response) => {
         try {
-            logger.info('in controller now');
-            const dataResult = await this.dataService.getAlertData();
+            const page = req.query;
+            const newPage = parseInt(String(page.page));
+            const LIMIT:number = 5;
+            const OFFSET:number = (LIMIT * (newPage - 1));
+            console.log(OFFSET);
+            const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
 
-            res.json({data: dataResult, message: 'handbrake data get'});
-            logger.info('res json data');
+            res.json({alertData: dataResult, message: 'handbrake data get'});
+            //logger.info('res json data');
             return;
         } catch (err) {
             logger.error(err);
@@ -23,10 +27,12 @@ export class DataController {
 
     postAlertData = async (req: Request, res: Response) => {//not finish
         try {
-            const test = req.query;
-            console.log(test);
-            const {device_name, dev_eui, data, date, time, latitude, longitude, battery} = req.body;
-            await this.dataService.postAlertData(device_name, dev_eui, data, date, time, latitude, longitude, battery);
+            const dataResult = req.body;
+            if(!dataResult.data){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message: 'event is not up, data dont update to DB.'});
+                return;
+            }
+            await this.dataService.postAlertData(dataResult.deviceName, dataResult.devEUI, dataResult.data, dataResult.objectJSON[0].date, dataResult.objectJSON[0].time, dataResult.objectJSON[0].latitude, dataResult.objectJSON[0].longitude, dataResult.objectJSON[0].battery);
 
             res.status(httpStatusCodes.CREATED).json({ message: 'created'});
         } catch (err) {

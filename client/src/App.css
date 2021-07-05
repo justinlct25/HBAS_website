@@ -51,3 +51,9 @@
   justify-content:center;
   align-items: center;
 }
+
+.refreshButton{
+  position:-webkit-sticky;
+  left: 0;
+  top: 100px;
+}
