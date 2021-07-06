@@ -12,6 +12,8 @@ import { push } from "connected-react-router";
 import { useDispatch } from "react-redux";
 import { CompanyName } from "./CompanyName";
 import { CaretIcon, GraphViewIcon, SearchIcon } from "./IconsOnly";
+import "../css/NavBar.css";
+import { tableHeaders } from "../table/tableHeader";
 
 function NavBar() {
   const [collapsed, setCollapsed] = useState(true);
@@ -21,14 +23,6 @@ function NavBar() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
-  const dropDownList = [
-    "Device ID",
-    "Car Plate",
-    "User",
-    "Phone number",
-    "Location",
-    "Date",
-  ];
 
   const HomeBand = () => {
     dispatch(push("/"));
@@ -42,16 +36,8 @@ function NavBar() {
     dispatch(push("/alertData"));
   };
   return (
-    <div className="topNavStyle">
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          justifyContent: "space-between",
-          alignItems: "center",
-          margin: "8px",
-        }}
-      >
+    <div className="topNavContainer">
+      <div className="topNavContent">
         <CompanyName />
         <div className="flex-center" style={{ position: "relative" }}>
           <div style={{ padding: "8px" }}>Search by:</div>
@@ -65,7 +51,12 @@ function NavBar() {
             {placeHolderText}
           </div>
           <div
-            style={{ padding: "8px", cursor: "pointer" }}
+            style={{
+              padding: "8px",
+              cursor: "pointer",
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.3s",
+            }}
             onClick={() => setIsOpen(!isOpen)}
           >
             <CaretIcon />
@@ -85,11 +76,11 @@ function NavBar() {
           <div
             className="dropDownListContainer"
             style={{
-              maxHeight: isOpen ? `${(dropDownList.length + 1) * 40}px` : 0,
+              maxHeight: isOpen ? `${(tableHeaders.length + 1) * 40}px` : 0,
             }}
           >
             {isOpen &&
-              dropDownList.map((item, idx) => {
+              tableHeaders.map((item, idx) => {
                 return (
                   <div
                     key={idx}
