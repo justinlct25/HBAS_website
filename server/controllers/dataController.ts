@@ -12,10 +12,16 @@ export class DataController {
             const newPage = parseInt(String(page.page));
             const LIMIT:number = 5;
             const OFFSET:number = (LIMIT * (newPage - 1));
-            console.log(OFFSET);
+            const counting = await this.dataService.getCountingData();
+            let totalPage = (parseInt(String(counting[0].count)) / LIMIT);
+            if(totalPage > Math.round(totalPage)){
+                totalPage = Math.round(totalPage) + 1;  
+            } else{ 
+                totalPage = Math.round(totalPage);
+            }
             const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
 
-            res.json({alertData: dataResult, message: 'handbrake data get'});
+            res.json({alertData: dataResult, totalPage: totalPage, limit:LIMIT , message: 'handbrake data get'});
             //logger.info('res json data');
             return;
         } catch (err) {

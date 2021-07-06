@@ -52,8 +52,11 @@
   align-items: center;
 }
 
-.refreshButton{
-  position:-webkit-sticky;
-  left: 0;
-  top: 100px;
+.pageChange{
+  display:flex;
+  justify-content:center;
+}
+
+.mouseforce:hover{
+  visibility: hidden;
 }

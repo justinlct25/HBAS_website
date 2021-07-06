@@ -1,12 +1,13 @@
 import { CallHistoryMethodAction } from 'connected-react-router';
 import { IAlertDataPage } from './state';
 
-export function setAlertDataList(alertDataList: Array<IAlertDataPage>, activePage:number){//, nextPage:number){
+export function setAlertDataList(alertDataList: Array<IAlertDataPage>, activePage:number, totalPage:number, limit:number){
     return{
         type: "@@AlertDataPage/SET_AlertDataList" as const,
         alertDataList, 
         activePage, 
-        // nextPage
+        totalPage,
+        limit,
     };
 }
 

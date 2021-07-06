@@ -8,13 +8,16 @@ export const IAlertDataPageReducer = (state: IAlertDataPageState = initAlertData
                 ...state,
                 alertDataList: action.alertDataList,
                 activePage: action.activePage,
-                // nextPage: action.nextPage,
+                totalPage: action.totalPage,
+                limit: action.limit,
             };
         case "@@AlertDataPage/RESET":
             return{
                 ...state,
                 alertDataList: initAlertDataPageState.alertDataList,
-                activePage: initAlertDataPageState.activePage
+                activePage: initAlertDataPageState.activePage,
+                totalPage: initAlertDataPageState.totalPage,
+                limit: initAlertDataPageState.limit,
             };
         default:
             return state;

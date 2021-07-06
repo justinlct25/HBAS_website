@@ -13,11 +13,13 @@ export interface IAlertDataPage {
 export interface IAlertDataPageState{
     alertDataList: Array<IAlertDataPage>;
     activePage: number;
-    //nextPage: number;
+    totalPage: number;
+    limit:number;
 }
 
 export const initAlertDataPageState: IAlertDataPageState={
     alertDataList: [],
     activePage: 1,
-    //nextPage: 2,
+    totalPage: 10,
+    limit: 5,
 }
