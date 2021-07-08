@@ -14,18 +14,18 @@ export class DataController {
             const OFFSET:number = (LIMIT * (newPage - 1));
             const counting = await this.dataService.getCountingData();
             let totalPage = (parseInt(String(counting[0].count)) / LIMIT);
-            if(totalPage > Math.round(totalPage)){
-                totalPage = Math.round(totalPage) + 1;  
+            if(totalPage > Math.floor(totalPage)){
+                totalPage = Math.ceil(totalPage);  
             } else{ 
-                totalPage = Math.round(totalPage);
+                totalPage = Math.floor(totalPage);
             }
             const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
 
-            res.json({alertData: dataResult, totalPage: totalPage, limit:LIMIT , message: 'handbrake data get'});
+            res.status(httpStatusCodes.OK).json({alertData: dataResult, totalPage: totalPage, limit:LIMIT , message: 'handbrake data get'});
             //logger.info('res json data');
             return;
         } catch (err) {
-            logger.error(err);
+            logger.error(err.message);
             res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
         }
         
@@ -33,14 +33,50 @@ export class DataController {
 
     postAlertData = async (req: Request, res: Response) => {//not finish
         try {
+            const queryMethod = req.query;
             const dataResult = req.body;
-            if(!dataResult.data){
-                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message: 'event is not up, data dont update to DB.'});
+            //check query join / up first
+            if(queryMethod.event != 'up'){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'query is not accept to insert, return.'});
                 return;
             }
-            await this.dataService.postAlertData(dataResult.deviceName, dataResult.devEUI, dataResult.data, dataResult.objectJSON[0].date, dataResult.objectJSON[0].time, dataResult.objectJSON[0].latitude, dataResult.objectJSON[0].longitude, dataResult.objectJSON[0].battery);
+            
+            //replace json broken data
+            let JsonStr = JSON.stringify(dataResult);
+            JsonStr = JsonStr.replace(/\"\[\{/gi, `\[\{`);
+            JsonStr = JsonStr.replace(/\'\[\{/gi, `\[\{`);
+            JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
+            JsonStr = JsonStr.replace(/\}\]\'/gi, `\}\]`);
+            JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
+            JsonStr = JsonStr.replace(/\\\"/gi,`\"`);
+            const newJSON = JSON.parse(JsonStr);
+
+            //check data code is alive
+            if(!newJSON.data){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'Income data is null, return.'});
+                return;
+            }
+            //check json is undefined or good
+            if(newJSON.objectJSON[0].date == "0-0-0" || newJSON.objectJSON[0].latitude == '0' || newJSON.objectJSON[0].longitude == '0' || newJSON.objectJSON[0].time == '00:00:00'){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'Income data is not accept to insert, return.'});
+                return;
+            }
+            //check handbrake is sending real data
+            if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
+                return;
+            }
+            // require device id
+            const deviceID = await this.dataService.getDevicesID(newJSON.deviceName, newJSON.devEUI);
+            if(deviceID == undefined || deviceID == null){
+                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'Wrong device unique code.'});
+                return;
+            }
+            
+            await this.dataService.postAlertData(deviceID.id, newJSON.data, newJSON.objectJSON[0].date, newJSON.objectJSON[0].time, newJSON.objectJSON[0].latitude, newJSON.objectJSON[0].longitude, newJSON.objectJSON[0].battery);
 
             res.status(httpStatusCodes.CREATED).json({ message: 'created'});
+            return;
         } catch (err) {
             logger.error(err);
             res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
@@ -65,6 +101,17 @@ export class DataController {
             res.status(httpStatusCodes.ACCEPTED).json({ message: 'record is delete'})
         } catch (err) {
             logger.error(err);
+            res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
+        }
+    }
+
+    getHistoryData = async(req: Request, res: Response) =>{
+        try {
+            await this.dataService.getUserGroupingData('');
+            res.status(httpStatusCodes.OK).json({message:'test'});
+            return;
+        } catch (err) {
+            logger.error(err.message);
             res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
         }
     }
