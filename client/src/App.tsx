@@ -1,10 +1,12 @@
-import React from "react";
-import "./App.css";
-import { Route, Switch } from "react-router-dom";
-import LandingPage from "./pages/LandingPage";
-import AlertDataPage from "./pages/AlertDataPage";
-import NavBar from "./components/NavBar";
 import { ConnectedRouter } from "connected-react-router";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import "./App.css";
+import NavBar from "./components/NavBar";
+import AlertDataPage from "./pages/AlertDataPage";
+import ManageDevice from "./pages/ManageDevice";
+import ManageUser from "./pages/ManageUser";
+import Statistics from "./pages/Statistics";
 import { history } from "./redux/store";
 
 function App() {
@@ -18,6 +20,9 @@ function App() {
           {/* <Route path="/" exact={true} component={LandingPage} /> */}
           {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
           <Route path="/" exact={true} component={AlertDataPage} />
+          <Route path="/manageUser" exact={true} component={ManageUser} />
+          <Route path="/manageDevice" exact={true} component={ManageDevice} />
+          <Route path="/statistics" exact={true} component={Statistics} />
         </Switch>
       </ConnectedRouter>
     </div>
