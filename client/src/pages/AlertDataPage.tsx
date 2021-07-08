@@ -5,10 +5,13 @@ import AlertDataPagination from "../components/AlertDataPagination";
 import AlertDataTable from "../components/AlertDataTable";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { IRootState } from "../redux/store";
-import "../css/Table.css";
-import { tableHeaders } from "../table/tableHeader";
+import "../css/AlertDataPage.css";
+import { incidentRecordsTableHeaders } from "../table/tableHeader";
+import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 
 function AlertDataPage() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [placeHolderText, setPlaceHolderText] = useState("Select");
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
 
   const alertDataList = alertDataPage.alertDataList;
@@ -29,18 +32,72 @@ function AlertDataPage() {
   }, [activePage, limit]);
 
   return (
-    <div
-      className="flex-center"
-      style={{
-        alignItems: "flex-start",
-        width: "100vw",
-        height: "calc(100vh - var(--topNavHeight) - 16px)",
-        padding: "24px",
-      }}
-    >
+    <div className="flex-center alertDataPage">
+      <div
+        className="flex-center"
+        style={{ position: "relative", margin: "8px" }}
+      >
+        <div style={{ padding: "8px" }}>Search by:</div>
+        <div
+          style={{
+            color: placeHolderText === "Select" ? "#ccc" : "#555",
+            minWidth: "64px",
+            transition: "all 1s ease",
+          }}
+        >
+          {placeHolderText}
+        </div>
+        <div
+          className="caretIconContainer"
+          style={{
+            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <CaretIcon />
+        </div>
+        <div className="flex-center" style={{ padding: "8px" }}>
+          <input
+            className="searchInput"
+            placeholder={"Search"}
+            style={{
+              width: placeHolderText !== "Select" ? "240px" : "0px",
+            }}
+          />
+          <div style={{ cursor: "pointer", padding: "8px" }}>
+            <SearchIcon />
+          </div>
+        </div>
+        <div
+          className="dropDownListContainer"
+          style={{
+            zIndex: 1,
+            maxHeight: isOpen
+              ? `${(incidentRecordsTableHeaders.length + 1) * 40}px`
+              : 0,
+          }}
+        >
+          {isOpen &&
+            incidentRecordsTableHeaders.map((item, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className="dropDownItem"
+                  style={{ height: isOpen ? "48px" : "0px" }}
+                  onClick={() => {
+                    setPlaceHolderText(item);
+                    setIsOpen(false);
+                  }}
+                >
+                  {item}
+                </div>
+              );
+            })}
+        </div>
+      </div>
       <div className="table">
         <div className="tableHeader">
-          {tableHeaders.map((item, idx) => {
+          {incidentRecordsTableHeaders.map((item, idx) => {
             return (
               <div key={idx} className="thItem">
                 {item}
