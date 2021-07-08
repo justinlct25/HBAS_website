@@ -39,7 +39,7 @@ export async function up(knex: Knex): Promise<void> {
             table.increments();
             table.integer('device_id').notNullable();
             table.foreign('device_id').references('devices.id');
-            table.date('date').notNullable();// data detail
+            table.dateTime('date',{useTz: false, precision: 6}).notNullable();// data detail
             table.time('time').notNullable();// data detail
             table.string('latitude', 20).notNullable();// data detail
             table.string('longitude', 20).notNullable();// data detail

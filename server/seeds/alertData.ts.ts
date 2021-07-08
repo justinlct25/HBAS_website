@@ -14,14 +14,14 @@ export async function seed(knex: Knex): Promise<void> {
         { company_name: "Muselabs", tel: "67182301", contact_person: "Chan Tai Man" },
         { company_name: "Highway Bound", tel: "60740748", contact_person: "Lee Hui Sai" },
         { company_name: "transite", tel: "58787520", contact_person: "Wong wai web" },
-        { company_name: "Bridgine", tel: "66109325", contact_person: "Li Cow Cow" }
+        { company_name: "Bridgine", tel: "66109325", contact_person: "Li Cow Lon" }
     ]);
     await knex("vehicles").insert([
         {car_plate:"AX789", vehicle_model:"SCANIA", vehicle_type:"18"},
-        {car_plate:"UFUCKU", vehicle_model:"SCANIA", vehicle_type:"20"},
+        {car_plate:"JG1330", vehicle_model:"SCANIA", vehicle_type:"20"},
         {car_plate:"BM7414", vehicle_model:"Volvo", vehicle_type:"22"},
         {car_plate:"GV1032", vehicle_model:"Isuzu", vehicle_type:"24"},
-        {car_plate:"DAPETPET", vehicle_model:"Volvo", vehicle_type:"20"},
+        {car_plate:"TM7532", vehicle_model:"Volvo", vehicle_type:"20"},
         {car_plate:"LP3209", vehicle_model:"Isuzu", vehicle_type:"20"}
     ]);
     await knex("devices").insert([

@@ -16,6 +16,7 @@ export function getAlertDataListThunk(activePage:number, isInit: boolean){
             if(res.status === 200){
                 const data = await res.json();
                 dispatch(setAlertDataList(data.alertData, activePage, data.totalPage, data.limit));
+                console.log(data.alertData);
             }
             return ;
         } catch (err) {

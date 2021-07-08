@@ -10,7 +10,7 @@ export class DataController {
         try {
             const page = req.query;
             const newPage = parseInt(String(page.page));
-            const LIMIT:number = 5;
+            const LIMIT:number = 10;
             const OFFSET:number = (LIMIT * (newPage - 1));
             const counting = await this.dataService.getCountingData();
             let totalPage = (parseInt(String(counting[0].count)) / LIMIT);
@@ -105,10 +105,35 @@ export class DataController {
         }
     }
 
+    // RESTful get /history
     getHistoryData = async(req: Request, res: Response) =>{
         try {
             await this.dataService.getUserGroupingData('');
             res.status(httpStatusCodes.OK).json({message:'test'});
+            return;
+        } catch (err) {
+            logger.error(err.message);
+            res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
+        }
+    }
+
+    // RESTful get /companies
+    getCompaniesData = async(req: Request, res: Response) => {
+        try {
+            const companyResult = await this.dataService.getCompaniesData();
+            res.status(httpStatusCodes.OK).json({companies: companyResult, message: 'get company data'});
+            return;
+        } catch (err) {
+            logger.error(err.message);
+            res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({message: 'Internal server error!'});
+        }
+    }
+
+    // RESTful get /devices
+    getDevicesData = async(req: Request, res: Response) => {
+        try {
+            const devicesResult = await this.dataService.getDevicesData();
+            res.status(httpStatusCodes.OK).json({devices: devicesResult, message: 'get devices data'});
             return;
         } catch (err) {
             logger.error(err.message);

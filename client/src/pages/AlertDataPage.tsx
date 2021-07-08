@@ -23,7 +23,7 @@ function AlertDataPage() {
   const [idCheck, setIdCheck] = useState<number>(1);
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(1, true));
+    dispatch(getAlertDataListThunk(1, false));
   }, [dispatch]);
 
   useEffect(() => {

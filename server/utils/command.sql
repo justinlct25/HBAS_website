@@ -22,3 +22,9 @@ left join users on users.id = devices.users_id
 where devices.device_name = 'ramp_meter_001' and users.is_active = true and devices.is_active = true and alertdata.is_active = true
 group by alertdata.date, devices.device_name, users.name, users.phone, users.car_plate
 order by date desc;
+
+-- get company & vehicles count
+select companies.id, companies.company_name, companies.tel, companies.contact_person, count(company_vehicles.company_id)
+from companies 
+left join company_vehicles on company_vehicles.company_id = companies.id
+group by companies.id, companies.company_name, companies.tel, companies.contact_person, company_vehicles.company_id;

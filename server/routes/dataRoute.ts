@@ -8,7 +8,17 @@ dataRoutes.post(`/alertData`, dataController.postAlertData);
 dataRoutes.put(`/alertData`, dataController.putAlertData);
 dataRoutes.delete(`/alertData`, dataController.deleteAlertData);
 // update later
-dataRoutes.get(`/alertData/history`, dataController.getHistoryData);
-dataRoutes.post(`/alertData/history`);
-dataRoutes.put(`/alertData/history`);
-dataRoutes.delete(`/alertData/history`);
+dataRoutes.get(`/history`, dataController.getHistoryData);
+dataRoutes.post(`/history`);
+dataRoutes.put(`/history`);
+dataRoutes.delete(`/history`);
+
+dataRoutes.get(`/companies`, dataController.getCompaniesData);
+dataRoutes.post(`/companies`);
+dataRoutes.put(`/companies`);
+dataRoutes.delete(`/companies`);
+
+dataRoutes.get(`/devices`, dataController.getDevicesData);
+dataRoutes.post(`/devices`);
+dataRoutes.put(`/devices`);
+dataRoutes.delete(`/devices`);

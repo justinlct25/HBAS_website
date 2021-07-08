@@ -2,7 +2,7 @@ import * as Knex from 'knex';
 
 export class DataService {
     constructor(private knex:Knex){}
-    // RESTful get, get all data in database
+    // RESTful get /alertData, get all data in database
     async getAlertData(offset:number, limit:number):Promise<any>{
         return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
@@ -20,7 +20,7 @@ export class DataService {
             .orderBy('alert_data.date', 'desc')
             .limit(limit).offset(offset);
     }
-    // RESTful post, handle income data from incline meter
+    // RESTful post /alertData, handle income data from incline meter
     async postAlertData(
         devices_id:number, 
         data:string, 
@@ -33,16 +33,16 @@ export class DataService {
             devices_id, data, date, time, latitude, longitude, battery
         }).returning('id');
     }
-    // RESTful Put
+    // RESTful Put /alertData
     async putAlertData(){
         return;
     }
-    // RESTful Del
+    // RESTful Del /alertData
     async deleteAlertData(){
         return;
     }
 
-    // get grouping data with one user
+    // RESTful get /history, get grouping data with one user
     async getUserGroupingData(deviceEUI:string){
         return await this.knex.select('devices.device_name', 'alert_data.date', 
         'users.name', 'users.phone', 'users.car_plate').count('alert_data.date')
@@ -52,6 +52,32 @@ export class DataService {
         .where({'devices.dev_eui': `${deviceEUI}`, 'users.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true})
         .groupBy('alert_data.date','devices.device_name', 'users.name', 'users.phone', 'users.car_plate')
         .orderBy('date', 'desc')
+    }
+
+
+    //RESTful get /companies
+    async getCompaniesData():Promise<any>{
+        return await this.knex("companies")
+        .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+        .groupBy('companies.id', 'companies.company_name', 'companies.tel', 
+        'companies.contact_person', 'company_vehicles.company_id')
+        .where({'companies.is_active': true, 'company_vehicles.is_active': true})
+        .select('companies.id', 'companies.company_name', 'companies.tel', 
+        'companies.contact_person').count('company_vehicles.company_id')
+    }
+
+    // RESTful get /devices
+    async getDevicesData():Promise<any>{
+        return await this.knex("devices")
+        .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+        .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+        .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+        .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+        .where({'companies.is_active': true, 'devices.is_active': true, 'vehicles.is_active':true, 
+        'company_vehicles.is_active': true, 'vehicle_device.is_active': true})
+        .select('devices.id', 'devices.device_name', 'devices.device_eui', 
+        'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicles.vehicle_type', 
+        'companies.company_name', 'companies.tel', 'companies.contact_person')
     }
 
     // get count data
