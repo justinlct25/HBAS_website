@@ -5,9 +5,13 @@ import AlertDataPagination from "../components/AlertDataPagination";
 import AlertDataTable from "../components/AlertDataTable";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { IRootState } from "../redux/store";
-import "../css/AlertDataPage.css";
+import "../css/TablePage.css";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
+import { push } from "connected-react-router";
+
+const tableHeaders = incidentRecordsTableHeaders;
+const TABLE_WIDTH = "85%";
 
 function AlertDataPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,102 +36,107 @@ function AlertDataPage() {
   }, [activePage, limit]);
 
   return (
-    <div className="flex-center alertDataPage">
+    <div className="flex-center pageContainer">
       <div
-        className="flex-center"
-        style={{ position: "relative", margin: "8px" }}
+        className="flex-center topRowContainer"
+        style={{ justifyContent: "center" }}
       >
-        <div style={{ padding: "8px" }}>Search by:</div>
-        <div
-          style={{
-            color: placeHolderText === "Select" ? "#ccc" : "#555",
-            minWidth: "64px",
-            transition: "all 1s ease",
-          }}
-        >
-          {placeHolderText}
-        </div>
-        <div
-          className="caretIconContainer"
-          style={{
-            transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-          }}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <CaretIcon />
-        </div>
-        <div className="flex-center" style={{ padding: "8px" }}>
-          <input
-            className="searchInput"
-            placeholder={"Search"}
+        <div className="flex-center">
+          <div style={{ padding: "8px" }}>Search by:</div>
+          <div
             style={{
-              width: placeHolderText !== "Select" ? "240px" : "0px",
+              color: placeHolderText === "Select" ? "#ccc" : "#555",
+              minWidth: "64px",
+              transition: "all 1s ease",
             }}
-          />
-          <div style={{ cursor: "pointer", padding: "8px" }}>
-            <SearchIcon />
+          >
+            {placeHolderText}
+          </div>
+          <div
+            className="caretIconContainer"
+            style={{
+              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+            }}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <CaretIcon />
+          </div>
+          <div className="flex-center" style={{ padding: "8px" }}>
+            <input
+              className="searchInput"
+              placeholder={"Search"}
+              style={{
+                width: placeHolderText !== "Select" ? "240px" : "0px",
+              }}
+            />
+            <div style={{ cursor: "pointer", padding: "8px" }}>
+              <SearchIcon />
+            </div>
+          </div>
+          {/* </div> */}
+          <div
+            className="dropDownListContainer"
+            style={{
+              zIndex: 1,
+              maxHeight: isOpen ? `${(tableHeaders.length + 1) * 64}px` : 0,
+            }}
+          >
+            {isOpen &&
+              tableHeaders.map((item, idx) => {
+                return (
+                  <div
+                    key={item + idx}
+                    className="flex-center dropDownItem"
+                    style={{ height: isOpen ? "48px" : "0px" }}
+                    onClick={() => {
+                      setPlaceHolderText(item);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {item}
+                  </div>
+                );
+              })}
           </div>
         </div>
-        <div
-          className="dropDownListContainer"
-          style={{
-            zIndex: 1,
-            maxHeight: isOpen
-              ? `${(incidentRecordsTableHeaders.length + 1) * 40}px`
-              : 0,
-          }}
-        >
-          {isOpen &&
-            incidentRecordsTableHeaders.map((item, idx) => {
-              return (
-                <div
-                  key={idx}
-                  className="dropDownItem"
-                  style={{ height: isOpen ? "48px" : "0px" }}
-                  onClick={() => {
-                    setPlaceHolderText(item);
-                    setIsOpen(false);
-                  }}
-                >
-                  {item}
-                </div>
-              );
-            })}
-        </div>
       </div>
-      <div className="table">
-        <div className="tableHeader">
-          {incidentRecordsTableHeaders.map((item, idx) => {
+      <div className="table" style={{ width: TABLE_WIDTH }}>
+        <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
+          {tableHeaders.map((item, idx) => {
             return (
-              <div key={idx} className="thItem">
+              <div key={item + idx} className="flex-center thItem">
                 {item}
               </div>
             );
           })}
         </div>
-        <div className="tableBody">
+        <div className="tableBody" style={{ width: TABLE_WIDTH }}>
           {alertDataList &&
             alertDataList.length > 0 &&
             alertDataList.map((item, idx) => {
               return (
-                <div className="tableRow" onClick={() => console.log("hihi")}>
-                  <div key={idx} className="tdItem">
+                <div
+                  key={item.device_eui + idx}
+                  className=" flex-center tableRow"
+                  onClick={() => dispatch(push("/incident"))}
+                >
+                  <div key={idx} className="flex-center tdItem">
                     {item.device_eui}
                   </div>
-                  <div key={idx} className="tdItem">
+                  <div key={idx} className="flex-center tdItem">
                     {item.device_name}
                   </div>
-                  <div key={idx} className="tdItem">
+                  <div key={idx} className="flex-center tdItem">
                     {item.device_name}
                   </div>
-                  <div key={idx} className="tdItem">
+                  <div key={idx} className="flex-center tdItem">
                     {item.longitude}
                   </div>
-                  <div key={idx} className="tdItem">
+                  <div key={idx} className="flex-center tdItem">
                     {item.latitude}
                   </div>
-                  <div key={idx} className="tdItem">
-                    {item.date}
+                  <div key={idx} className="flex-center tdItem">
+                    {item.date.substr(0, 10)}
                   </div>
                 </div>
               );

@@ -88,7 +88,7 @@ function NavBar() {
             {menuItem.map((item, idx) => {
               return (
                 <Link
-                  key={idx}
+                  key={"menuItem" + idx}
                   to={item.link}
                   style={{
                     width: "100%",

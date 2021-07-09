@@ -8,18 +8,14 @@ export const incidentRecordsTableHeaders = [
 ];
 
 export const manageUserTableHeaders = [
-  "Device ID",
-  "Car Plate",
-  "User",
-  "Phone number",
-  "Location",
-  "Date",
+  "Company Name",
+  "Contact Person",
+  "Phone Number",
+  "Number of Vehicles",
 ];
 export const manageDeviceTableHeaders = [
   "Device ID",
-  "Car Plate",
+  "Device Name",
   "User",
   "Phone number",
-  "Location",
-  "Date",
 ];
