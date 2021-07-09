@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   AddIcon,
   CaretIcon,
-  SearchIcon,
   CloseIcon,
+  SearchIcon,
 } from "../components/IconsOnly";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
@@ -17,8 +17,6 @@ function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
-  const dispatch = useDispatch();
-
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
@@ -34,12 +32,13 @@ function ManageDevice() {
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
   );
-
-  const devicesList = devicesDataList.devicesDataList;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getDeviceDataListThunk(false));
   }, [dispatch]);
+
+  const devicesList = devicesDataList.devicesDataList;
 
   return (
     <>
@@ -155,11 +154,9 @@ function ManageDevice() {
                     </div>
                     <div key={idx} className="tdItem">
                       {item.company_name}
-                      {/* {companiesDataList.companiesDataList[idx].company_name} */}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.contact_person}
-                      {/* {companiesDataList.companiesDataList[idx].tel} */}
+                      {item.tel}
                     </div>
                   </div>
                 );
@@ -280,17 +277,6 @@ function ManageDevice() {
           </div>
         </div>
       </div>
-      {devicesList &&
-        devicesList.length > 0 &&
-        devicesList.map((data, idx) => {
-          return (
-            <div>
-              idx:{idx + 1} DB_id:{data.id} {data.device_eui} {data.device_name}
-              {data.car_plate} {data.vehicle_model} {data.vehicle_type}
-              {data.company_name} {data.tel} {data.contact_person}
-            </div>
-          );
-        })}
     </>
   );
 }
