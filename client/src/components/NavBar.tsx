@@ -17,8 +17,13 @@ import { incidentRecordsTableHeaders } from "../table/tableHeader";
 import MenuButton from "./MenuButton";
 import anime from "animejs";
 import { Link } from "react-router-dom";
+import { useRouter } from "../helpers/useRouter";
 
 function NavBar() {
+  const router = useRouter();
+  const splitRoute = router.pathname;
+  console.log(splitRoute);
+
   const [collapsed, setCollapsed] = useState(true);
   const dispatch = useDispatch();
 
@@ -27,7 +32,7 @@ function NavBar() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   const menuItem = [
-    { display: "Incident Records", link: "/" },
+    { display: "Incident Records", link: "/alertDataPage" },
     { display: "Manage User", link: "/manageUser" },
     { display: "Manage Device", link: "/manageDevice" },
     { display: "Statistics", link: "/statistics" },
@@ -68,48 +73,53 @@ function NavBar() {
 
   return (
     <div className="topNavContainer">
-      <div className="topNavContent">
-        <CompanyName />
+      {splitRoute !== "/login" && (
+        <>
+          <div className="topNavContent">
+            <CompanyName />
 
-        <div
-          className="flex-center"
-          style={{ height: "100%", padding: "8px", cursor: "pointer" }}
-        >
-          {/* <GraphViewIcon /> */}
-          <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
-        </div>
-        <div
-          className="rightMenu"
-          style={{
-            right: menuIsOpen ? 0 : "-150%",
-          }}
-        >
-          <div className="flex-center menuItemContainer">
-            {menuItem.map((item, idx) => {
-              return (
-                <Link
-                  key={"menuItem" + idx}
-                  to={item.link}
-                  style={{
-                    width: "100%",
-                    color: "none",
-                    textDecoration: "none",
-                  }}
-                >
-                  <div className="flex-center menuItem">{item.display}</div>
-                </Link>
-              );
-            })}
+            <div
+              className="flex-center"
+              style={{ height: "100%", padding: "8px", cursor: "pointer" }}
+            >
+              {/* <GraphViewIcon /> */}
+              <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
+            </div>
+
+            <div
+              className="rightMenu"
+              style={{
+                right: menuIsOpen ? 0 : "-150%",
+              }}
+            >
+              <div className="flex-center menuItemContainer">
+                {menuItem.map((item, idx) => {
+                  return (
+                    <Link
+                      key={"menuItem" + idx}
+                      to={item.link}
+                      style={{
+                        width: "100%",
+                        color: "none",
+                        textDecoration: "none",
+                      }}
+                    >
+                      <div className="flex-center menuItem">{item.display}</div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div
-        style={{
-          width: "100%",
-          border: "solid 0.5px #aaaa",
-        }}
-      />
+          <div
+            style={{
+              width: "100%",
+              border: "solid 0.5px #aaaa",
+            }}
+          />
+        </>
+      )}
       {menuIsOpen && (
         <div
           style={{

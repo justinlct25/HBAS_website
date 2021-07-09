@@ -5,6 +5,7 @@ import "./App.css";
 import NavBar from "./components/NavBar";
 import AlertDataPage from "./pages/AlertDataPage";
 import IncidentPage from "./pages/IncidentPage";
+import LoginPage from "./pages/LoginPage";
 import ManageDevice from "./pages/ManageDevice";
 import ManageUser from "./pages/ManageUser";
 import ProfilePage from "./pages/ProfilePage";
@@ -21,7 +22,9 @@ function App() {
         <Switch>
           {/* <Route path="/" exact={true} component={LandingPage} /> */}
           {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
-          <Route path="/" exact={true} component={AlertDataPage} />
+
+          <Route path="/login" exact={true} component={LoginPage} />
+          <Route path="/alertDataPage" exact={true} component={AlertDataPage} />
           <Route path="/incident" exact={true} component={IncidentPage} />
           <Route path="/profile" exact={true} component={ProfilePage} />
           <Route path="/manageUser" exact={true} component={ManageUser} />
