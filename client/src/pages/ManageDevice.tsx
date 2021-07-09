@@ -1,4 +1,3 @@
-import { push } from "connected-react-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -7,8 +6,6 @@ import {
   SearchIcon,
   CloseIcon,
 } from "../components/IconsOnly";
-import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { getCompaniesDataListThunk } from "../redux/companies/thunk";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
@@ -21,21 +18,6 @@ function ManageDevice() {
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const dispatch = useDispatch();
-
-  const companiesDataList = useSelector(
-    (state: IRootState) => state.companiesDataList
-  );
-  const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
-  const alertDataList = alertDataPage.alertDataList;
-  useEffect(() => {
-    dispatch(getAlertDataListThunk(1, false));
-  }, [dispatch]);
-
-  // const companiesList = companiesDataList.companiesDataList;
-
-  useEffect(() => {
-    dispatch(getCompaniesDataListThunk(false));
-  }, [dispatch]);
 
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
@@ -156,9 +138,9 @@ function ManageDevice() {
             })}
           </div>
           <div className="tableBody" style={{ width: TABLE_WIDTH }}>
-            {alertDataList &&
-              alertDataList.length > 0 &&
-              alertDataList.map((item, idx) => {
+            {devicesList &&
+              devicesList.length > 0 &&
+              devicesList.map((item, idx) => {
                 return (
                   <div
                     key={item.id}
@@ -172,11 +154,11 @@ function ManageDevice() {
                       {item.device_name}
                     </div>
                     <div key={idx} className="tdItem">
-                      {`Company name ${idx}`}
+                      {item.company_name}
                       {/* {companiesDataList.companiesDataList[idx].company_name} */}
                     </div>
                     <div key={idx} className="tdItem">
-                      {`Contact person ${idx}`}
+                      {item.contact_person}
                       {/* {companiesDataList.companiesDataList[idx].tel} */}
                     </div>
                   </div>

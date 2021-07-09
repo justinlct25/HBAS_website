@@ -124,10 +124,10 @@ function AlertDataPage() {
                     {item.device_eui}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.device_name}
+                    {item.car_plate}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.device_name}
+                    {item.company_name}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.longitude}
