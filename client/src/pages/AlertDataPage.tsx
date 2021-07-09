@@ -26,8 +26,19 @@ function AlertDataPage() {
   const dispatch = useDispatch();
   const [idCheck, setIdCheck] = useState<number>(1);
 
+  // useEffect(() => {
+  //   dispatch(getAlertDataListThunk(1, false));
+  // }, [dispatch]);
+
   useEffect(() => {
-    dispatch(getAlertDataListThunk(1, false));
+    const timer = setInterval(() => {
+      dispatch(getAlertDataListThunk(1, false));
+      console.log("interval");
+    }, 5000);
+
+    return () => {
+      clearInterval(timer);
+    };
   }, [dispatch]);
 
   useEffect(() => {
