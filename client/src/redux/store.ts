@@ -20,7 +20,6 @@ import {
 } from "connected-react-router";
 import thunk, { ThunkDispatch as OldThunkDispatch } from "redux-thunk";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
-import logger from "redux-logger";
 
 export const history = createBrowserHistory();
 
