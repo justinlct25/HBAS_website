@@ -1,14 +1,11 @@
-import { push } from "connected-react-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AddIcon,
   CaretIcon,
-  SearchIcon,
   CloseIcon,
+  SearchIcon,
 } from "../components/IconsOnly";
-import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { getCompaniesDataListThunk } from "../redux/companies/thunk";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
@@ -20,23 +17,6 @@ function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
-  const dispatch = useDispatch();
-
-  const companiesDataList = useSelector(
-    (state: IRootState) => state.companiesDataList
-  );
-  const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
-  const alertDataList = alertDataPage.alertDataList;
-  useEffect(() => {
-    dispatch(getAlertDataListThunk(1, false));
-  }, [dispatch]);
-
-  // const companiesList = companiesDataList.companiesDataList;
-
-  useEffect(() => {
-    dispatch(getCompaniesDataListThunk(false));
-  }, [dispatch]);
-
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
@@ -52,12 +32,13 @@ function ManageDevice() {
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
   );
-
-  const devicesList = devicesDataList.devicesDataList;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getDeviceDataListThunk(false));
   }, [dispatch]);
+
+  const devicesList = devicesDataList.devicesDataList;
 
   return (
     <>
@@ -156,9 +137,9 @@ function ManageDevice() {
             })}
           </div>
           <div className="tableBody" style={{ width: TABLE_WIDTH }}>
-            {alertDataList &&
-              alertDataList.length > 0 &&
-              alertDataList.map((item, idx) => {
+            {devicesList &&
+              devicesList.length > 0 &&
+              devicesList.map((item, idx) => {
                 return (
                   <div
                     key={item.id}
@@ -172,12 +153,10 @@ function ManageDevice() {
                       {item.device_name}
                     </div>
                     <div key={idx} className="tdItem">
-                      {`Company name ${idx}`}
-                      {/* {companiesDataList.companiesDataList[idx].company_name} */}
+                      {item.company_name}
                     </div>
                     <div key={idx} className="tdItem">
-                      {`Contact person ${idx}`}
-                      {/* {companiesDataList.companiesDataList[idx].tel} */}
+                      {item.tel}
                     </div>
                   </div>
                 );
@@ -298,17 +277,6 @@ function ManageDevice() {
           </div>
         </div>
       </div>
-      {devicesList &&
-        devicesList.length > 0 &&
-        devicesList.map((data, idx) => {
-          return (
-            <div>
-              idx:{idx + 1} DB_id:{data.id} {data.device_eui} {data.device_name}
-              {data.car_plate} {data.vehicle_model} {data.vehicle_type}
-              {data.company_name} {data.tel} {data.contact_person}
-            </div>
-          );
-        })}
     </>
   );
 }
