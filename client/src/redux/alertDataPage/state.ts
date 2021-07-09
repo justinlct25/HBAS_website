@@ -1,7 +1,7 @@
 export interface IAlertDataPage {
     id: number;
     device_name:string;
-    dev_eui:string;
+    device_eui:string;
     data:string;
     date:string;
     time:string;

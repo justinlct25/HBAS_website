@@ -112,7 +112,7 @@ function AlertDataPage() {
               return (
                 <div className="tableRow" onClick={() => console.log("hihi")}>
                   <div key={idx} className="tdItem">
-                    {item.dev_eui}
+                    {item.device_eui}
                   </div>
                   <div key={idx} className="tdItem">
                     {item.device_name}

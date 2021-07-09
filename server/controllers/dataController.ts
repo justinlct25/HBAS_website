@@ -62,10 +62,10 @@ export class DataController {
                 return;
             }
             //check handbrake is sending real data
-            if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
-                res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
-                return;
-            }
+            // if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
+            //     res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
+            //     return;
+            // }
             // require device id
             const deviceID = await this.dataService.getDevicesID(newJSON.deviceName, newJSON.devEUI);
             if(deviceID == undefined || deviceID == null){

@@ -22,15 +22,15 @@ export class DataService {
     }
     // RESTful post /alertData, handle income data from incline meter
     async postAlertData(
-        devices_id:number, 
+        device_id:number, 
         data:string, 
         date:string, 
         time:string, 
         latitude:string, 
         longitude:string, 
         battery:string){
-        return await this.knex('alertdata').insert({
-            devices_id, data, date, time, latitude, longitude, battery
+        return await this.knex('alert_data').insert({
+            device_id, data, date, time, latitude, longitude, battery
         }).returning('id');
     }
     // RESTful Put /alertData
@@ -89,6 +89,6 @@ export class DataService {
     async getDevicesID(reqName:string, reqEUI:string):Promise<any>{
         return await this.knex.select('id')
             .from('devices')
-            .where({device_name: reqName, dev_eui: reqEUI}).first();
+            .where({device_name: reqName, device_eui: reqEUI}).first();
     }
 }
