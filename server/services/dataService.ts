@@ -6,7 +6,7 @@ export class DataService {
     async getAlertData(offset:number, limit:number):Promise<any>{
         return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
-            'alert_data.time', 'alert_data.latitude', 'alert_data.longitude', 'alert_data.battery', 
+            'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 
             'companies.company_name', 'companies.tel', 'companies.contact_person', 
             'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type')
             .from('alert_data')
@@ -30,7 +30,7 @@ export class DataService {
         longitude:string, 
         battery:string){
         return await this.knex('alert_data').insert({
-            device_id, data, date, time, latitude, longitude, battery
+            device_id, data, date: new Date(date).toLocaleDateString('en-CA'), time, geolocation:`${latitude},${longitude}` , battery
         }).returning('id');
     }
     // RESTful Put /alertData
