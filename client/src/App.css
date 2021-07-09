@@ -55,3 +55,13 @@ body {
 .mouseforce:hover {
   visibility: hidden;
 }
+.pageContainer {
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100vw;
+  height: calc(100vh - var(--topNavHeight) - 16px);
+}
+.incidentReportText {
+  font-size: 20px;
+  margin: 8px;
+}

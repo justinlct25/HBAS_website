@@ -52,3 +52,102 @@ export const SearchIcon = () => {
     </svg>
   );
 };
+
+export function AddIcon() {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_i)">
+        <path
+          d="M13.9999 2.33337C7.55642 2.33337 2.33325 7.55654 2.33325 14C2.33325 20.4435 7.55642 25.6667 13.9999 25.6667C20.4434 25.6667 25.6666 20.4435 25.6666 14C25.6666 7.55654 20.4434 2.33337 13.9999 2.33337ZM19.8333 15.1667H15.1666V19.8334H12.8333V15.1667H8.16659V12.8334H12.8333V8.16671H15.1666V12.8334H19.8333V15.1667Z"
+          fill="#0BFF06"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_i"
+          x="2.33325"
+          y="2.33337"
+          width="23.3333"
+          height="23.3333"
+          filterUnits="userSpaceOnUse"
+          colorInterpolationFilters="sRGB"
+        >
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="BackgroundImageFix"
+            result="shape"
+          />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset />
+          <feGaussianBlur stdDeviation="5" />
+          <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+          />
+          <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+        </filter>
+      </defs>
+    </svg>
+  );
+}
+export const CloseIcon = () => {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M25 25L3 3M25 3L3 25"
+        stroke="#EEEEEE"
+        strokeWidth="3"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
+interface BackButtonProps {
+  color?: string;
+}
+export const BackButton = (props: BackButtonProps) => {
+  const { color = "#555555" } = props;
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 3.75C8.78906 3.75 3.75 8.78906 3.75 15C3.75 21.2109 8.78906 26.25 15 26.25C21.2109 26.25 26.25 21.2109 26.25 15C26.25 8.78906 21.2109 3.75 15 3.75Z"
+        stroke={color}
+        strokeWidth="1.875"
+        strokeMiterlimit="10"
+      />
+      <path
+        d="M17.3438 20.625L11.7188 15L17.3438 9.375"
+        stroke={color}
+        strokeWidth="1.875"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
