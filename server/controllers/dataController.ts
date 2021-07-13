@@ -10,21 +10,17 @@ export class DataController {
     try {
       const page = req.query;
       const newPage = parseInt(String(page.page));
-      const LIMIT: number = 100;
+      const LIMIT: number = 7;
 
-      // @ts-ignore
       const OFFSET: number = LIMIT * (newPage - 1);
-      let demo: number;
       const counting = await this.dataService.getCountingData();
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
         totalPage = Math.ceil(totalPage);
-        demo = Math.ceil(totalPage);
       } else {
         totalPage = Math.floor(totalPage);
-        demo = Math.floor(totalPage);
       }
-      const dataResult = await this.dataService.getAlertData(demo, LIMIT);
+      const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
 
       res.status(httpStatusCodes.OK).json({
         alertData: dataResult,

@@ -1,25 +1,28 @@
 //alertdata
-import { IAlertDataPageActions } from "./alertDataPage/action";
-import { IAlertDataPageState } from "./alertDataPage/state";
-import { IAlertDataPageReducer } from "./alertDataPage/reducer";
-//companies
-import { ICompaniesDataActions } from "./companies/action";
-import { ICompaniesDataState } from "./companies/state";
-import { ICompaniesDataReducer } from "./companies/reducer";
-//devices
-import { IDevicesDataActions } from "./devices/action";
-import { IDevicesDataState } from "./devices/state";
-import { IDevicesDataReducer } from "./devices/reducer";
-
-import { createBrowserHistory } from "history";
 import {
   CallHistoryMethodAction,
   connectRouter,
   routerMiddleware,
   RouterState,
 } from "connected-react-router";
-import thunk, { ThunkDispatch as OldThunkDispatch } from "redux-thunk";
+import { createBrowserHistory } from "history";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import thunk, { ThunkDispatch as OldThunkDispatch } from "redux-thunk";
+import { IAlertDataPageActions } from "./alertDataPage/action";
+import { IAlertDataPageReducer } from "./alertDataPage/reducer";
+import { IAlertDataPageState } from "./alertDataPage/state";
+//companies
+import { ICompaniesDataActions } from "./companies/action";
+import { ICompaniesDataReducer } from "./companies/reducer";
+import { ICompaniesDataState } from "./companies/state";
+//devices
+import { IDevicesDataActions } from "./devices/action";
+import { IDevicesDataReducer } from "./devices/reducer";
+import { IDevicesDataState } from "./devices/state";
+//loading
+import { ILoadingPageAction } from "./loading/action";
+import { ILoadingReducer } from "./loading/reducer";
+import { ILoadingState } from "./loading/state";
 
 export const history = createBrowserHistory();
 
@@ -29,6 +32,7 @@ export interface IRootState {
   companiesDataList: ICompaniesDataState;
   alertDataPage: IAlertDataPageState;
   router: RouterState;
+  loading: ILoadingState;
 }
 
 // initState
@@ -36,7 +40,8 @@ type IRootAction =
   | IAlertDataPageActions
   | ICompaniesDataActions
   | IDevicesDataActions
-  | CallHistoryMethodAction;
+  | CallHistoryMethodAction
+  | ILoadingPageAction;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
@@ -47,6 +52,7 @@ const rootReducer = combineReducers<IRootState>({
   companiesDataList: ICompaniesDataReducer,
   alertDataPage: IAlertDataPageReducer,
   router: connectRouter(history),
+  loading: ILoadingReducer,
 });
 
 declare global {

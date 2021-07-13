@@ -1,6 +1,6 @@
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import AlertDataPage from "./pages/AlertDataPage";
@@ -23,6 +23,9 @@ function App() {
           {/* <Route path="/" exact={true} component={LandingPage} /> */}
           {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
 
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
           <Route path="/login" exact={true} component={LoginPage} />
           <Route path="/alertDataPage" exact={true} component={AlertDataPage} />
           <Route path="/incident" exact={true} component={IncidentPage} />

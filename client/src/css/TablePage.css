@@ -79,11 +79,9 @@
 }
 .tableBody {
   background-color: #fff;
-  height: 54vh;
-  overflow: scroll;
+  overflow: hidden;
   box-shadow: 0 4px 8px #0003;
   border-radius: 0px 0px 10px 10px;
-  scroll-snap-type: y proximity;
 }
 .tableRow {
   width: 100%;
@@ -93,8 +91,9 @@
   padding: 40px 0;
   border-bottom: solid 0.5px #0004;
   cursor: pointer;
-  scroll-snap-align: start;
+  transition: all 0.4s;
 }
+
 .tableRow:hover {
   background: #eee;
   transition: all 0.4s;
