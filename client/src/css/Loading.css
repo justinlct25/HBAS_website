@@ -1,0 +1,28 @@
+.dotContainer {
+  display: flex;
+
+  transform-origin: center;
+  transform-style: preserve-3d;
+  animation: animate 8s linear infinite;
+}
+@keyframes animate {
+  0% {
+    transform: perspective(1400px) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(1400px) rotateY(360deg);
+  }
+}
+.eachDot {
+  top: 0;
+  left: 0;
+  transform-origin: center;
+  transform-style: preserve-3d;
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background-color: rgb(0, 149, 255);
+  border-radius: 50%;
+  opacity: 0.3;
+  -webkit-box-reflect: below 8px linear-gradient(transparent, #fff5);
+}

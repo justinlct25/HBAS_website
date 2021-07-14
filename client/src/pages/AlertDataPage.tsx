@@ -1,21 +1,22 @@
+import { push } from "connected-react-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Alert, Container, Table } from "reactstrap";
-import AlertDataPagination from "../components/AlertDataPagination";
-import AlertDataTable from "../components/AlertDataTable";
+import { CaretIcon, SearchIcon } from "../components/IconsOnly";
+import Loading from "../components/Loading";
+import "../css/TablePage.css";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { IRootState } from "../redux/store";
-import "../css/TablePage.css";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
-import { CaretIcon, SearchIcon } from "../components/IconsOnly";
-import { push } from "connected-react-router";
 
 const tableHeaders = incidentRecordsTableHeaders;
+const itemPerPage = 7;
 const TABLE_WIDTH = "85%";
 
 function AlertDataPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
+  const [searchInput, setSearchInput] = useState("");
+  // const [currentPage, setCurrentPage] = useState(1);
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
 
   const alertDataList = alertDataPage.alertDataList;
@@ -23,22 +24,14 @@ function AlertDataPage() {
   const totalPage = alertDataPage.totalPage;
   const limit = alertDataPage.limit;
 
+  const isLoading = useSelector(
+    (state: IRootState) => state.loading.loading.isLoading
+  );
   const dispatch = useDispatch();
   const [idCheck, setIdCheck] = useState<number>(1);
 
-  // useEffect(() => {
-  //   dispatch(getAlertDataListThunk(1, false));
-  // }, [dispatch]);
-
   useEffect(() => {
-    const timer = setInterval(() => {
-      dispatch(getAlertDataListThunk(1, false));
-      console.log("interval");
-    }, 5000);
-
-    return () => {
-      clearInterval(timer);
-    };
+    dispatch(getAlertDataListThunk(activePage, false));
   }, [dispatch]);
 
   useEffect(() => {
@@ -76,11 +69,24 @@ function AlertDataPage() {
             <input
               className="searchInput"
               placeholder={"Search"}
+              value={searchInput}
               style={{
                 width: placeHolderText !== "Select" ? "240px" : "0px",
               }}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+              }}
             />
-            <div style={{ cursor: "pointer", padding: "8px" }}>
+            <div
+              style={{ cursor: "pointer", padding: "8px" }}
+              onClick={
+                placeHolderText !== "Select"
+                  ? () => {
+                      // dispatch() something use value: searchInput & tableHeaders[0]
+                    }
+                  : () => {}
+              }
+            >
               <SearchIcon />
             </div>
           </div>
@@ -121,7 +127,14 @@ function AlertDataPage() {
             );
           })}
         </div>
-        <div className="tableBody" style={{ width: TABLE_WIDTH }}>
+        <div
+          className="tableBody"
+          style={{
+            width: TABLE_WIDTH,
+            height: `${itemPerPage * 82}px `,
+          }}
+        >
+          {isLoading && <Loading />}
           {alertDataList &&
             alertDataList.length > 0 &&
             alertDataList.map((item, idx) => {
@@ -154,45 +167,54 @@ function AlertDataPage() {
             })}
         </div>
       </div>
-    </div>
-    // <Container>
-    //   <Table striped>
-    //     <thead>
-    //       <tr>
-    //         <th>###</th>
-    //         <th>date</th>
-    //         <th>time</th>
-    //         <th>latitude</th>
-    //         <th>longitude</th>
-    //         <th>battery</th>
-    //       </tr>
-    //     </thead>
-    //     <tbody>
-    //       {alertDataList &&
-    //         alertDataList.length > 0 &&
-    //         alertDataList.map((data, idx) => (
-    //           <AlertDataTable
-    //             key={idx + 1}
-    //             id={idx + idCheck + 1}
-    //             date={data.date}
-    //             time={data.time}
-    //             latitude={data.latitude}
-    //             longitude={data.longitude}
-    //             battery={data.battery}
-    //           />
-    //         ))}
-    //     </tbody>
-    //   </Table>
+      <div className="flex-center" style={{ width: "100%" }}>
+        <div
+          style={{
+            margin: "16px",
+            fontSize: "30px",
+            color: activePage === 1 ? "#CCC" : "#555",
+          }}
+          onClick={
+            activePage === 1
+              ? () => {}
+              : () => {
+                  dispatch(getAlertDataListThunk(activePage - 1, false));
+                }
+          }
+        >
+          {"<"}
+        </div>
+        <div
+          className="flex-center"
+          style={{
+            margin: "16px",
+            fontSize: "20px",
+          }}
+        >
+          {"Page " + activePage}
+        </div>
 
-    //   {alertDataList && alertDataList.length > 0 && (
-    //     <AlertDataPagination activePage={activePage} totalPage={totalPage} />
-    //   )}
-    //   {alertDataList && alertDataList.length === 0 && (
-    //     <Alert className="handbrake_data" color="success">
-    //       <b>Congratulations! Your have the best parking habits!</b>
-    //     </Alert>
-    //   )}
-    // </Container>
+        <div
+          style={{
+            margin: "16px",
+            fontSize: "30px",
+            color: activePage !== totalPage ? "#555" : "#CCC",
+          }}
+          onClick={
+            activePage !== totalPage
+              ? () => {
+                  if (activePage >= totalPage) {
+                    return;
+                  }
+                  dispatch(getAlertDataListThunk(activePage + 1, false));
+                }
+              : () => {}
+          }
+        >
+          {">"}
+        </div>
+      </div>
+    </div>
   );
 }
 
