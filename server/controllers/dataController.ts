@@ -171,4 +171,20 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+
+  getDevicesVersion = async (req: Request, res: Response) => {
+    try {
+      const ver = req.query;
+      console.log(ver);
+      const newVer = String(ver);
+      console.log(newVer);
+      const verData = await this.dataService.getDevicesVersion(newVer);
+      console.log(verData);
+      res.status(httpStatusCodes.ACCEPTED).json({version: verData[0], message: 'get version data'})
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
 }

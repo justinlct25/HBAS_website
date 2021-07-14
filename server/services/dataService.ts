@@ -128,4 +128,11 @@ export class DataService {
       .where({ device_name: reqName, device_eui: reqEUI })
       .first();
   }
+
+  // get device version & is_active , for update version
+  async getDevicesVersion(version: string){
+    return await this.knex('devices')
+    .where({ device_eui: 'jPlXIAADvQ0=', is_active: true})
+    .select('id', 'device_name', 'device_eui', 'version', 'is_active')
+  }
 }

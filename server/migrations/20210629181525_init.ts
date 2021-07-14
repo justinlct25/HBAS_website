@@ -23,6 +23,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments();
     table.string('device_name', 20).notNullable();
     table.string('device_eui', 30).notNullable();
+    table.string('version').notNullable().defaultTo('0.0.0');
     table.boolean('is_active').defaultTo(true).notNullable();
     table.timestamps(false, true);
   });

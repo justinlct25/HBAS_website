@@ -22,3 +22,8 @@ dataRoutes.get(`/devices`, dataController.getDevicesData);
 dataRoutes.post(`/devices`);
 dataRoutes.put(`/devices`);
 dataRoutes.delete(`/devices`);
+
+dataRoutes.get(`/devices/version`, dataController.getDevicesVersion);
+dataRoutes.post(`/devices/version`);
+dataRoutes.put(`/devices/version`);
+dataRoutes.delete(`/devices/version`);
