@@ -1,6 +1,6 @@
 -- get all data
 select alert_data.id, devices.device_name, devices.device_eui, alert_data.date, 
-alert_data.time, alert_data.latitude, alert_data.longitude, alert_data.battery, 
+alert_data.time, alert_data.geolocation, alert_data.battery, 
 companies.company_name, companies.tel, companies.contact_person, 
 vehicles.car_plate, vehicles.vehicle_model, vehicle_type
 from alert_data 
@@ -28,3 +28,19 @@ select companies.id, companies.company_name, companies.tel, companies.contact_pe
 from companies 
 left join company_vehicles on company_vehicles.company_id = companies.id
 group by companies.id, companies.company_name, companies.tel, companies.contact_person, company_vehicles.company_id;
+
+-- get all data by searching
+select alert_data.id, devices.device_name, devices.device_eui, alert_data.date, 
+alert_data.time, alert_data.geolocation, alert_data.battery, 
+companies.company_name, companies.tel, companies.contact_person, 
+vehicles.car_plate, vehicles.vehicle_model, vehicle_type
+from alert_data 
+left join devices on devices.id = alert_data.device_id 
+left join vehicle_device on vehicle_device.device_id = devices.id
+left join vehicles on vehicles.id = vehicle_device.vehicle_id
+left join company_vehicles on company_vehicles.vehicle_id = vehicles.id
+left join companies on companies.id = company_vehicles.company_id 
+where companies.is_active = true and devices.is_active = true and 
+alert_data.is_active = true and vehicles.is_active = true and 
+company_vehicles.is_active = true and vehicle_device.is_active = true and devices.device_eui like '%aAA%'
+order by alert_data.date desc;

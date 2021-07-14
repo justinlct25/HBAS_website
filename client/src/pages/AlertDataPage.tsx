@@ -31,7 +31,7 @@ function AlertDataPage() {
   const [idCheck, setIdCheck] = useState<number>(1);
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage, false));
+    dispatch(getAlertDataListThunk(activePage, true, placeHolderText, searchInput));
   }, [dispatch]);
 
   useEffect(() => {
@@ -83,6 +83,7 @@ function AlertDataPage() {
                 placeHolderText !== "Select"
                   ? () => {
                       // dispatch() something use value: searchInput & tableHeaders[0]
+                      dispatch(getAlertDataListThunk(1, true, placeHolderText, searchInput));
                     }
                   : () => {}
               }
@@ -154,10 +155,10 @@ function AlertDataPage() {
                     {item.company_name}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.longitude}
+                    {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.latitude}
+                    {item.geolocation.x + ',' + item.geolocation.y}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}
@@ -178,7 +179,7 @@ function AlertDataPage() {
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getAlertDataListThunk(activePage - 1, false));
+                  dispatch(getAlertDataListThunk(activePage - 1, false, placeHolderText, searchInput));
                 }
           }
         >
@@ -206,7 +207,7 @@ function AlertDataPage() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getAlertDataListThunk(activePage + 1, false));
+                  dispatch(getAlertDataListThunk(activePage + 1, false, placeHolderText, searchInput));
                 }
               : () => {}
           }

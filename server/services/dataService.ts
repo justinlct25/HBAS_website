@@ -42,6 +42,28 @@ export class DataService {
         return;
     }
 
+    // get /alertData, where search is not all
+    async getAlertDataBySearch(offset:number, limit:number, searchType:string, searchString:string){
+      return await this.knex
+        .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
+            'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 
+            'companies.company_name', 'companies.tel', 'companies.contact_person', 
+            'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type')
+            .from('alert_data')
+            .leftJoin('devices', 'devices.id', 'alert_data.device_id')
+            .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+            .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+            .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+            .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+            .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
+                    , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true, 
+
+                  })
+            .andWhere(`${searchType}`,'like',`%${searchString}%`)
+            .orderBy('alert_data.date', 'desc')
+            .limit(limit).offset(offset);
+    }
+
   // RESTful get /history, get grouping data with one user
   async getUserGroupingData(deviceEUI: string) {
     return await this.knex
@@ -118,6 +140,19 @@ export class DataService {
   // get count data
   async getCountingData() {
     return await this.knex('alert_data').count('id');
+  }
+  // get count data by searching
+  async getCountingDataBySearch(searchType:string, searchString:string){
+    return await this.knex('alert_data')
+      .leftJoin('devices', 'devices.id', 'alert_data.device_id')
+      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+      .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
+            , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true})
+      .andWhere(`${searchType}`,'like',`%${searchString}%`)
+      .count('alert_data.id');
   }
 
   // get device id to confirm

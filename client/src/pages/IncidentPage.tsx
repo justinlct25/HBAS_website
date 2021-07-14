@@ -26,7 +26,7 @@ function IncidentPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(1, false));
+    // dispatch(getAlertDataListThunk(1, false));
   }, []);
   useEffect(() => {
     dispatch(getCompaniesDataListThunk(false));

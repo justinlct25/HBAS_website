@@ -2,14 +2,16 @@ export interface IAlertDataPage {
   id: number;
   device_name: string;
   device_eui: string;
-  data: string;
   date: string;
   time: string;
-  latitude: string;
-  longitude: string;
+  geolocation: {x:number, y:number};
   battery: string;
-  car_plate: string;
   company_name: string;
+  tel: string;
+  contact_person: string;
+  car_plate: string;
+  vehicle_model: string;
+  vehicle_type: string;
 }
 
 export interface IAlertDataPageState {

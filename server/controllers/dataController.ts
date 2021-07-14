@@ -8,28 +8,61 @@ export class DataController {
 
   getAlertData = async (req: Request, res: Response) => {
     try {
-      const page = req.query;
-      const newPage = parseInt(String(page.page));
+      const page:number = parseInt(String(req.query.page));
+      const searchType = String(req.query.searchType);
+      const searchString = String(req.query.searchString);
       const LIMIT: number = 7;
-
-      const OFFSET: number = LIMIT * (newPage - 1);
-      const counting = await this.dataService.getCountingData();
+      const OFFSET: number = LIMIT * (page - 1);
+      let newSearchType = '';
+      // check dropdown list string and replace in DB stucture.
+      switch (searchType) {
+        case 'Device ID':
+          newSearchType = 'device_eui';
+          break;
+        case 'Car Plate':
+          newSearchType = 'car_plate';
+          break;
+        case 'User':
+          newSearchType = 'company_name';
+          break;
+        case 'Phone number':
+          newSearchType = 'tel';
+          break;
+        case 'Location':
+          newSearchType = 'geolocation';
+          break;
+        case 'Date':
+          newSearchType = 'date';
+          break;
+        default:
+          break;
+      }
+      let counting = (newSearchType === '') ? await this.dataService.getCountingData() : await this.dataService.getCountingDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
         totalPage = Math.ceil(totalPage);
       } else {
         totalPage = Math.floor(totalPage);
       }
-      const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
-
-      res.status(httpStatusCodes.OK).json({
-        alertData: dataResult,
-        totalPage: totalPage,
-        limit: LIMIT,
-        message: 'handbrake data get',
-      });
-      //logger.info('res json data');
-      return;
+      if(searchType == 'Select'){
+        const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
+        res.status(httpStatusCodes.OK).json({
+          alertData: dataResult,
+          totalPage: totalPage,
+          limit: LIMIT,
+          message: 'handbrake data get',
+        });
+        return;
+      } else {
+        const dataResult = await this.dataService.getAlertDataBySearch(OFFSET, LIMIT, newSearchType, searchString);
+        res.status(httpStatusCodes.OK).json({
+          alertData: dataResult,
+          totalPage: totalPage,
+          limit: LIMIT,
+          message: 'handbrake data get',
+        });
+        return;
+      }
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
@@ -89,7 +122,7 @@ export class DataController {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
-
+      
       await this.dataService.postAlertData(
         deviceID.id,
         newJSON.data,
@@ -100,6 +133,7 @@ export class DataController {
         newJSON.objectJSON[0].battery
       );
 
+      logger.info(JSON.stringify(newJSON));
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
     } catch (err) {

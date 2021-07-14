@@ -4,7 +4,7 @@ import { resetAlertDataList, setAlertDataList } from "./action";
 
 const { REACT_APP_API_SERVER } = process.env;
 
-export function getAlertDataListThunk(activePage: number, isInit: boolean) {
+export function getAlertDataListThunk(activePage: number, isInit: boolean, searchType:string, searchString:string) {
   return async (dispatch: ThunkDispatch) => {
     dispatch(setIsLoadingAction(true));
     setTimeout(async () => {
@@ -15,7 +15,7 @@ export function getAlertDataListThunk(activePage: number, isInit: boolean) {
         }
         // fetch the data
         const res = await fetch(
-          `${REACT_APP_API_SERVER}/alertData?page=${activePage}`
+          `${REACT_APP_API_SERVER}/alertData?page=${activePage}&searchType=${searchType}&searchString=${searchString}`
         );
 
         if (res.status === 200) {
