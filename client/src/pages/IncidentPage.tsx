@@ -29,7 +29,7 @@ function IncidentPage() {
     // dispatch(getAlertDataListThunk(1, false));
   }, []);
   useEffect(() => {
-    dispatch(getCompaniesDataListThunk(false));
+    //dispatch(getCompaniesDataListThunk(false));
   }, []);
 
   return (

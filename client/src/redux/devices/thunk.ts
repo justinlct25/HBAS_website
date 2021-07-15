@@ -3,18 +3,18 @@ import { IDevicesDataActions, resetDevicesDataList ,setDevicesDataList} from './
 
 const { REACT_APP_API_SERVER } = process.env;
 
-export function getDeviceDataListThunk(isInit: boolean){
+export function getDeviceDataListThunk(activePage: number, isInit: boolean, searchType:string, searchString:string){
     return async(dispatch: Dispatch<IDevicesDataActions>)=>{
         try {
             if(isInit){
                 dispatch(resetDevicesDataList());
             }
 
-            const res = await fetch(`${REACT_APP_API_SERVER}/devices`);
+            const res = await fetch(`${REACT_APP_API_SERVER}/devices?page=${activePage}&searchType=${searchType}&searchString=${searchString}`);
 
             if(res.status === 200){
                 const data = await res.json();
-                dispatch(setDevicesDataList(data.devices));
+                dispatch(setDevicesDataList(data.devices, activePage, data.totalPage, data.limit));
                 console.log(data.devices);
             }
             return;

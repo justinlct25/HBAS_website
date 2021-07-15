@@ -12,8 +12,14 @@ export interface IDevicesData {
 
 export interface IDevicesDataState{
     devicesDataList: Array<IDevicesData>;
+    activePage: number;
+    totalPage: number;
+    limit: number;
 }
 
 export const initDevicesDataState: IDevicesDataState = {
     devicesDataList: [],
+    activePage: 1,
+    totalPage: 10,
+    limit: 7,
 }

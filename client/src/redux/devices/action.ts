@@ -1,10 +1,13 @@
 import { CallHistoryMethodAction } from 'connected-react-router';
 import { IDevicesData } from './state';
 
-export function setDevicesDataList(devicesDataList: Array<IDevicesData>){
+export function setDevicesDataList(devicesDataList: Array<IDevicesData>, activePage:number, totalPage:number, limit:number){
     return{
         type: "@@ManageDevice/SET_devicesDataList" as const,
-        devicesDataList
+        devicesDataList,
+        activePage,
+        totalPage,
+        limit,
     };
 }
 

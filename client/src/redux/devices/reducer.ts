@@ -7,11 +7,17 @@ export const IDevicesDataReducer = (state: IDevicesDataState = initDevicesDataSt
             return{
                 ...state,
                 devicesDataList: action.devicesDataList,
+                activePage: action.activePage,
+                totalPage: action.totalPage,
+                limit: action.limit,
             };
         case "@@ManageDevice/RESET":
             return{
                 ...state,
                 devicesDataList: initDevicesDataState.devicesDataList,
+                activePage: initDevicesDataState.activePage,
+                totalPage: initDevicesDataState.totalPage,
+                limit: initDevicesDataState.limit,
             };
         default:
             return state;

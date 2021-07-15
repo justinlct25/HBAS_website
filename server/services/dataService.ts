@@ -42,7 +42,7 @@ export class DataService {
         return;
     }
 
-    // get /alertData, where search is not all
+    // get /alertData, when searching
     async getAlertDataBySearch(offset:number, limit:number, searchType:string, searchString:string){
       return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
@@ -59,7 +59,7 @@ export class DataService {
                     , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true, 
 
                   })
-            .andWhere(`${searchType}`,'like',`%${searchString}%`)
+            .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
             .orderBy('alert_data.date', 'desc')
             .limit(limit).offset(offset);
     }
@@ -93,36 +93,56 @@ export class DataService {
       )
       .orderBy('date', 'desc');
   }
-
-  //RESTful get /companies
-  async getCompaniesData(): Promise<any> {
+////---- get /companies /devices and searching ----////
+  // get /companies
+  async getCompaniesData(offset:number, limit:number): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .groupBy(
-        'companies.id',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person',
-        'company_vehicles.company_id'
-      )
       .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .groupBy('companies.id')
+      .distinct('companies.id')
       .select('companies.id', 'companies.company_name', 'companies.tel', 'companies.contact_person')
-      .count('company_vehicles.company_id');
+      .count('company_vehicles.company_id')
+      .limit(limit).offset(offset);
   }
-
+  // get /companies, when searching string
+  async getCompaniesDataBySearch(offset:number, limit:number, searchType:string, searchString:string|number): Promise<any> {
+    return await this.knex('companies')
+      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .groupBy('companies.id')
+      .distinct('companies.id')
+      .select('companies.company_name', 'companies.tel', 'companies.contact_person') 
+      .count('company_vehicles.company_id')
+      .havingRaw(`${searchType} ILIKE ?`, [searchString])
+      .limit(limit).offset(offset);
+  }
+  // get /companies, when searching number
+  async getCompaniesDataNumberBySearch(offset:number, limit:number, searchString:string|number): Promise<any> {
+    return await this.knex('companies')
+      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .groupBy('companies.id')
+      .distinct('companies.id')
+      .select('companies.company_name', 'companies.tel', 'companies.contact_person')
+      .count('company_vehicles.company_id')
+      .havingRaw(`(companies.id, count(company_vehicles.company_id)) in 
+      (select distinct(company_id), count(id) from company_vehicles group by company_id having count(id) = ${searchString})`)
+      .limit(limit).offset(offset);
+  }
   // RESTful get /devices
-  async getDevicesData(): Promise<any> {
+  async getDevicesData(offset:number, limit:number): Promise<any> {
     return await this.knex('devices')
       .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
       .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
       .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({
-        'companies.is_active': true,
         'devices.is_active': true,
+        'vehicle_device.is_active': true,
         'vehicles.is_active': true,
         'company_vehicles.is_active': true,
-        'vehicle_device.is_active': true,
+        'companies.is_active': true,
       })
       .select(
         'devices.id',
@@ -134,15 +154,44 @@ export class DataService {
         'companies.company_name',
         'companies.tel',
         'companies.contact_person'
-      );
+      )
+      .offset(offset).limit(limit);
   }
-
-  // get count data
-  async getCountingData() {
+// RESTful get by searching /devices
+  async getDevicesDataBySearch(offset: number, limit:number, searchType:string, searchString:string): Promise<any> {
+    return await this.knex('devices')
+      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+      .where({
+        'devices.is_active': true,
+        'vehicle_device.is_active': true,
+        'vehicles.is_active': true,
+        'company_vehicles.is_active': true,
+        'companies.is_active': true,
+      })
+      .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
+      .select(
+        'devices.id',
+        'devices.device_name',
+        'devices.device_eui',
+        'vehicles.car_plate',
+        'vehicles.vehicle_model',
+        'vehicles.vehicle_type',
+        'companies.company_name',
+        'companies.tel',
+        'companies.contact_person'
+      )
+      .offset(offset).limit(limit)
+  }
+////---- counting ----////
+  // get count data , /alert_data
+  async getCountingAlertData() {
     return await this.knex('alert_data').count('id');
   }
-  // get count data by searching
-  async getCountingDataBySearch(searchType:string, searchString:string){
+  // get count data by searching, /alert_data
+  async getCountingAlertDataBySearch(searchType:string, searchString:string){
     return await this.knex('alert_data')
       .leftJoin('devices', 'devices.id', 'alert_data.device_id')
       .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -151,10 +200,44 @@ export class DataService {
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
             , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true})
-      .andWhere(`${searchType}`,'like',`%${searchString}%`)
+      .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
       .count('alert_data.id');
   }
-
+  // get count data, /companies
+  async getCountingCompanies(){
+    return await this.knex('companies').count('id');
+    }
+  // get searching , /companies
+  async getCountingCompaniesBySearch(searchType:string, searchString:string|number, sqlLike:string){
+    return await this.knex('companies')
+    .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+    .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+    .groupBy('companies.id')
+    .distinct('companies.id')
+    .havingRaw(`${searchType} ${sqlLike} ?`, [searchString])
+  }
+  // get count data, /devices
+  async getCountingDevices(){
+    return await this.knex('devices').count('id');
+  }
+  // get searching, /devices
+  async getCountingDevicesBySearch(searchType:string, searchString:string){
+    return await this.knex('devices')
+      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+      .where({
+        'devices.is_active': true,
+        'vehicle_device.is_active': true,
+        'vehicles.is_active': true,
+        'company_vehicles.is_active': true,
+        'companies.is_active': true,
+      })
+      .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
+      .count('devices.id')
+  }
+////---- others ----////
   // get device id to confirm
   async getDevicesID(reqName: string, reqEUI: string): Promise<any> {
     return await this.knex
