@@ -212,7 +212,6 @@ export class DataController {
          await this.dataService.getCountingCompaniesBySearch(newSearchType, newSearchString, sqlLike);
       
       let totalPage = (newSearchType === '') ? parseInt(String(counting[0].count)) / LIMIT : parseInt(String(counting.length)) / LIMIT;
-      
       (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
       
       let companyResult;
@@ -260,13 +259,9 @@ export class DataController {
           break;          
       }
       const counting = (newSearchType === '') ? await this.dataService.getCountingDevices() : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
-      console.log(JSON.stringify(counting) + ' ' + newSearchType);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
-      if (totalPage > Math.floor(totalPage)) {
-        totalPage = Math.ceil(totalPage);
-      } else {
-        totalPage = Math.floor(totalPage);
-      }
+      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
+      
       let devicesResult;
       if(newSearchType === ''){
         devicesResult = await this.dataService.getDevicesData(OFFSET, LIMIT);
