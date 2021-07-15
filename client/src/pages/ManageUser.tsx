@@ -20,16 +20,22 @@ function ManageUser() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
+  const [searchInput, setSearchInput] = useState("");
 
   const companiesDataList = useSelector(
     (state: IRootState) => state.companiesDataList
   );
 
   const companiesList = companiesDataList.companiesDataList;
+  const activePage = companiesDataList.activePage;
+  const totalPage = companiesDataList.totalPage;
+  //const limit = companiesDataList.limit;
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getCompaniesDataListThunk(false));
+    dispatch(
+      getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput)
+    );
   }, [dispatch]);
 
   const [totalVehicle, setTotalVehicle] = useState<
@@ -102,11 +108,32 @@ function ManageUser() {
               <input
                 className="searchInput"
                 placeholder={"Search"}
+                value={searchInput}
                 style={{
                   width: placeHolderText !== "Select" ? "240px" : "0px",
                 }}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                }}
               />
-              <div style={{ cursor: "pointer", padding: "8px" }}>
+              <div
+                style={{ cursor: "pointer", padding: "8px" }}
+                onClick={
+                  placeHolderText !== "Select"
+                    ? () => {
+                        // dispatch() something use value: searchInput & tableHeaders[0]
+                        dispatch(
+                          getCompaniesDataListThunk(
+                            1,
+                            true,
+                            placeHolderText,
+                            searchInput
+                          )
+                        );
+                      }
+                    : () => {}
+                }
+              >
                 <SearchIcon />
               </div>
             </div>
@@ -335,6 +362,67 @@ function ManageUser() {
                 <div className="button">Confirm</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="flex-center" style={{ width: "100%" }}>
+          <div
+            style={{
+              margin: "16px",
+              fontSize: "30px",
+              color: activePage === 1 ? "#CCC" : "#555",
+            }}
+            onClick={
+              activePage === 1
+                ? () => {}
+                : () => {
+                    dispatch(
+                      getCompaniesDataListThunk(
+                        activePage - 1,
+                        false,
+                        placeHolderText,
+                        searchInput
+                      )
+                    );
+                  }
+            }
+          >
+            {"<"}
+          </div>
+          <div
+            className="flex-center"
+            style={{
+              margin: "16px",
+              fontSize: "20px",
+            }}
+          >
+            {"Page " + activePage}
+          </div>
+
+          <div
+            style={{
+              margin: "16px",
+              fontSize: "30px",
+              color: activePage !== totalPage ? "#555" : "#CCC",
+            }}
+            onClick={
+              activePage !== totalPage
+                ? () => {
+                    if (activePage >= totalPage) {
+                      return;
+                    }
+                    dispatch(
+                      getCompaniesDataListThunk(
+                        activePage + 1,
+                        false,
+                        placeHolderText,
+                        searchInput
+                      )
+                    );
+                  }
+                : () => {}
+            }
+          >
+            {">"}
           </div>
         </div>
       </div>

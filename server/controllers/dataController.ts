@@ -6,6 +6,7 @@ import httpStatusCodes from 'http-status-codes';
 export class DataController {
   constructor(private dataService: DataService) {}
 
+  // RESTful get /alertData
   getAlertData = async (req: Request, res: Response) => {
     try {
       const page:number = parseInt(String(req.query.page));
@@ -37,14 +38,14 @@ export class DataController {
         default:
           break;
       }
-      let counting = (newSearchType === '') ? await this.dataService.getCountingData() : await this.dataService.getCountingDataBySearch(newSearchType, searchString);
+      const counting = (newSearchType === '') ? await this.dataService.getCountingAlertData() : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
         totalPage = Math.ceil(totalPage);
       } else {
         totalPage = Math.floor(totalPage);
       }
-      if(searchType == 'Select'){
+      if(newSearchType == ''){
         const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
         res.status(httpStatusCodes.OK).json({
           alertData: dataResult,
@@ -68,7 +69,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
+  // RESTful post /alertData
   postAlertData = async (req: Request, res: Response) => {
     //not finish
     try {
@@ -141,7 +142,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
+  // RESTful put /alertData
   putAlertData = async (req: Request, res: Response) => {
     try {
       await this.dataService.putAlertData();
@@ -152,7 +153,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
+  // RESTful delete /alertData
   deleteAlertData = async (req: Request, res: Response) => {
     try {
       await this.dataService.deleteAlertData();
@@ -163,8 +164,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
-  // RESTful get /history
+  // get /history
   getHistoryData = async (req: Request, res: Response) => {
     try {
       await this.dataService.getUserGroupingData('');
@@ -175,33 +175,113 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
-  // RESTful get /companies
+  // get /companies
   getCompaniesData = async (req: Request, res: Response) => {
     try {
-      const companyResult = await this.dataService.getCompaniesData();
+      const page:number = parseInt(String(req.query.page));
+      const searchType = String(req.query.searchType);
+      const searchString = String(req.query.searchString);
+      const LIMIT: number = 7;
+      const OFFSET: number = LIMIT * (page - 1);
+      let newSearchType = '';
+      let sqlLike = 'ILIKE';
+      let newSearchString:string|number = searchString;
+      switch(searchType) {
+        case 'Company Name':
+          newSearchType = 'company_name';
+          newSearchString = `%${newSearchString}%`;
+          break;
+        case 'Contact Person':
+          newSearchType = 'contact_person';
+          newSearchString = `%${newSearchString}%`;
+          break;
+        case 'Phone Number':
+          newSearchType = 'tel';
+          newSearchString = `%${newSearchString}%`;
+          break;
+        case 'Number of Vehicles':
+          newSearchType = 'count(company_vehicles.company_id)';
+          sqlLike = '=';
+          newSearchString = parseInt(newSearchString);
+          break;
+        default:
+          break;
+      }
+      
+      const counting = (newSearchType === '') ? await this.dataService.getCountingCompanies() : 
+         await this.dataService.getCountingCompaniesBySearch(newSearchType, newSearchString, sqlLike);
+      
+      let totalPage = (newSearchType === '') ? parseInt(String(counting[0].count)) / LIMIT : parseInt(String(counting.length)) / LIMIT;
+      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
+      
+      let companyResult;
+      ((newSearchType === '')) ? companyResult = await this.dataService.getCompaniesData(OFFSET, LIMIT) : 
+        (searchType !== 'Number of Vehicles') ? 
+          companyResult = await this.dataService.getCompaniesDataBySearch(OFFSET, LIMIT, newSearchType, newSearchString) : 
+            companyResult = await this.dataService.getCompaniesDataNumberBySearch(OFFSET, LIMIT, newSearchString);
       res
         .status(httpStatusCodes.OK)
-        .json({ companies: companyResult, message: 'get company data' });
+        .json({ 
+          companies: companyResult,
+          totalPage: totalPage,
+          limit: LIMIT, 
+          message: 'get company data'
+        });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
-  // RESTful get /devices
+  // get /devices
   getDevicesData = async (req: Request, res: Response) => {
     try {
-      const devicesResult = await this.dataService.getDevicesData();
-      res.status(httpStatusCodes.OK).json({ devices: devicesResult, message: 'get devices data' });
+      const page:number = parseInt(String(req.query.page));
+      const searchType = String(req.query.searchType);
+      const searchString = String(req.query.searchString);
+      const LIMIT: number = 7;
+      const OFFSET: number = LIMIT * (page - 1);
+      let newSearchType = '';
+      switch(searchType){
+        case 'Device ID':
+          newSearchType = `devices.device_eui`;
+          break;
+        case 'Device Name':
+          newSearchType = `devices.device_name`;
+          break;
+        case 'User':
+          newSearchType = `companies.company_name`;
+          break;
+        case 'Phone number':
+          newSearchType = `companies.tel`;
+          break;
+        default:
+          break;          
+      }
+      const counting = (newSearchType === '') ? await this.dataService.getCountingDevices() : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
+      let totalPage = parseInt(String(counting[0].count)) / LIMIT;
+      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
+      
+      let devicesResult;
+      if(newSearchType === ''){
+        devicesResult = await this.dataService.getDevicesData(OFFSET, LIMIT);
+      } else {
+        devicesResult = await this.dataService.getDevicesDataBySearch(OFFSET, LIMIT, newSearchType, searchString);
+      } 
+      res.status(httpStatusCodes.OK)
+      .json({ 
+        devices: devicesResult, 
+        totalPage: totalPage,
+        limit: LIMIT,
+        message: 'get devices data' 
+      });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
+  // check meter's version to update
   getDevicesVersion = async (req: Request, res: Response) => {
     try {
       const ver = req.query;

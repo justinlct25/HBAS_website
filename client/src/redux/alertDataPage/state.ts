@@ -25,5 +25,5 @@ export const initAlertDataPageState: IAlertDataPageState = {
   alertDataList: [],
   activePage: 1,
   totalPage: 10,
-  limit: 5,
+  limit: 7,
 };

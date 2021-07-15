@@ -17,6 +17,7 @@ function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
+  const [searchInput, setSearchInput] = useState("");
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
@@ -29,17 +30,18 @@ function ManageDevice() {
     vehicleType: "",
     vehicleModel: "",
   });
-  const devicesDataList = useSelector(
-    (state: IRootState) => state.devicesDataList
-  );
+  const devicesDataList = useSelector((state: IRootState) => state.devicesDataList);
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
-    dispatch(getDeviceDataListThunk(false));
+    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, ''));
   }, [dispatch]);
-
+  
   const devicesList = devicesDataList.devicesDataList;
-
+  const activePage = devicesDataList.activePage;
+  const totalPage = devicesDataList.totalPage;
+  // const limit = devicesDataList.limit;
+  
   return (
     <>
       <div className="flex-center pageContainer">
@@ -86,11 +88,24 @@ function ManageDevice() {
               <input
                 className="searchInput"
                 placeholder={"Search"}
+                value={searchInput}
                 style={{
                   width: placeHolderText !== "Select" ? "240px" : "0px",
                 }}
+                onChange={(e)=>{
+                  setSearchInput(e.target.value);
+                }}
               />
-              <div style={{ cursor: "pointer", padding: "8px" }}>
+              <div style={{ cursor: "pointer", padding: "8px" }}
+                onClick={
+                  placeHolderText !== "Select"
+                  ? () => {
+                      // dispatch() something use value: searchInput & tableHeaders[0]
+                      dispatch(getDeviceDataListThunk(1, true, placeHolderText, searchInput));
+                    }
+                  : () => {}
+                }
+              >
                 <SearchIcon />
               </div>
             </div>
@@ -227,6 +242,53 @@ function ManageDevice() {
                 <div className="button">Confirm</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="flex-center" style={{ width: "100%" }}>
+          <div
+            style={{
+              margin: "16px",
+              fontSize: "30px",
+              color: activePage === 1 ? "#CCC" : "#555",
+            }}
+            onClick={
+              activePage === 1
+                ? () => {}
+                : () => {
+                    dispatch(getDeviceDataListThunk(activePage - 1, false, placeHolderText, searchInput));
+                  }
+            }
+          >
+            {"<"}
+          </div>
+          <div
+            className="flex-center"
+            style={{
+              margin: "16px",
+              fontSize: "20px",
+            }}
+          >
+            {"Page " + activePage}
+          </div>
+
+          <div
+            style={{
+              margin: "16px",
+              fontSize: "30px",
+              color: activePage !== totalPage ? "#555" : "#CCC",
+            }}
+            onClick={
+              activePage !== totalPage
+                ? () => {
+                    if (activePage >= totalPage) {
+                      return;
+                    }
+                    dispatch(getDeviceDataListThunk(activePage + 1, false, placeHolderText, searchInput));
+                  }
+                : () => {}
+            }
+          >
+            {">"}
           </div>
         </div>
       </div>

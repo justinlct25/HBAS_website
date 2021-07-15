@@ -7,11 +7,17 @@ export const ICompaniesDataReducer = (state: ICompaniesDataState = initCompanies
             return{
                 ...state,
                 companiesDataList: action.companiesDataList,
+                activePage: action.activePage,
+                totalPage: action.totalPage,
+                limit: action.limit,
             };
         case "@@ManageUser/RESET":
             return{
                 ...state,
                 companiesDataList: initCompaniesDataState.companiesDataList,
+                activePage: initCompaniesDataState.activePage,
+                totalPage: initCompaniesDataState.totalPage,
+                limit: initCompaniesDataState.limit,
             }
         default: 
             return state;

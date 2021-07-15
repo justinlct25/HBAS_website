@@ -1,10 +1,13 @@
 import { CallHistoryMethodAction } from 'connected-react-router';
 import { ICompaniesData } from './state';
 
-export function setCompaniesDataList(companiesDataList: Array<ICompaniesData>){
+export function setCompaniesDataList(companiesDataList: Array<ICompaniesData>, activePage:number, totalPage:number, limit:number){
     return{
         type: "@@ManageUser/SET_companiesDataList" as const,
-        companiesDataList
+        companiesDataList,
+        activePage,
+        totalPage,
+        limit,
     };
 }
 
