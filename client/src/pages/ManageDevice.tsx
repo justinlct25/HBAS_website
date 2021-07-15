@@ -175,96 +175,49 @@ function ManageDevice() {
               className="closeIconContainer"
               onClick={() => setPopUpIsActive(false)}
             >
-              <CloseIcon />
+              <CloseIcon color={"#555"} />
             </div>
             <div
               className="flex-center"
-              style={{ height: "100%", width: "100%", flexDirection: "column" }}
+              style={{
+                height: "100%",
+                width: "100%",
+                flexDirection: "column",
+              }}
             >
               <div className="flex-center form">
                 <div className="flex-center companySection">
-                  <div className="titleText">Company Details</div>
+                  <div className="titleText">Add new device</div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Company Name :</div>
+                    <div className="formLeftColumn">Device ID :</div>
                     <div className="formRightColumn">
                       <input className="formInput" />
                     </div>
                   </div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Contact Person :</div>
+                    <div className="formLeftColumn">Car plate :</div>
                     <div className="formRightColumn">
                       <input className="formInput" />
                     </div>
                   </div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Phone Number :</div>
+                    <div className="formLeftColumn">Company name :</div>
                     <div className="formRightColumn">
                       <input className="formInput" />
                     </div>
                   </div>
-                </div>
-                <div className="flex-center vehicleSection">
-                  <div style={{ position: "relative", width: "100%" }}>
-                    <div className="titleText">Vehicles</div>
-                    {/* <div
-                    className="flex-center formAddIconContainer"
-                    onClick={() =>
-                      setTotalVehicle([...totalVehicle, vehicleInput])
-                    }
-                  >
-                    <AddIcon />
-                    <div>Add New Vehicle</div>
-                  </div> */}
-                  </div>
-                  {/* {totalVehicle.map((item, idx) => { */}
-                  {/* return ( */}
-                  {/* <div style={{ width: "100%" }}> */}
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Car Plate :</div>
+                    <div className="formLeftColumn">Contact number :</div>
                     <div className="formRightColumn">
-                      <input
-                        className="formInput"
-                        value={vehicleInput.carPlate}
-                        onChange={(e) =>
-                          setVehicleInput({
-                            ...vehicleInput,
-                            carPlate: e.target.value,
-                          })
-                        }
-                      />
+                      <input className="formInput" />
                     </div>
                   </div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Vehicle Type :</div>
+                    <div className="formLeftColumn">Contact person :</div>
                     <div className="formRightColumn">
-                      <input
-                        className="formInput"
-                        value={vehicleInput.vehicleType}
-                        onChange={(e) =>
-                          setVehicleInput({
-                            ...vehicleInput,
-                            vehicleType: e.target.value,
-                          })
-                        }
-                      />
+                      <input className="formInput" />
                     </div>
                   </div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Vehicle Model :</div>
-                    <div className="formRightColumn">
-                      <input
-                        className="formInput"
-                        value={vehicleInput.vehicleModel}
-                        onChange={(e) =>
-                          setVehicleInput({
-                            ...vehicleInput,
-                            vehicleModel: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-                  </div>
-                  {/* </div> */}
                 </div>
               </div>
               <div className="flex-center formButtonContainer">

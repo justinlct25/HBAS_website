@@ -7,6 +7,7 @@ html {
   --topNavHeight: 80px;
   --inputHeight: 40px;
   --tableRowHeight: 70px;
+  --formWidth: 60%;
   max-height: 100vh;
   overflow-y: hidden;
 }
@@ -65,4 +66,25 @@ body {
 .incidentReportText {
   font-size: 20px;
   margin: 8px;
+  color: #333;
+}
+.mapboxgl-control-container {
+  display: none;
+}
+.satelliteViewButtonContainer {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  transform: translate(-50%);
+}
+.satelliteButton {
+  width: 200px;
+  height: 32px;
+  border: solid 0.5px rgba(94, 147, 220, 0.76);
+  cursor: pointer;
+  transition: all 0.3s linear;
+}
+.hiddenReport {
+  width: 0;
+  transition: all 0.4s;
 }

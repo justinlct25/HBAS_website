@@ -4,7 +4,12 @@ import { resetAlertDataList, setAlertDataList } from "./action";
 
 const { REACT_APP_API_SERVER } = process.env;
 
-export function getAlertDataListThunk(activePage: number, isInit: boolean, searchType:string, searchString:string) {
+export function getAlertDataListThunk(
+  activePage: number,
+  isInit: boolean,
+  searchType?: string,
+  searchString?: string
+) {
   return async (dispatch: ThunkDispatch) => {
     dispatch(setIsLoadingAction(true));
     setTimeout(async () => {

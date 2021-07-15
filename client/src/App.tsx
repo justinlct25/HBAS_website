@@ -28,7 +28,7 @@ function App() {
           </Route>
           <Route path="/login" exact={true} component={LoginPage} />
           <Route path="/alertDataPage" exact={true} component={AlertDataPage} />
-          <Route path="/incident" exact={true} component={IncidentPage} />
+          <Route path="/incident/:id" exact={true} component={IncidentPage} />
           <Route path="/profile" exact={true} component={ProfilePage} />
           <Route path="/manageUser" exact={true} component={ManageUser} />
           <Route path="/manageDevice" exact={true} component={ManageDevice} />

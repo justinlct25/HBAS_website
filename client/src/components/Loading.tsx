@@ -9,6 +9,7 @@ function Loading() {
     { id: 4 },
     { id: 5 },
     { id: 6 },
+    { id: 7 },
   ];
   const distanceBetweenDots = 24;
   return (
@@ -55,6 +56,19 @@ function Loading() {
                 transform: `
                 rotateX(${(dot.id + 1) * (360 / dots.length)}deg) 
                 rotateY(${(dot.id + 1) * (360 / dots.length)}deg) 
+                translateZ(${dots.length * distanceBetweenDots}px)`,
+              }}
+            />
+          );
+        })}
+        {dots.map((dot) => {
+          return (
+            <div
+              className="eachDot"
+              style={{
+                transform: `
+                rotateX(${(dot.id + 1.5) * (360 / dots.length)}deg) 
+                rotateY(${(dot.id + 1.5) * (360 / dots.length)}deg) 
                 translateZ(${dots.length * distanceBetweenDots}px)`,
               }}
             />

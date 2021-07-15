@@ -1,6 +1,5 @@
 .dotContainer {
   display: flex;
-
   transform-origin: center;
   transform-style: preserve-3d;
   animation: animate 8s linear infinite;

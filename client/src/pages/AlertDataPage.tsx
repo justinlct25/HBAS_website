@@ -5,6 +5,7 @@ import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import "../css/TablePage.css";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
+import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
@@ -31,7 +32,7 @@ function AlertDataPage() {
   const [idCheck, setIdCheck] = useState<number>(1);
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage, true, placeHolderText, searchInput));
+    dispatch(getAlertDataListThunk(activePage, false));
   }, [dispatch]);
 
   useEffect(() => {
@@ -83,7 +84,6 @@ function AlertDataPage() {
                 placeHolderText !== "Select"
                   ? () => {
                       // dispatch() something use value: searchInput & tableHeaders[0]
-                      dispatch(getAlertDataListThunk(1, true, placeHolderText, searchInput));
                     }
                   : () => {}
               }
@@ -139,14 +139,34 @@ function AlertDataPage() {
           {alertDataList &&
             alertDataList.length > 0 &&
             alertDataList.map((item, idx) => {
+              console.log(alertDataList);
               return (
                 <div
                   key={item.device_eui + idx}
                   className=" flex-center tableRow"
-                  onClick={() => dispatch(push("/incident"))}
+                  onClick={async () => {
+                    console.log(item);
+                    dispatch(
+                      await setIncidentPageData({
+                        date: item.date,
+                        time: item.time,
+                        longitude: item.geolocation.y,
+                        latitude: item.geolocation.x,
+                        deviceId: item.device_eui,
+                        deviceName: item.device_name,
+                        companyName: item.company_name,
+                        contactPerson: item.contact_person,
+                        phoneNumber: item.tel,
+                        carPlate: item.car_plate,
+                      })
+                    );
+
+                    dispatch(push(`/incident/${item.id}`));
+                  }}
                 >
                   <div key={idx} className="flex-center tdItem">
                     {item.device_eui}
+                    {/* {item.id} */}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.car_plate}
@@ -155,10 +175,10 @@ function AlertDataPage() {
                     {item.company_name}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.tel}
+                    {item.geolocation.x}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.x + ',' + item.geolocation.y}
+                    {item.geolocation.y}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}
@@ -179,7 +199,7 @@ function AlertDataPage() {
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getAlertDataListThunk(activePage - 1, false, placeHolderText, searchInput));
+                  dispatch(getAlertDataListThunk(activePage - 1, false));
                 }
           }
         >
@@ -207,7 +227,7 @@ function AlertDataPage() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getAlertDataListThunk(activePage + 1, false, placeHolderText, searchInput));
+                  dispatch(getAlertDataListThunk(activePage + 1, false));
                 }
               : () => {}
           }

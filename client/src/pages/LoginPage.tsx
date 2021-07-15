@@ -10,14 +10,14 @@ function LoginPage() {
     password: "password",
   };
   const [login, setLogin] = useState({ username: "", password: "" });
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const handleLogin = () => {
+    setIsSubmitted(true);
     if (
       login.password === validLogin.password &&
       login.username === validLogin.username
     ) {
       dispatch(push("/alertDataPage"));
-    } else {
-      alert("Invalid username or password");
     }
   };
   return (
@@ -42,7 +42,13 @@ function LoginPage() {
               marginLeft: "8px",
             }}
             value={login.username}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleLogin();
+              }
+            }}
             onChange={(e) => {
+              setIsSubmitted(false);
               setLogin({ username: e.target.value, password: login.password });
             }}
           />
@@ -56,11 +62,24 @@ function LoginPage() {
               marginLeft: "8px",
             }}
             value={login.password}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                handleLogin();
+              }
+            }}
             onChange={(e) => {
+              setIsSubmitted(false);
               setLogin({ username: login.username, password: e.target.value });
             }}
           />
         </div>
+        {(isSubmitted ||
+          login.password === validLogin.password ||
+          login.username === validLogin.username) && (
+          <div style={{ marginTop: "24px", color: "red" }}>
+            Invalid Username or Password
+          </div>
+        )}
         <div
           className="flex-center formButtonContainer"
           style={{ width: "100%" }}

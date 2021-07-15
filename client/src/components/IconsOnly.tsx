@@ -104,7 +104,30 @@ export function AddIcon() {
     </svg>
   );
 }
-export const CloseIcon = () => {
+
+export const MinusIcon = () => {
+  return (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M14.0003 1.16699C6.91283 1.16699 1.16699 6.91283 1.16699 14.0003C1.16699 21.0878 6.91283 26.8337 14.0003 26.8337C21.0878 26.8337 26.8337 21.0878 26.8337 14.0003C26.8337 6.91283 21.0878 1.16699 14.0003 1.16699ZM9.33366 12.8337C9.02424 12.8337 8.72749 12.9566 8.5087 13.1754C8.28991 13.3942 8.16699 13.6909 8.16699 14.0003C8.16699 14.3097 8.28991 14.6065 8.5087 14.8253C8.72749 15.0441 9.02424 15.167 9.33366 15.167H18.667C18.9764 15.167 19.2732 15.0441 19.492 14.8253C19.7107 14.6065 19.8337 14.3097 19.8337 14.0003C19.8337 13.6909 19.7107 13.3942 19.492 13.1754C19.2732 12.9566 18.9764 12.8337 18.667 12.8337H9.33366Z"
+        fill="#FF463A"
+      />
+    </svg>
+  );
+};
+interface CloseIconProps {
+  color?: string;
+}
+export const CloseIcon = (props: CloseIconProps) => {
+  const { color = "#EEEEEE" } = props;
   return (
     <svg
       width="28"
@@ -115,7 +138,7 @@ export const CloseIcon = () => {
     >
       <path
         d="M25 25L3 3M25 3L3 25"
-        stroke="#EEEEEE"
+        stroke={color}
         strokeWidth="3"
         strokeLinecap="round"
       />
