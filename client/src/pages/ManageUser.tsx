@@ -14,6 +14,7 @@ import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = manageUserTableHeaders;
+const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
 
 function ManageUser() {
@@ -69,7 +70,9 @@ function ManageUser() {
           <div
             className="flex-center"
             style={{
+              position: "absolute",
               cursor: "pointer",
+              left: 32,
             }}
             onClick={() => {
               setPopUpIsActive(true);
@@ -168,10 +171,17 @@ function ManageUser() {
           </div>
           {/* </div> */}
         </div>
-        <div className="table" style={{ width: TABLE_WIDTH }}>
+        <div
+          className="table"
+          style={{
+            width: TABLE_WIDTH,
+            marginBottom: "unset",
+            height: `${itemPerPage * 60}px`,
+          }}
+        >
           <div
             className="flex-center tableHeader"
-            style={{ width: TABLE_WIDTH }}
+            style={{ width: TABLE_WIDTH, height: "64px" }}
           >
             {tableHeaders.map((item, idx) => {
               return (
@@ -220,7 +230,7 @@ function ManageUser() {
               className="closeIconContainer"
               onClick={() => setPopUpIsActive(false)}
             >
-              <CloseIcon />
+              <CloseIcon color={"#555"} />
             </div>
             <div
               className="flex-center"
@@ -273,20 +283,7 @@ function ManageUser() {
                           position: "relative",
                         }}
                       >
-                        <h1
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            fontSize: "80px",
-                            color: "#aaa3",
-                            width: "10%",
-                            textAlign: "center",
-                          }}
-                        >
-                          {totalVehicle.length - idx}
-                        </h1>
+                        <h1>{totalVehicle.length - idx}</h1>
                         <div className="flex-center formRow">
                           <div className="formLeftColumn">Car Plate :</div>
                           <div className="formRightColumn">

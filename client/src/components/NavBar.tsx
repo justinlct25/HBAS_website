@@ -35,7 +35,7 @@ function NavBar() {
     { display: "Incident Records", link: "/alertDataPage" },
     { display: "Manage User", link: "/manageUser" },
     { display: "Manage Device", link: "/manageDevice" },
-    { display: "Statistics", link: "/statistics" },
+    { display: "Statistics (Coming soon)", link: "/statistics" },
   ];
 
   const HomeBand = () => {

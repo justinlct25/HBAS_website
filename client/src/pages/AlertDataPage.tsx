@@ -10,7 +10,7 @@ import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = incidentRecordsTableHeaders;
-const itemPerPage = 7;
+const itemPerPage = 10;
 const TABLE_WIDTH = "85%";
 
 function AlertDataPage() {
@@ -118,8 +118,18 @@ function AlertDataPage() {
           </div>
         </div>
       </div>
-      <div className="table" style={{ width: TABLE_WIDTH }}>
-        <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
+      <div
+        className="table"
+        style={{
+          width: TABLE_WIDTH,
+          marginBottom: "unset",
+          height: `${itemPerPage * 60}px`,
+        }}
+      >
+        <div
+          className="flex-center tableHeader"
+          style={{ width: TABLE_WIDTH, height: "64px" }}
+        >
           {tableHeaders.map((item, idx) => {
             return (
               <div key={item + idx} className="flex-center thItem">
@@ -128,18 +138,11 @@ function AlertDataPage() {
             );
           })}
         </div>
-        <div
-          className="tableBody"
-          style={{
-            width: TABLE_WIDTH,
-            height: `${itemPerPage * 82}px `,
-          }}
-        >
+        <div className="tableBody" style={{ width: TABLE_WIDTH }}>
           {isLoading && <Loading />}
           {alertDataList &&
             alertDataList.length > 0 &&
             alertDataList.map((item, idx) => {
-              console.log(alertDataList);
               return (
                 <div
                   key={item.device_eui + idx}
@@ -175,10 +178,10 @@ function AlertDataPage() {
                     {item.company_name}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.x}
+                    {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.y}
+                    {item.geolocation.y + ", " + item.geolocation.x}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}
