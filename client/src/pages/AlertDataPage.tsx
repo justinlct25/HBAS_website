@@ -3,7 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
-import "../css/TablePage.css";
+import styles from "../css/anything.module.scss";
+// import "../css/TablePage.css";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
@@ -17,7 +18,6 @@ function AlertDataPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
 
   const alertDataList = alertDataPage.alertDataList;
@@ -41,7 +41,8 @@ function AlertDataPage() {
   }, [activePage, limit]);
 
   return (
-    <div className="flex-center pageContainer">
+    // <div className="flex-center pageContainer">
+    <div className={`flex-center ${styles.pageContainer}`}>
       <div
         className="flex-center topRowContainer"
         style={{ justifyContent: "center" }}
@@ -146,7 +147,7 @@ function AlertDataPage() {
               return (
                 <div
                   key={item.device_eui + idx}
-                  className=" flex-center tableRow"
+                  className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
                     console.log(item);
                     dispatch(
