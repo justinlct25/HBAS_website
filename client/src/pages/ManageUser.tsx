@@ -9,7 +9,7 @@ import {
   SearchIcon,
 } from "../components/IconsOnly";
 import "../css/TablePage.css";
-import { getCompaniesDataListThunk } from "../redux/companies/thunk";
+import { getCompaniesDataListThunk, postCompaniesDataThunk } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
 
@@ -47,6 +47,14 @@ function ManageUser() {
     }>
   >([]);
 
+  const [companyDetail, setCompanyDetail] = useState<
+    Array<{
+      companyName: string;
+      contactPerson: string;
+      tel: string;
+    }>
+  >([{companyName: "", contactPerson: "", tel: ""}]);
+
   const handleDeleteVehicle = (idx: number) => {
     const newArr = totalVehicle.slice();
     newArr.splice(idx, 1);
@@ -62,6 +70,10 @@ function ManageUser() {
   useEffect(() => {
     console.log(totalVehicle);
   }, [totalVehicle]);
+
+  useEffect(() => {
+    console.log(companyDetail);
+  }, [companyDetail]);
 
   return (
     <>
@@ -247,19 +259,49 @@ function ManageUser() {
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Company Name :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" />
+                      <input className="formInput" 
+                        value={companyDetail[0].companyName}
+                        onChange={(e)=>{
+                          const newArr = companyDetail.slice();
+                          newArr[0] = {
+                            ...companyDetail[0], 
+                            companyName: e.target.value,
+                          };
+                          setCompanyDetail(newArr);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Contact Person :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" />
+                      <input className="formInput" 
+                        value={companyDetail[0].contactPerson}
+                        onChange={(e) => {
+                          const newArr = companyDetail.slice();
+                          newArr[0] = {
+                            ...companyDetail[0], 
+                            contactPerson: e.target.value,
+                          };
+                          setCompanyDetail(newArr);
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Phone Number :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" />
+                      <input className="formInput" 
+                        value={companyDetail[0].tel}
+                        onChange={(e) => {
+                          const newArr = companyDetail.slice();
+                          newArr[0] = {
+                            ...companyDetail[0],
+                            tel: e.target.value,
+                          };
+                          setCompanyDetail(newArr);
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -356,7 +398,15 @@ function ManageUser() {
                 <div className="button" onClick={() => setPopUpIsActive(false)}>
                   Cancel
                 </div>
-                <div className="button">Confirm</div>
+                <div className="button"
+                onClick={()=>{
+                  dispatch(postCompaniesDataThunk(totalVehicle, companyDetail));
+                  console.log('on click confirm button');
+                  setPopUpIsActive(false);
+                }}
+                >
+                  Confirm
+                </div>
               </div>
             </div>
           </div>

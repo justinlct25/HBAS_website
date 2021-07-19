@@ -260,6 +260,34 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+  // post /companies
+  postCompaniesData = async (req: Request, res: Response) => {
+    try {
+      // const mQuery = req.query;
+      const mBody = req.body;
+      let vehiclesArray:number[] = [];
+      // console.log('mQuery' + JSON.stringify(mQuery));
+      // console.log('mBody' + JSON.stringify(mBody));
+      // console.log(mBody[0]);
+      const companiesResult:number = await this.dataService
+        .postCompaniesData(mBody[0].companyName, mBody[0].contactPerson, mBody[0].tel);
+      for(let i = 1; i < mBody.length; i++) {
+        let vehiclesResult:number = await this.dataService
+          .postVehicles(mBody[i].carPlate, mBody[i].vehicleType, mBody[i].vehicleModel);
+        vehiclesArray.push(vehiclesResult);
+      }
+      for(let i = 0; i < vehiclesArray.length; i++) {
+        await this.dataService
+          .postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
+      }
+
+      res.status(httpStatusCodes.CREATED).json({ message: 'record created' })
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({formInput: false, message: 'Internal server error!' });
+    }
+  }
   // get /devices
   getDevicesData = async (req: Request, res: Response) => {
     try {
@@ -290,9 +318,7 @@ export class DataController {
           ? await this.dataService.getCountingDevices()
           : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
-      totalPage > Math.floor(totalPage)
-        ? (totalPage = Math.ceil(totalPage))
-        : (totalPage = Math.floor(totalPage));
+      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
 
       let devicesResult;
       if (newSearchType === '') {

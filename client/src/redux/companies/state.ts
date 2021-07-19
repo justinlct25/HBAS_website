@@ -11,6 +11,7 @@ export interface ICompaniesDataState{
     activePage: number;
     totalPage: number;
     limit: number;
+    formErrorInput: boolean;
 }
 
 export const initCompaniesDataState: ICompaniesDataState ={
@@ -18,4 +19,5 @@ export const initCompaniesDataState: ICompaniesDataState ={
     activePage: 1,
     totalPage: 10,
     limit: 7,
+    formErrorInput: false,
 }

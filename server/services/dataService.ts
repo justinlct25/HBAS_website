@@ -93,7 +93,7 @@ export class DataService {
       )
       .orderBy('date', 'desc');
   }
-////---- get /companies /devices and searching ----////
+////---- RESTful /companies ----////
   // get /companies
   async getCompaniesData(offset:number, limit:number): Promise<any> {
     return await this.knex('companies')
@@ -130,6 +130,16 @@ export class DataService {
       (select distinct(company_id), count(id) from company_vehicles group by company_id having count(id) = ${searchString})`)
       .limit(limit).offset(offset);
   }
+  // post /companies
+  async postCompaniesData(companyName:string, contactPerson:string, tel:string): Promise<number>{
+    //console.log(companyName + ' ' + contactPerson + ' ' + tel);
+    return await this.knex('companies')
+      .insert({company_name: companyName, contact_person: contactPerson, tel: tel})
+      .returning('id');
+  }
+  // put /companies
+  // delete /companies
+////---- RESTful /devices ----////
   // RESTful get /devices
   async getDevicesData(offset:number, limit:number): Promise<any> {
     return await this.knex('devices')
@@ -157,7 +167,8 @@ export class DataService {
       )
       .offset(offset).limit(limit);
   }
-// RESTful get by searching /devices
+
+  // RESTful get by searching /devices
   async getDevicesDataBySearch(offset: number, limit:number, searchType:string, searchString:string): Promise<any> {
     return await this.knex('devices')
       .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -184,6 +195,29 @@ export class DataService {
         'companies.contact_person'
       )
       .offset(offset).limit(limit)
+  }
+////---- vehicles ----////
+  //get vehicles
+  //post vehicles
+  async postVehicles(carPlate:string, vehicleType:string, vehicleModel:string):Promise<number>{
+    //console.log(carPlate + ' ' + vehicleType + ' ' + vehicleModel);
+    return this.knex('vehicles')
+      .insert({car_plate: carPlate, vehicle_type: vehicleType, vehicle_model: vehicleModel})
+      .returning('id');
+  }
+  //put vehicles
+  //delete vehicles
+
+////---- company_vehicles ----////
+  // post company_vehicles
+  async postCompanyVehicles(companyID:number, vehiclesID:any){
+    return this.knex('company_vehicles')
+      .insert({company_id: companyID, vehicle_id: vehiclesID})
+  }
+////---- vehicle_device ----////
+  // post vehicle_device
+  async postVehicleDevice(){
+    return;
   }
 ////---- counting ----////
   // get count data , /alert_data

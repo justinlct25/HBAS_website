@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import { ICompaniesDataActions, resetCompaniesDataList, setCompaniesDataList } from './action';
+import { ICompaniesDataActions, resetCompaniesDataList, setCompaniesDataList, postCompaniesDataList, errorCompaniesInput } from './action';
 
 const { REACT_APP_API_SERVER } = process.env;
 
@@ -25,6 +25,38 @@ export function getCompaniesDataListThunk(activePage: number, isInit: boolean, s
         } catch (err) {
             console.error(err);
             //handle error
+            return;
+        }
+    }
+}
+
+export function postCompaniesDataThunk(totalVehicle:any, companyDetail: any){
+    return async(dispatch: Dispatch<ICompaniesDataActions>) =>{
+        try {
+            //console.log(JSON.stringify(companyDetail, totalVehicle))
+            let concatD = companyDetail.concat(totalVehicle);
+            console.log(concatD);
+            console.log('test input data from thunk')
+            const res = await fetch(`http://localhost:8085/companies`, {
+                method: 'post',
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+                body: JSON.stringify(concatD)
+            });
+            if(res.status === 201 || res.status === 200){
+                const data = res.json();
+                console.log('returning from service')
+                console.log(data);
+                dispatch(postCompaniesDataList());
+                dispatch(errorCompaniesInput(false));
+            }
+            console.log(res);
+            return;
+        } catch (err) {
+            console.error(err);
+            //handle error
+            dispatch(errorCompaniesInput(true));
             return;
         }
     }
