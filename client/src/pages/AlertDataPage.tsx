@@ -149,7 +149,6 @@ function AlertDataPage() {
                   key={item.device_eui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
-                    console.log(item);
                     dispatch(
                       await setIncidentPageData({
                         date: item.date,
@@ -182,7 +181,8 @@ function AlertDataPage() {
                     {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.y + ' , ' + item.geolocation.x}
+                    {item.location.suburb || item.location.city_district || item.location.city}
+                    {/* {item.geolocation.y + ", " + item.geolocation.x} */}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}

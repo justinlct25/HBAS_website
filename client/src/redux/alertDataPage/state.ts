@@ -5,6 +5,7 @@ export interface IAlertDataPage {
   date: string;
   time: string;
   geolocation: {x:number, y:number};
+  location: {[index: string]: string},
   battery: string;
   company_name: string;
   tel: string;
