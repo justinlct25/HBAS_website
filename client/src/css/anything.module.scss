@@ -1,0 +1,32 @@
+$pageContainerHeight: calc(100vh - var(--topNavHeight) - 16px);
+$tableRowHeight: 40px;
+
+.pageContainer {
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 100vw;
+  height: $pageContainerHeight;
+}
+.tableRow {
+  width: 100%;
+  flex: 1;
+  text-align: center;
+  height: $tableRowHeight;
+  padding: 24px 0;
+  border-bottom: solid 0.5px #0001;
+  cursor: pointer;
+  transition: all 0.4s;
+}
+.tableRow:hover {
+  background: #eee;
+  transition: all 0.4s;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pageContainer .topRowContainer {
+}

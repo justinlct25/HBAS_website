@@ -3,21 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
-import "../css/TablePage.css";
+import styles from "../css/anything.module.scss";
+// import "../css/TablePage.css";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = incidentRecordsTableHeaders;
-const itemPerPage = 7;
+const itemPerPage = 10;
 const TABLE_WIDTH = "85%";
 
 function AlertDataPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-  // const [currentPage, setCurrentPage] = useState(1);
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
 
   const alertDataList = alertDataPage.alertDataList;
@@ -41,7 +41,8 @@ function AlertDataPage() {
   }, [activePage, limit]);
 
   return (
-    <div className="flex-center pageContainer">
+    // <div className="flex-center pageContainer">
+    <div className={`flex-center ${styles.pageContainer}`}>
       <div
         className="flex-center topRowContainer"
         style={{ justifyContent: "center" }}
@@ -118,8 +119,18 @@ function AlertDataPage() {
           </div>
         </div>
       </div>
-      <div className="table" style={{ width: TABLE_WIDTH }}>
-        <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
+      <div
+        className="table"
+        style={{
+          width: TABLE_WIDTH,
+          marginBottom: "unset",
+          height: `${itemPerPage * 60}px`,
+        }}
+      >
+        <div
+          className="flex-center tableHeader"
+          style={{ width: TABLE_WIDTH, height: "64px" }}
+        >
           {tableHeaders.map((item, idx) => {
             return (
               <div key={item + idx} className="flex-center thItem">
@@ -128,22 +139,15 @@ function AlertDataPage() {
             );
           })}
         </div>
-        <div
-          className="tableBody"
-          style={{
-            width: TABLE_WIDTH,
-            height: `${itemPerPage * 82}px `,
-          }}
-        >
+        <div className="tableBody" style={{ width: TABLE_WIDTH }}>
           {isLoading && <Loading />}
           {alertDataList &&
             alertDataList.length > 0 &&
             alertDataList.map((item, idx) => {
-              console.log(alertDataList);
               return (
                 <div
                   key={item.device_eui + idx}
-                  className=" flex-center tableRow"
+                  className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
                     console.log(item);
                     dispatch(

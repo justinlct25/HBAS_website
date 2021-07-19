@@ -11,6 +11,7 @@ import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = manageDeviceTableHeaders;
+const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
 
 function ManageDevice() {
@@ -30,18 +31,20 @@ function ManageDevice() {
     vehicleType: "",
     vehicleModel: "",
   });
-  const devicesDataList = useSelector((state: IRootState) => state.devicesDataList);
+  const devicesDataList = useSelector(
+    (state: IRootState) => state.devicesDataList
+  );
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
-    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, ''));
+    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, ""));
   }, [dispatch]);
-  
+
   const devicesList = devicesDataList.devicesDataList;
   const activePage = devicesDataList.activePage;
   const totalPage = devicesDataList.totalPage;
   // const limit = devicesDataList.limit;
-  
+
   return (
     <>
       <div className="flex-center pageContainer">
@@ -49,7 +52,9 @@ function ManageDevice() {
           <div
             className="flex-center"
             style={{
+              position: "absolute",
               cursor: "pointer",
+              left: 32,
             }}
             onClick={() => {
               setPopUpIsActive(true);
@@ -92,18 +97,26 @@ function ManageDevice() {
                 style={{
                   width: placeHolderText !== "Select" ? "240px" : "0px",
                 }}
-                onChange={(e)=>{
+                onChange={(e) => {
                   setSearchInput(e.target.value);
                 }}
               />
-              <div style={{ cursor: "pointer", padding: "8px" }}
+              <div
+                style={{ cursor: "pointer", padding: "8px" }}
                 onClick={
                   placeHolderText !== "Select"
-                  ? () => {
-                      // dispatch() something use value: searchInput & tableHeaders[0]
-                      dispatch(getDeviceDataListThunk(1, true, placeHolderText, searchInput));
-                    }
-                  : () => {}
+                    ? () => {
+                        // dispatch() something use value: searchInput & tableHeaders[0]
+                        dispatch(
+                          getDeviceDataListThunk(
+                            1,
+                            true,
+                            placeHolderText,
+                            searchInput
+                          )
+                        );
+                      }
+                    : () => {}
                 }
               >
                 <SearchIcon />
@@ -138,10 +151,17 @@ function ManageDevice() {
           </div>
           {/* </div> */}
         </div>
-        <div className="table" style={{ width: TABLE_WIDTH }}>
+        <div
+          className="table"
+          style={{
+            width: TABLE_WIDTH,
+            marginBottom: "unset",
+            height: `${itemPerPage * 60}px`,
+          }}
+        >
           <div
             className="flex-center tableHeader"
-            style={{ width: TABLE_WIDTH }}
+            style={{ width: TABLE_WIDTH, height: "64px" }}
           >
             {tableHeaders.map((item, idx) => {
               return (
@@ -255,7 +275,14 @@ function ManageDevice() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(getDeviceDataListThunk(activePage - 1, false, placeHolderText, searchInput));
+                    dispatch(
+                      getDeviceDataListThunk(
+                        activePage - 1,
+                        false,
+                        placeHolderText,
+                        searchInput
+                      )
+                    );
                   }
             }
           >
@@ -283,7 +310,14 @@ function ManageDevice() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(getDeviceDataListThunk(activePage + 1, false, placeHolderText, searchInput));
+                    dispatch(
+                      getDeviceDataListThunk(
+                        activePage + 1,
+                        false,
+                        placeHolderText,
+                        searchInput
+                      )
+                    );
                   }
                 : () => {}
             }

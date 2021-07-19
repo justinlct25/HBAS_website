@@ -6,7 +6,7 @@
 html {
   --topNavHeight: 80px;
   --inputHeight: 40px;
-  --tableRowHeight: 70px;
+  --tableRowHeight: 40px;
   --formWidth: 60%;
   max-height: 100vh;
   overflow-y: hidden;

@@ -9,10 +9,10 @@ export class DataController {
   // RESTful get /alertData
   getAlertData = async (req: Request, res: Response) => {
     try {
-      const page:number = parseInt(String(req.query.page));
+      const page: number = parseInt(String(req.query.page));
       const searchType = String(req.query.searchType);
       const searchString = String(req.query.searchString);
-      const LIMIT: number = 7;
+      const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
       let newSearchType = '';
       // check dropdown list string and replace in DB stucture.
@@ -38,14 +38,17 @@ export class DataController {
         default:
           break;
       }
-      const counting = (newSearchType === '') ? await this.dataService.getCountingAlertData() : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
+      const counting =
+        newSearchType === ''
+          ? await this.dataService.getCountingAlertData()
+          : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
         totalPage = Math.ceil(totalPage);
       } else {
         totalPage = Math.floor(totalPage);
       }
-      if(newSearchType == ''){
+      if (newSearchType == '') {
         const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
         res.status(httpStatusCodes.OK).json({
           alertData: dataResult,
@@ -55,7 +58,12 @@ export class DataController {
         });
         return;
       } else {
-        const dataResult = await this.dataService.getAlertDataBySearch(OFFSET, LIMIT, newSearchType, searchString);
+        const dataResult = await this.dataService.getAlertDataBySearch(
+          OFFSET,
+          LIMIT,
+          newSearchType,
+          searchString
+        );
         res.status(httpStatusCodes.OK).json({
           alertData: dataResult,
           totalPage: totalPage,
@@ -123,7 +131,7 @@ export class DataController {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
-      
+
       await this.dataService.postAlertData(
         deviceID.id,
         newJSON.data,
@@ -178,15 +186,15 @@ export class DataController {
   // get /companies
   getCompaniesData = async (req: Request, res: Response) => {
     try {
-      const page:number = parseInt(String(req.query.page));
+      const page: number = parseInt(String(req.query.page));
       const searchType = String(req.query.searchType);
       const searchString = String(req.query.searchString);
-      const LIMIT: number = 7;
+      const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
       let newSearchType = '';
       let sqlLike = 'ILIKE';
-      let newSearchString:string|number = searchString;
-      switch(searchType) {
+      let newSearchString: string | number = searchString;
+      switch (searchType) {
         case 'Company Name':
           newSearchType = 'company_name';
           newSearchString = `%${newSearchString}%`;
@@ -207,26 +215,45 @@ export class DataController {
         default:
           break;
       }
-      
-      const counting = (newSearchType === '') ? await this.dataService.getCountingCompanies() : 
-         await this.dataService.getCountingCompaniesBySearch(newSearchType, newSearchString, sqlLike);
-      
-      let totalPage = (newSearchType === '') ? parseInt(String(counting[0].count)) / LIMIT : parseInt(String(counting.length)) / LIMIT;
-      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
-      
+
+      const counting =
+        newSearchType === ''
+          ? await this.dataService.getCountingCompanies()
+          : await this.dataService.getCountingCompaniesBySearch(
+              newSearchType,
+              newSearchString,
+              sqlLike
+            );
+
+      let totalPage =
+        newSearchType === ''
+          ? parseInt(String(counting[0].count)) / LIMIT
+          : parseInt(String(counting.length)) / LIMIT;
+      totalPage > Math.floor(totalPage)
+        ? (totalPage = Math.ceil(totalPage))
+        : (totalPage = Math.floor(totalPage));
+
       let companyResult;
-      ((newSearchType === '')) ? companyResult = await this.dataService.getCompaniesData(OFFSET, LIMIT) : 
-        (searchType !== 'Number of Vehicles') ? 
-          companyResult = await this.dataService.getCompaniesDataBySearch(OFFSET, LIMIT, newSearchType, newSearchString) : 
-            companyResult = await this.dataService.getCompaniesDataNumberBySearch(OFFSET, LIMIT, newSearchString);
-      res
-        .status(httpStatusCodes.OK)
-        .json({ 
-          companies: companyResult,
-          totalPage: totalPage,
-          limit: LIMIT, 
-          message: 'get company data'
-        });
+      newSearchType === ''
+        ? (companyResult = await this.dataService.getCompaniesData(OFFSET, LIMIT))
+        : searchType !== 'Number of Vehicles'
+        ? (companyResult = await this.dataService.getCompaniesDataBySearch(
+            OFFSET,
+            LIMIT,
+            newSearchType,
+            newSearchString
+          ))
+        : (companyResult = await this.dataService.getCompaniesDataNumberBySearch(
+            OFFSET,
+            LIMIT,
+            newSearchString
+          ));
+      res.status(httpStatusCodes.OK).json({
+        companies: companyResult,
+        totalPage: totalPage,
+        limit: LIMIT,
+        message: 'get company data',
+      });
       return;
     } catch (err) {
       logger.error(err.message);
@@ -264,13 +291,13 @@ export class DataController {
   // get /devices
   getDevicesData = async (req: Request, res: Response) => {
     try {
-      const page:number = parseInt(String(req.query.page));
+      const page: number = parseInt(String(req.query.page));
       const searchType = String(req.query.searchType);
       const searchString = String(req.query.searchString);
-      const LIMIT: number = 7;
+      const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
       let newSearchType = '';
-      switch(searchType){
+      switch (searchType) {
         case 'Device ID':
           newSearchType = `devices.device_eui`;
           break;
@@ -284,24 +311,31 @@ export class DataController {
           newSearchType = `companies.tel`;
           break;
         default:
-          break;          
+          break;
       }
-      const counting = (newSearchType === '') ? await this.dataService.getCountingDevices() : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
+      const counting =
+        newSearchType === ''
+          ? await this.dataService.getCountingDevices()
+          : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
 
       let devicesResult;
-      if(newSearchType === ''){
+      if (newSearchType === '') {
         devicesResult = await this.dataService.getDevicesData(OFFSET, LIMIT);
       } else {
-        devicesResult = await this.dataService.getDevicesDataBySearch(OFFSET, LIMIT, newSearchType, searchString);
-      } 
-      res.status(httpStatusCodes.OK)
-      .json({ 
-        devices: devicesResult, 
+        devicesResult = await this.dataService.getDevicesDataBySearch(
+          OFFSET,
+          LIMIT,
+          newSearchType,
+          searchString
+        );
+      }
+      res.status(httpStatusCodes.OK).json({
+        devices: devicesResult,
         totalPage: totalPage,
         limit: LIMIT,
-        message: 'get devices data' 
+        message: 'get devices data',
       });
       return;
     } catch (err) {
@@ -318,11 +352,13 @@ export class DataController {
       console.log(newVer);
       const verData = await this.dataService.getDevicesVersion(newVer);
       console.log(verData);
-      res.status(httpStatusCodes.ACCEPTED).json({version: verData[0], message: 'get version data'})
+      res
+        .status(httpStatusCodes.ACCEPTED)
+        .json({ version: verData[0], message: 'get version data' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 }
