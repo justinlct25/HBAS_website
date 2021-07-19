@@ -401,7 +401,6 @@ function ManageUser() {
                 <div className="button"
                 onClick={()=>{
                   dispatch(postCompaniesDataThunk(totalVehicle, companyDetail));
-                  console.log('on click confirm button');
                   setPopUpIsActive(false);
                 }}
                 >
