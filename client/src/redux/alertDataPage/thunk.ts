@@ -1,8 +1,20 @@
 import { setIsLoadingAction } from "../loading/action";
 import { ThunkDispatch } from "../store";
 import { resetAlertDataList, setAlertDataList } from "./action";
+import { IAlertDataPage } from "./state";
 
 const { REACT_APP_API_SERVER } = process.env;
+
+async function getLocationName(dataArray: Array<IAlertDataPage>){
+  for ( let i = 0; i < dataArray.length; i++){
+      const response = await fetch(`
+      https://nominatim.openstreetmap.org/reverse?lat=${dataArray[i]['geolocation']['x']}&lon=${dataArray[i]['geolocation']['y']}&format=json&zoom=16
+      `)
+      const result = (await response.json())['address'];
+      dataArray[i]['location'] = result;
+  }
+  return dataArray;
+}
 
 export function getAlertDataListThunk(
   activePage: number,
@@ -25,9 +37,10 @@ export function getAlertDataListThunk(
 
         if (res.status === 200) {
           const data = await res.json();
+          const dataWithLocation = await getLocationName(data.alertData);
           dispatch(
             setAlertDataList(
-              data.alertData,
+              dataWithLocation,
               activePage,
               data.totalPage,
               data.limit
