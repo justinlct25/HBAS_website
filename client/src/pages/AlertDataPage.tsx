@@ -175,10 +175,10 @@ function AlertDataPage() {
                     {item.company_name}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.x}
+                    {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.geolocation.y}
+                    {item.geolocation.y + ' , ' + item.geolocation.x}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}

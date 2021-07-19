@@ -17,6 +17,19 @@ export function resetCompaniesDataList(){
     };
 }
 
-type CompaniesActionCreators = typeof setCompaniesDataList | typeof resetCompaniesDataList;
+export function postCompaniesDataList(){
+    return{
+        type: "@@ManageUser/POST_companiesDataList" as const,
+    };
+}
+
+export function errorCompaniesInput(formErrorInput:boolean){
+    return{
+        type: "@@ManageUser/ERROR_handle" as const,
+        formErrorInput,
+    }
+}
+
+type CompaniesActionCreators = typeof setCompaniesDataList | typeof resetCompaniesDataList | typeof postCompaniesDataList | typeof errorCompaniesInput;
 
 export type ICompaniesDataActions = ReturnType<CompaniesActionCreators> | CallHistoryMethodAction;

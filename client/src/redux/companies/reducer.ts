@@ -18,7 +18,16 @@ export const ICompaniesDataReducer = (state: ICompaniesDataState = initCompanies
                 activePage: initCompaniesDataState.activePage,
                 totalPage: initCompaniesDataState.totalPage,
                 limit: initCompaniesDataState.limit,
-            }
+            };
+        case "@@ManageUser/POST_companiesDataList":
+            return{
+                ...state,
+            };
+        case "@@ManageUser/ERROR_handle":
+            return{
+                ...state,
+                formErrorInput: action.formErrorInput,
+            };
         default: 
             return state;
     }
