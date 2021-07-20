@@ -9,10 +9,12 @@ import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
+import { io }  from 'socket.io-client';
 
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "85%";
+const { REACT_APP_API_SERVER } = process.env;
 
 function AlertDataPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,22 +25,29 @@ function AlertDataPage() {
   const alertDataList = alertDataPage.alertDataList;
   const activePage = alertDataPage.activePage;
   const totalPage = alertDataPage.totalPage;
-  const limit = alertDataPage.limit;
+  //const limit = alertDataPage.limit;
 
   const isLoading = useSelector(
     (state: IRootState) => state.loading.loading.isLoading
   );
   const dispatch = useDispatch();
-  const [idCheck, setIdCheck] = useState<number>(1);
+  //let [socket, setSocket] = useState< SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage, false));
+    dispatch(getAlertDataListThunk(activePage, true));
   }, [dispatch]);
 
-  useEffect(() => {
-    let sum: number = limit * (activePage - 1);
-    setIdCheck(sum);
-  }, [activePage, limit]);
+  useEffect(()=>{
+    const socket = io(`${REACT_APP_API_SERVER}`);
+
+    socket.on('get-new-alertData', ()=>{
+      dispatch(getAlertDataListThunk(activePage, false));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     // <div className="flex-center pageContainer">
@@ -181,7 +190,7 @@ function AlertDataPage() {
                     {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.location.suburb || item.location.city_district || item.location.city}
+                    {item.location.suburb || item.location.city_district || item.location.city || ''}
                     {/* {item.geolocation.y + ", " + item.geolocation.x} */}
                   </div>
                   <div key={idx} className="flex-center tdItem">

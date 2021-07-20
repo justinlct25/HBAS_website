@@ -12,10 +12,12 @@ import "../css/TablePage.css";
 import { getCompaniesDataListThunk, postCompaniesDataThunk } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
+import { io } from 'socket.io-client';
 
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
+const serverUrl = process.env.REACT_APP_API_SERVER; 
 
 function ManageUser() {
   const [isOpen, setIsOpen] = useState(false);
@@ -74,6 +76,18 @@ function ManageUser() {
   useEffect(() => {
     console.log(companyDetail);
   }, [companyDetail]);
+
+  useEffect(()=> {
+    const socket = io(`${serverUrl}`);
+
+    socket.on('get-new-companies', ()=>{
+      dispatch(getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  });
 
   return (
     <>

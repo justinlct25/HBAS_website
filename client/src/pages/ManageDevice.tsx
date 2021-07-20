@@ -9,10 +9,12 @@ import {
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
+import { io } from 'socket.io-client';
 
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
+const serverUrl = process.env.REACT_APP_API_SERVER;
 
 function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,13 +39,25 @@ function ManageDevice() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, ""));
+    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, searchInput));
   }, [dispatch]);
 
   const devicesList = devicesDataList.devicesDataList;
   const activePage = devicesDataList.activePage;
   const totalPage = devicesDataList.totalPage;
   // const limit = devicesDataList.limit;
+
+  useEffect(() => {
+    const socket = io(`${serverUrl}`);
+
+    socket.on('get-new-devices', ()=>{
+      dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, searchInput));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  });
 
   return (
     <>

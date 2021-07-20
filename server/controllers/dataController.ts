@@ -2,6 +2,7 @@ import { DataService } from '../services/dataService';
 import { Request, Response } from 'express';
 import { logger } from '../utils/logger';
 import httpStatusCodes from 'http-status-codes';
+import { io } from '../main';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -142,7 +143,8 @@ export class DataController {
         newJSON.objectJSON[0].battery
       );
 
-      logger.info(JSON.stringify(newJSON));
+      //logger.info(JSON.stringify(newJSON));
+      io.emit('get-new-alertData');
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
     } catch (err) {
@@ -281,6 +283,7 @@ export class DataController {
           .postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
       }
 
+      io.emit('get-new-companies');
       res.status(httpStatusCodes.CREATED).json({ message: 'record created' })
       return;
     } catch (err) {

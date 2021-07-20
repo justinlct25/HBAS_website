@@ -15,6 +15,14 @@ const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
 const app = express();
 app.use(cors());
 
+//socket.io
+const server = new http.Server(app);
+export const io = new SocketIO(server, { 
+        cors: {
+            origin: process.env.FRONTEND_URL
+        }
+    });
+
 // info
 app.use((req, res, next) => {
     logger.info(`method: [${req.method}] path: [${req.path}]`);
@@ -22,6 +30,15 @@ app.use((req, res, next) => {
 });
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// // socket on
+io.on('connection', (socket: Socket) => {
+    logger.info(`socket ${socket.id} is connected`);
+
+    socket.on('disconnect', () => {
+        logger.info(`socket ${socket.id} is disconnected`);
+    });
+});
 
 //service
 import {DataService} from './services/dataService';
@@ -35,20 +52,12 @@ export const dataController = new DataController(dataService);
 import { dataRoutes } from './routes/dataRoute';
 app.use(dataRoutes);
 
-//socket.io
-const server = new http.Server(app);
-const io = new SocketIO(server);
-
-io.on('connection', (socket: Socket) => {
-    logger.info(socket);
-});
 
 const PORT = process.env.PORT || 8085;
 
 // app.listen(PORT, ()=> {
 //     logger.info(`listening to PORT: [${PORT}]`);
 // });
-io.close();
 server.listen(PORT, ()=> {
     logger.info(`Socket listening to PORT: [${PORT}]`);
 });
