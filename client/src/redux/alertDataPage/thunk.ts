@@ -10,8 +10,12 @@ async function getLocationName(dataArray: Array<IAlertDataPage>){
       const response = await fetch(`
       https://nominatim.openstreetmap.org/reverse?lat=${dataArray[i]['geolocation']['x']}&lon=${dataArray[i]['geolocation']['y']}&format=json&zoom=16
       `)
-      const result = (await response.json())['address'];
-      dataArray[i]['location'] = result;
+      if ( response.status === 200){
+        const result = (await response.json())['address'];
+        dataArray[i]['location'] = result;
+      }else{
+        dataArray[i]['location'] = {error: 'network error'};
+      }
   }
   return dataArray;
 }
