@@ -190,7 +190,7 @@ function AlertDataPage() {
                     {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.location.suburb || item.location.city_district || item.location.city || ''}
+                    {item.location.suburb || item.location.city_district || item.location.city || item.location.error || ''}
                     {/* {item.geolocation.y + ", " + item.geolocation.x} */}
                   </div>
                   <div key={idx} className="flex-center tdItem">
