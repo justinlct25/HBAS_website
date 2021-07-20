@@ -1,10 +1,10 @@
 import { setIsLoadingAction } from "../loading/action";
 import { ThunkDispatch } from "../store";
 import { resetAlertDataList, setAlertDataList } from "./action";
-import { IAlertDataPage } from "./state";
+// import { IAlertDataPage } from "./state";
 
 const { REACT_APP_API_SERVER } = process.env;
-
+/*
 async function getLocationName(dataArray: Array<IAlertDataPage>){
   for ( let i = 0; i < dataArray.length; i++){
       const response = await fetch(`
@@ -12,14 +12,20 @@ async function getLocationName(dataArray: Array<IAlertDataPage>){
       `)
       if ( response.status === 200){
         const result = (await response.json())['address'];
+        console.log(result);
+        if ( result === undefined ){
+          dataArray[i]['location'] = {error: 'invalid location'};
+        }
         dataArray[i]['location'] = result;
       }else{
         dataArray[i]['location'] = {error: 'network error'};
       }
+      console.log(dataArray[i]['location']);
   }
+  console.log(dataArray);
   return dataArray;
 }
-
+*/
 export function getAlertDataListThunk(
   activePage: number,
   isInit: boolean,
@@ -41,10 +47,11 @@ export function getAlertDataListThunk(
 
         if (res.status === 200) {
           const data = await res.json();
-          const dataWithLocation = await getLocationName(data.alertData);
+          console.log(data.alertData);
+          // const dataWithLocation = await getLocationName(data.alertData);
           dispatch(
             setAlertDataList(
-              dataWithLocation,
+              data.alertData,
               activePage,
               data.totalPage,
               data.limit

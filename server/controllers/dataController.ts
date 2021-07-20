@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { logger } from '../utils/logger';
 import httpStatusCodes from 'http-status-codes';
 import { io } from '../main';
+import fetch from 'node-fetch'
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -31,7 +32,7 @@ export class DataController {
           newSearchType = 'tel';
           break;
         case 'Location':
-          newSearchType = 'geolocation';
+          newSearchType = 'address';
           break;
         case 'Date':
           newSearchType = 'date';
@@ -132,6 +133,17 @@ export class DataController {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
+      let addressJSON:string[] = [];
+      await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
+      ).then(response => response.json())
+      .then(data => {
+        // console.log(data.address);
+        (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+        (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+        (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+        (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : '';
+      });
 
       await this.dataService.postAlertData(
         deviceID.id,
@@ -140,6 +152,7 @@ export class DataController {
         newJSON.objectJSON[0].time,
         newJSON.objectJSON[0].latitude,
         newJSON.objectJSON[0].longitude,
+        addressJSON[0],
         newJSON.objectJSON[0].battery
       );
 

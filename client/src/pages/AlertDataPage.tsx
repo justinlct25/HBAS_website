@@ -34,7 +34,7 @@ function AlertDataPage() {
   //let [socket, setSocket] = useState< SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage, true));
+    dispatch(getAlertDataListThunk(activePage, false));
   }, [dispatch]);
 
   useEffect(()=>{
@@ -94,6 +94,9 @@ function AlertDataPage() {
                 placeHolderText !== "Select"
                   ? () => {
                       // dispatch() something use value: searchInput & tableHeaders[0]
+                      dispatch(
+                        getAlertDataListThunk(1, true, placeHolderText ,searchInput)
+                      )
                     }
                   : () => {}
               }
@@ -190,8 +193,8 @@ function AlertDataPage() {
                     {item.tel}
                   </div>
                   <div key={idx} className="flex-center tdItem">
-                    {item.location.suburb || item.location.city_district || item.location.city || item.location.error || ''}
-                    {/* {item.geolocation.y + ", " + item.geolocation.x} */}
+                    {/* { item.location.county || item.location.city_district || item.location.quarter || item.location.road || item.location.error || ''} */}
+                    {item.address}
                   </div>
                   <div key={idx} className="flex-center tdItem">
                     {item.date.substr(0, 10)}
