@@ -9,15 +9,18 @@ import {
   SearchIcon,
 } from "../components/IconsOnly";
 import "../css/TablePage.css";
-import { getCompaniesDataListThunk, postCompaniesDataThunk } from "../redux/companies/thunk";
+import {
+  getCompaniesDataListThunk,
+  postCompaniesDataThunk,
+} from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
-const serverUrl = process.env.REACT_APP_API_SERVER; 
+const serverUrl = process.env.REACT_APP_API_SERVER;
 
 function ManageUser() {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +58,7 @@ function ManageUser() {
       contactPerson: string;
       tel: string;
     }>
-  >([{companyName: "", contactPerson: "", tel: ""}]);
+  >([{ companyName: "", contactPerson: "", tel: "" }]);
 
   const handleDeleteVehicle = (idx: number) => {
     const newArr = totalVehicle.slice();
@@ -77,11 +80,18 @@ function ManageUser() {
     console.log(companyDetail);
   }, [companyDetail]);
 
-  useEffect(()=> {
+  useEffect(() => {
     const socket = io(`${serverUrl}`);
 
-    socket.on('get-new-companies', ()=>{
-      dispatch(getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput));
+    socket.on("get-new-companies", () => {
+      dispatch(
+        getCompaniesDataListThunk(
+          activePage,
+          false,
+          placeHolderText,
+          searchInput
+        )
+      );
     });
 
     return () => {
@@ -144,13 +154,24 @@ function ManageUser() {
                 onChange={(e) => {
                   setSearchInput(e.target.value);
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    dispatch(
+                      getCompaniesDataListThunk(
+                        1,
+                        true,
+                        placeHolderText,
+                        searchInput
+                      )
+                    );
+                  }
+                }}
               />
               <div
                 style={{ cursor: "pointer", padding: "8px" }}
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        // dispatch() something use value: searchInput & tableHeaders[0]
                         dispatch(
                           getCompaniesDataListThunk(
                             1,
@@ -273,12 +294,13 @@ function ManageUser() {
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Company Name :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" 
+                      <input
+                        className="formInput"
                         value={companyDetail[0].companyName}
-                        onChange={(e)=>{
+                        onChange={(e) => {
                           const newArr = companyDetail.slice();
                           newArr[0] = {
-                            ...companyDetail[0], 
+                            ...companyDetail[0],
                             companyName: e.target.value,
                           };
                           setCompanyDetail(newArr);
@@ -289,12 +311,13 @@ function ManageUser() {
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Contact Person :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" 
+                      <input
+                        className="formInput"
                         value={companyDetail[0].contactPerson}
                         onChange={(e) => {
                           const newArr = companyDetail.slice();
                           newArr[0] = {
-                            ...companyDetail[0], 
+                            ...companyDetail[0],
                             contactPerson: e.target.value,
                           };
                           setCompanyDetail(newArr);
@@ -305,7 +328,8 @@ function ManageUser() {
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Phone Number :</div>
                     <div className="formRightColumn">
-                      <input className="formInput" 
+                      <input
+                        className="formInput"
                         value={companyDetail[0].tel}
                         onChange={(e) => {
                           const newArr = companyDetail.slice();
@@ -412,11 +436,14 @@ function ManageUser() {
                 <div className="button" onClick={() => setPopUpIsActive(false)}>
                   Cancel
                 </div>
-                <div className="button"
-                onClick={()=>{
-                  dispatch(postCompaniesDataThunk(totalVehicle, companyDetail));
-                  setPopUpIsActive(false);
-                }}
+                <div
+                  className="button"
+                  onClick={() => {
+                    dispatch(
+                      postCompaniesDataThunk(totalVehicle, companyDetail)
+                    );
+                    setPopUpIsActive(false);
+                  }}
                 >
                   Confirm
                 </div>
