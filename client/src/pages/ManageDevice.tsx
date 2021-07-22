@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   AddIcon,
+  BackButton,
   CaretIcon,
   CloseIcon,
   SearchIcon,
@@ -9,37 +10,34 @@ import {
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
+import { mockNewDevices, mockAllDevices } from "./mockUpData";
 
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
+type DeviceType = "New" | "All";
+
 function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-  const [totalVehicle, setTotalVehicle] = useState<
-    Array<{
-      carPlate: string;
-      vehicleType: string;
-      vehicleModel: string;
-    }>
-  >([]);
-  const [vehicleInput, setVehicleInput] = useState({
-    carPlate: "",
-    vehicleType: "",
-    vehicleModel: "",
-  });
+  const [selectDeviceModalOpen, setSelectDeviceModalOpen] = useState(false);
+  const [deviceType, setDeviceType] = useState<DeviceType>("New");
+  const [selectedDevice, setSelectedDevice] = useState("");
+
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, searchInput));
+    dispatch(
+      getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
+    );
   }, [dispatch]);
 
   const devicesList = devicesDataList.devicesDataList;
@@ -50,8 +48,10 @@ function ManageDevice() {
   useEffect(() => {
     const socket = io(`${serverUrl}`);
 
-    socket.on('get-new-devices', ()=>{
-      dispatch(getDeviceDataListThunk(activePage, false, placeHolderText, searchInput));
+    socket.on("get-new-devices", () => {
+      dispatch(
+        getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
+      );
     });
 
     return () => {
@@ -80,7 +80,7 @@ function ManageDevice() {
                 paddingLeft: "8px",
               }}
             >
-              Add new device
+              Manage new device
             </div>
           </div>
           <div className="flex-center">
@@ -239,8 +239,36 @@ function ManageDevice() {
                   <div className="titleText">Add new device</div>
                   <div className="flex-center formRow">
                     <div className="formLeftColumn">Device ID :</div>
-                    <div className="formRightColumn">
-                      <input className="formInput" />
+                    <div
+                      className="flex-center"
+                      style={{
+                        width: "50%",
+                        justifyContent: "flex-start",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        setSelectDeviceModalOpen(!selectDeviceModalOpen)
+                      }
+                    >
+                      <div
+                        className="flex-center"
+                        style={{
+                          justifyContent: "flex-start",
+                          paddingLeft: "8px",
+                        }}
+                      >
+                        {selectedDevice === ""
+                          ? "Select device"
+                          : selectedDevice}
+                      </div>
+                      <div
+                        style={{
+                          transform: "rotate(180deg)",
+                          paddingRight: "8px",
+                        }}
+                      >
+                        <BackButton />
+                      </div>
                     </div>
                   </div>
                   <div className="flex-center formRow">
@@ -266,6 +294,78 @@ function ManageDevice() {
                     <div className="formRightColumn">
                       <input className="formInput" />
                     </div>
+                  </div>
+                </div>
+                {selectDeviceModalOpen && (
+                  <div
+                    className="clickElsewhere"
+                    onClick={() => setSelectDeviceModalOpen(false)}
+                  />
+                )}
+                <div
+                  className="selectDeviceModal"
+                  style={{
+                    right: selectDeviceModalOpen ? 0 : "-100%",
+                  }}
+                >
+                  <div
+                    className="titleText flex-center"
+                    style={{ margin: "16px" }}
+                  >
+                    <div
+                      onClick={() => setDeviceType("New")}
+                      className="selectDeviceHeader"
+                      style={{
+                        borderRadius: "8px 0px 0px 8px",
+                        background:
+                          deviceType === "New"
+                            ? "rgba(94, 147, 220, 0.76)"
+                            : "transparent",
+                      }}
+                    >
+                      Unassigned devices
+                    </div>
+                    <div
+                      onClick={() => setDeviceType("All")}
+                      className="selectDeviceHeader"
+                      style={{
+                        borderRadius: "0px 8px 8px 0px",
+                        background:
+                          deviceType === "All"
+                            ? "rgba(94, 147, 220, 0.76)"
+                            : "transparent",
+                      }}
+                    >
+                      All devices
+                    </div>
+                  </div>
+                  <div className="deviceListContainer">
+                    {deviceType === "New"
+                      ? mockNewDevices.map((item) => {
+                          return (
+                            <div
+                              className="eachDevice"
+                              onClick={() => {
+                                setSelectedDevice(item);
+                              }}
+                            >
+                              {item}
+                            </div>
+                          );
+                        })
+                      : deviceType === "All" &&
+                        mockAllDevices.map((item) => {
+                          return (
+                            <div
+                              className="eachDevice"
+                              onClick={() => {
+                                setSelectedDevice(item);
+                              }}
+                            >
+                              {item}
+                            </div>
+                          );
+                        })}
                   </div>
                 </div>
               </div>

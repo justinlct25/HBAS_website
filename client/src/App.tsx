@@ -27,11 +27,15 @@ function App() {
             <Redirect to="/login" />
           </Route>
           <Route path="/login" exact={true} component={LoginPage} />
-          <Route path="/alertDataPage" exact={true} component={AlertDataPage} />
+          <Route
+            path="/alert-data-page"
+            exact={true}
+            component={AlertDataPage}
+          />
           <Route path="/incident/:id" exact={true} component={IncidentPage} />
-          <Route path="/profile/:id" exact={true} component={ProfilePage} />
-          <Route path="/manageUser" exact={true} component={ManageUser} />
-          <Route path="/manageDevice" exact={true} component={ManageDevice} />
+          <Route path="/profile" exact={true} component={ProfilePage} />
+          <Route path="/manage-user" exact={true} component={ManageUser} />
+          <Route path="/manage-device" exact={true} component={ManageDevice} />
           <Route path="/statistics" exact={true} component={Statistics} />
         </Switch>
       </ConnectedRouter>

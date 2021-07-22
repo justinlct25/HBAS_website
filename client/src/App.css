@@ -68,6 +68,7 @@ body {
   margin: 8px;
   color: #333;
 }
+
 .mapboxgl-control-container {
   display: none;
 }
@@ -87,4 +88,44 @@ body {
 .hiddenReport {
   width: 0;
   transition: all 0.4s;
+}
+.deviceVehicleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 4px;
+  border: solid 0.5px #8882;
+  background: white;
+  box-shadow: 0 4px 8px #5554;
+  padding: 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+  transform: translateY(0px);
+}
+.deviceVehicleCard:hover {
+  background: #777;
+  box-shadow: 0 4px 8px #5554;
+  transform: translateY(-10px);
+  transition: all 0.3s;
+}
+.deviceVehicleCard:hover .flex-center .incidentReportText {
+  color: #eee;
+  transition: all 0.4s;
+}
+.deviceName {
+  width: 196px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: left;
+}
+.companyDetailsRightColumn {
+  width: 50%;
+  max-height: 100%;
+  overflow-y: scroll;
+  flex-direction: column;
+  justify-content: flex-start;
 }

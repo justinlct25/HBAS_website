@@ -32,9 +32,9 @@ function NavBar() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
 
   const menuItem = [
-    { display: "Incident Records", link: "/alertDataPage" },
-    { display: "Manage User", link: "/manageUser" },
-    { display: "Manage Device", link: "/manageDevice" },
+    { display: "Incident Records", link: "/alert-data-page" },
+    { display: "Manage User", link: "/manage-user" },
+    { display: "Manage Device", link: "/manage-device" },
     { display: "Statistics (Coming soon)", link: "/statistics" },
   ];
 
@@ -80,7 +80,11 @@ function NavBar() {
 
             <div
               className="flex-center"
-              style={{ height: "100%", padding: "8px", cursor: "pointer" }}
+              style={{
+                height: "100%",
+                padding: "8px",
+                cursor: "pointer",
+              }}
             >
               {/* <GraphViewIcon /> */}
               <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
