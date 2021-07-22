@@ -80,7 +80,7 @@ function ManageDevice() {
                 paddingLeft: "8px",
               }}
             >
-              Add new device
+              Manage new device
             </div>
           </div>
           <div className="flex-center">

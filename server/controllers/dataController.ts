@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { logger } from '../utils/logger';
 import httpStatusCodes from 'http-status-codes';
 import { io } from '../main';
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -111,40 +111,66 @@ export class DataController {
         return;
       }
       //check json is undefined or good
-      if (
-        newJSON.objectJSON[0].date == '0-0-0' ||
-        newJSON.objectJSON[0].latitude == '0' ||
-        newJSON.objectJSON[0].longitude == '0' ||
-        newJSON.objectJSON[0].time == '00:00:00'
-      ) {
+      // newJSON.objectJSON[0].latitude == '0' ||
+      // newJSON.objectJSON[0].longitude == '0' ||
+      if (newJSON.objectJSON[0].date == '0-0-0' || newJSON.objectJSON[0].time == '00:00:00') {
         res
           .status(httpStatusCodes.NOT_ACCEPTABLE)
           .json({ message: 'Income data is not accept to insert, return.' });
         return;
       }
       //check handbrake is sending real data
-      if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
-          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
-          return;
-      }
+      // if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
+      //     res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
+      //     return;
+      // }
       // require device id
       const deviceID = await this.dataService.getDevicesID(newJSON.deviceName, newJSON.devEUI);
       if (deviceID == undefined || deviceID == null) {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
-      let addressJSON:string[] = [];
-      await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-      ).then(response => response.json())
-      .then(data => {
-        // console.log(data.address);
-        (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : '';
-      });
-
+      let addressJSON: string[] = [];
+      if (newJSON.objectJSON[0].latitude == '0' || newJSON.objectJSON[0].longitude == '0') {
+        addressJSON.push('GPS not found');
+      } else {
+        await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            // console.log(data.address);
+            data.address.county
+              ? addressJSON.push(
+                  JSON.stringify(data.address.county)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.city_district
+              ? addressJSON.push(
+                  JSON.stringify(data.address.city_district)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.quarter
+              ? addressJSON.push(
+                  JSON.stringify(data.address.quarter)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.suburb
+              ? addressJSON.push(
+                  JSON.stringify(data.address.suburb)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : '';
+          });
+      }
       await this.dataService.postAlertData(
         deviceID.id,
         newJSON.data,
@@ -280,30 +306,37 @@ export class DataController {
     try {
       // const mQuery = req.query;
       const mBody = req.body;
-      let vehiclesArray:number[] = [];
+      let vehiclesArray: number[] = [];
       // console.log('mQuery' + JSON.stringify(mQuery));
       // console.log('mBody' + JSON.stringify(mBody));
       // console.log(mBody[0]);
-      const companiesResult:number = await this.dataService
-        .postCompaniesData(mBody[0].companyName, mBody[0].contactPerson, mBody[0].tel);
-      for(let i = 1; i < mBody.length; i++) {
-        let vehiclesResult:number = await this.dataService
-          .postVehicles(mBody[i].carPlate, mBody[i].vehicleType, mBody[i].vehicleModel);
+      const companiesResult: number = await this.dataService.postCompaniesData(
+        mBody[0].companyName,
+        mBody[0].contactPerson,
+        mBody[0].tel
+      );
+      for (let i = 1; i < mBody.length; i++) {
+        let vehiclesResult: number = await this.dataService.postVehicles(
+          mBody[i].carPlate,
+          mBody[i].vehicleType,
+          mBody[i].vehicleModel
+        );
         vehiclesArray.push(vehiclesResult);
       }
-      for(let i = 0; i < vehiclesArray.length; i++) {
-        await this.dataService
-          .postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
+      for (let i = 0; i < vehiclesArray.length; i++) {
+        await this.dataService.postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
       }
 
       io.emit('get-new-companies');
-      res.status(httpStatusCodes.CREATED).json({ message: 'record created' })
+      res.status(httpStatusCodes.CREATED).json({ message: 'record created' });
       return;
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({formInput: false, message: 'Internal server error!' });
+      res
+        .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
+        .json({ formInput: false, message: 'Internal server error!' });
     }
-  }
+  };
   // get /devices
   getDevicesData = async (req: Request, res: Response) => {
     try {
@@ -334,7 +367,9 @@ export class DataController {
           ? await this.dataService.getCountingDevices()
           : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
-      (totalPage > Math.floor(totalPage)) ? totalPage = Math.ceil(totalPage) : totalPage = Math.floor(totalPage);
+      totalPage > Math.floor(totalPage)
+        ? (totalPage = Math.ceil(totalPage))
+        : (totalPage = Math.floor(totalPage));
 
       let devicesResult;
       if (newSearchType === '') {

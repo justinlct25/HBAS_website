@@ -24,3 +24,72 @@ export const mockAllDevices = [
   "4TBW45YWVEFAB34TB",
   "A34TBW34TBW34TVQ34",
 ];
+
+export const companyDevices = [
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+  {
+    deviceId: "RzrIaAAqADe=",
+    deviceName: "ramp_meter_003",
+    carPlate: "EC8390",
+  },
+];
