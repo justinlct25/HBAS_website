@@ -18,6 +18,7 @@ const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'nume
 function test(){
   console.log(new Date().toISOString());
   console.log(new Date().toUTCString());
+  console.log(new Date('2080-01-02').getFullYear());
   console.log(new Date('2021-07-22T15:32:00').toLocaleDateString(undefined, options));
   console.log(Date.parse("2021-07-22"));
 }

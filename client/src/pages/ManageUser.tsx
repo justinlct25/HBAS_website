@@ -72,13 +72,13 @@ function ManageUser() {
     ]);
   };
 
-  useEffect(() => {
-    console.log(totalVehicle);
-  }, [totalVehicle]);
+  // useEffect(() => {
+  //   console.log(totalVehicle);
+  // }, [totalVehicle]);
 
-  useEffect(() => {
-    console.log(companyDetail);
-  }, [companyDetail]);
+  // useEffect(() => {
+  //   console.log(companyDetail);
+  // }, [companyDetail]);
 
   useEffect(() => {
     const socket = io(`${serverUrl}`);
@@ -93,11 +93,10 @@ function ManageUser() {
         )
       );
     });
-
     return () => {
       socket.disconnect();
     };
-  });
+  }, []);
 
   return (
     <>

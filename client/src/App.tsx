@@ -33,7 +33,7 @@ function App() {
             component={AlertDataPage}
           />
           <Route path="/incident/:id" exact={true} component={IncidentPage} />
-          <Route path="/profile" exact={true} component={ProfilePage} />
+          <Route path="/profile/:id" exact={true} component={ProfilePage} />
           <Route path="/manage-user" exact={true} component={ManageUser} />
           <Route path="/manage-device" exact={true} component={ManageDevice} />
           <Route path="/statistics" exact={true} component={Statistics} />

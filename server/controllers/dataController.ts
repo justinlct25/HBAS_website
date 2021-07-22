@@ -88,19 +88,7 @@ export class DataController {
       const queryMethod = req.query;
       const dataResult = req.body;
       //check query join / up first
-      
       if (queryMethod.event != 'up') {
-        if(queryMethod.event == 'join'){
-          const deviceID = await this.dataService.getDevicesID(dataResult.deviceName, dataResult.devEUI);
-          console.log(JSON.stringify(deviceID));
-          if (deviceID == undefined || deviceID == null) {
-            await this.dataService.postDevices(dataResult.deviceName, dataResult.devEUI);
-            res.status(httpStatusCodes.CREATED).json({ message: 'new device join the network' });
-            return;
-          }
-          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'duplicate device join'});
-          return;
-      }
         res
           .status(httpStatusCodes.NOT_ACCEPTABLE)
           .json({ message: 'query is not accept to insert, return.' });
@@ -117,15 +105,6 @@ export class DataController {
       JsonStr = JsonStr.replace(/\\\"/gi, `\"`);
       const newJSON = JSON.parse(JsonStr);
 
-      //check handbrake is sending real data
-      if(newJSON.data && newJSON.objectJSON[0].msgtype === 'A'){
-        res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
-        return;
-      }
-      if(newJSON.data && newJSON.objectJSON[0].msgtype === 'B'){
-
-      }
-
       //check data code is alive
       if (!newJSON.data) {
         res
@@ -136,9 +115,11 @@ export class DataController {
       //check json is undefined or good
       // newJSON.objectJSON[0].latitude == '0' ||
       // newJSON.objectJSON[0].longitude == '0' ||
+      let checkDate = new Date(newJSON.objectJSON[0].date).getFullYear();
       if (
         newJSON.objectJSON[0].date == '0-0-0' ||
-        newJSON.objectJSON[0].time == '00:00:00'
+        newJSON.objectJSON[0].time == '00:00:00' ||
+        checkDate == 2080
       ) {
         res
           .status(httpStatusCodes.NOT_ACCEPTABLE)
@@ -153,6 +134,7 @@ export class DataController {
         return;
       }
       let addressJSON:string[] = [];
+      let mixDateTime = new Date(`${newJSON.objectJSON[0].date} ${newJSON.objectJSON[0].time}`).toLocaleDateString('en-CA');
       if(newJSON.objectJSON[0].latitude === '0' || newJSON.objectJSON[0].longitude === '0'){
         addressJSON.push('GPS not found');
       }else{
@@ -171,21 +153,20 @@ export class DataController {
       await this.dataService.postAlertData(
         deviceID.id,
         newJSON.data,
-        newJSON.objectJSON[0].date,
-        newJSON.objectJSON[0].time,
+        mixDateTime,
         newJSON.objectJSON[0].latitude,
         newJSON.objectJSON[0].longitude,
         addressJSON[0],
         newJSON.objectJSON[0].battery,
-        newJSON.objectJSON[0].msgType
+        newJSON.objectJSON[0].msgtype
       );
 
-      //logger.info(JSON.stringify(newJSON));
-      (newJSON.objectJSON[0].msgType == 'A')?
+      (newJSON.objectJSON[0].msgtype == 'A')?
       io.emit('get-new-alertData'):
-      (newJSON.objectJSON[0].msgType == 'B')?
+      (newJSON.objectJSON[0].msgtype == 'B')?
       io.emit('get-new-batteryData'): 
       io.emit('get-new-allMsgTypeData');
+      
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
     } catch (err) {
@@ -317,16 +298,18 @@ export class DataController {
         mBody[0].contactPerson,
         mBody[0].tel
       );
-      for (let i = 1; i < mBody.length; i++) {
-        let vehiclesResult: number = await this.dataService.postVehicles(
-          mBody[i].carPlate,
-          mBody[i].vehicleType,
-          mBody[i].vehicleModel
-        );
-        vehiclesArray.push(vehiclesResult);
-      }
-      for (let i = 0; i < vehiclesArray.length; i++) {
-        await this.dataService.postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
+      if(mBody.length > 1){
+        for (let i = 1; i < mBody.length; i++) {
+          let vehiclesResult: number = await this.dataService.postVehicles(
+            mBody[i].carPlate,
+            mBody[i].vehicleType,
+            mBody[i].vehicleModel
+          );
+          vehiclesArray.push(vehiclesResult);
+        }
+        for (let i = 0; i < vehiclesArray.length; i++) {
+          await this.dataService.postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
+        }
       }
 
       io.emit('get-new-companies');

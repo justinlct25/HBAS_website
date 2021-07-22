@@ -38,7 +38,7 @@ export async function up(knex: Knex): Promise<void> {
     table.dateTime('date');
     table.specificType('geolocation','POINT').notNullable().comment('latitude and longitude');
     table.string('address').notNullable().comment('fetch geolocation and return address');
-    table.string('msgType').notNullable().comment('A for alert, B for battery');
+    table.string('msg_type').notNullable().comment('A for alert, B for battery');
     table.string('battery', 20).notNullable(); // data detail
     table.string('data', 100).notNullable(); // encoding data, need to decode, detail is above 5 types
     table.boolean('is_active').defaultTo(true).notNullable();

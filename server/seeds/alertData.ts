@@ -18,7 +18,7 @@ type InsertAlertData = {
     address: string;
     battery: string;
     data: string;
-    msgType: string;
+    msg_type: string;
 }
 
 export async function seed(knex: Knex): Promise<void> {
@@ -56,7 +56,7 @@ export async function seed(knex: Knex): Promise<void> {
         address: session.address,
         battery: session.battery,
         data: session.data,
-        msgType: session.msgType,
+        msg_type: session.msg_type,
     }));
     await knex("alert_data").insert(alertData);
 

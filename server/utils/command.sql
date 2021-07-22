@@ -54,9 +54,5 @@ left join vehicle_device on vehicle_device.device_id = devices.id
 left join vehicles on vehicles.id = vehicle_device.vehicle_id
 left join company_vehicles on company_vehicles.vehicle_id = vehicles.id
 left join companies on companies.id = company_vehicles.company_id
-where devices.is_active = true and 
-vehicle_device.is_active = true and 
-vehicles.is_active = true and 
-company_vehicles.is_active = true and 
-companies.is_active = true and
+where devices.is_active = true
 devices.device_eui ilike '%aaa%';

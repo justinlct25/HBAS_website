@@ -18,7 +18,17 @@ export const insertedCompanies = [
         company_name: "Bridgine", 
         tel: "66109325", 
         contact_person: "Li Cow Lon" 
-    }
+    },
+    {  
+        company_name: "Carbino", 
+        tel: "68392215", 
+        contact_person: "Mark Chan" 
+    },
+    {  
+        company_name: "NaCOtwo", 
+        tel: "59829314", 
+        contact_person: "Koey Chong" 
+    },
 ]
 
 export const insertedVehicles = [
@@ -51,6 +61,16 @@ export const insertedVehicles = [
         car_plate:"LP3209", 
         vehicle_model:"Isuzu", 
         vehicle_type:"20"
+    },
+    {
+        car_plate:"HT5632", 
+        vehicle_model:"Volvo", 
+        vehicle_type:"20"
+    },
+    {
+        car_plate:"QW3321", 
+        vehicle_model:"SCANIA", 
+        vehicle_type:"22"
     }
 ]
 
@@ -84,6 +104,21 @@ export const insertedDevices = [
         device_name: "ramp_meter_005", 
         device_eui: "RzrIaAAqADg=",
         is_register: true
+    },
+    {
+        device_name: "ramp_meter_010", 
+        device_eui: "RzrIaAAqADh=",
+        is_register: false
+    },
+    {
+        device_name: "ramp_meter_011", 
+        device_eui: "RzrIaAAqADi=",
+        is_register: false
+    },
+    {
+        device_name: "ramp_meter_012", 
+        device_eui: "RzrIaAAqADj=",
+        is_register: false
     }
 ]
 
@@ -95,7 +130,7 @@ export const insertedAlertData = [
         address: "Sai Kung District", 
         battery: "1.95", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADc=", 
@@ -104,7 +139,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.94", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADc=", 
@@ -113,7 +148,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.93", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -122,7 +157,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.93", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -131,7 +166,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.71", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -140,7 +175,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.83", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -149,7 +184,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.82", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -158,7 +193,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.84", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
@@ -167,7 +202,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.91", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "jPlXIAADvTk=", 
@@ -176,7 +211,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.89", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADe=", 
@@ -185,7 +220,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.62", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADf=", 
@@ -194,7 +229,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.52", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADf=", 
@@ -203,7 +238,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.73", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     { 
         device_eui: "RzrIaAAqADe=", 
@@ -212,7 +247,7 @@ export const insertedAlertData = [
         address: "Sai Kung District",
         battery: "1.65", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A",
+        msg_type: "A",
     },
     {
         device_eui: "RzrIaAAqADe=", 
@@ -221,7 +256,7 @@ export const insertedAlertData = [
         address: "Kwun Tong District",
         battery: "1.75", 
         data: "MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw",
-        msgType: "A", 
+        msg_type: "A", 
     }
 ]
 
@@ -249,6 +284,14 @@ export const insertCompanyVehicles = [
     {
         company_name: "Highway Bound", 
         car_plate:"LP3209" 
+    },
+    {
+        company_name: "Carbino", 
+        car_plate:"HT5632" 
+    },
+    {
+        company_name: "Carbino", 
+        car_plate:"QW3321" 
     }
 ]
 

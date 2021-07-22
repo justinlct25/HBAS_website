@@ -6,9 +6,9 @@ export class DataService {
     async getAlertData(offset:number, limit:number):Promise<any>{
         return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
-            'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
-            'companies.company_name', 'companies.tel', 'companies.contact_person', 'alert_data.created_at', 
-            'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msgType')
+            'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
+            'companies.company_name', 'companies.tel', 'companies.contact_person',  
+            'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msg_type')
             .from('alert_data')
             .leftJoin('devices', 'devices.id', 'alert_data.device_id')
             .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -17,7 +17,7 @@ export class DataService {
             .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
             .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
                     , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true
-                    ,'alert_data.msgType':'A'})
+                    ,'alert_data.msg_type':'A'})
             .orderBy('alert_data.date', 'desc')
             .limit(limit).offset(offset);
     }
@@ -25,15 +25,14 @@ export class DataService {
     async postAlertData(
         device_id:number, 
         data:string, 
-        date:string, 
-        time:string, 
+        date:string,  
         latitude:string, 
         longitude:string, 
         address:string,
         battery:string,
-        msgType:string){
+        msg_type:string){
         return await this.knex('alert_data').insert({
-            device_id, data, date: new Date(date).toLocaleDateString('en-CA'), time, geolocation:`${latitude},${longitude}`, address , battery, msgType
+            device_id, data, date: new Date(date).toLocaleDateString('en-CA'), geolocation:`${latitude},${longitude}`, address , battery, msg_type
         }).returning('id');
     }
     // RESTful Put /alertData
@@ -49,9 +48,9 @@ export class DataService {
     async getAlertDataBySearch(offset:number, limit:number, searchType:string, searchString:string){
       return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
-            'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
-            'companies.company_name', 'companies.tel', 'companies.contact_person', 'alert_data.created_at',
-            'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msgType')
+            'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
+            'companies.company_name', 'companies.tel', 'companies.contact_person', 
+            'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msg_type')
             .from('alert_data')
             .leftJoin('devices', 'devices.id', 'alert_data.device_id')
             .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -60,7 +59,7 @@ export class DataService {
             .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
             .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
                     , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true, 
-                    'alert_data.msgType':'A'
+                    'alert_data.msg_type':'A'
                   })
             .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
             .orderBy('alert_data.date', 'desc')
@@ -70,9 +69,9 @@ export class DataService {
     async getAlertDataBySearchDate(offset:number, limit:number,date:string,nextDate:string){
       return await this.knex
         .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
-          'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
-          'companies.company_name', 'companies.tel', 'companies.contact_person', 'alert_data.created_at',
-          'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msgType')
+          'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
+          'companies.company_name', 'companies.tel', 'companies.contact_person', 
+          'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msg_type')
         .from('alert_data')
         .leftJoin('devices', 'devices.id', 'alert_data.device_id')
         .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -81,7 +80,7 @@ export class DataService {
         .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
         .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
                 , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true, 
-                'alert_data.msgType':'A'
+                'alert_data.msg_type':'A'
               })
         .andWhereRaw(`alert_data.date >= ${date} 00:00:00 AND alert_data.date < ${nextDate} 00:00:00`)
         .orderBy('alert_data.date', 'desc')
@@ -123,7 +122,7 @@ export class DataService {
   async getCompaniesData(offset:number, limit:number): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
       .select('companies.id', 'companies.company_name', 'companies.tel', 'companies.contact_person')
@@ -134,7 +133,7 @@ export class DataService {
   async getCompaniesDataBySearch(offset:number, limit:number, searchType:string, searchString:string|number): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
       .select('companies.company_name', 'companies.tel', 'companies.contact_person') 
@@ -146,7 +145,7 @@ export class DataService {
   async getCompaniesDataNumberBySearch(offset:number, limit:number, searchString:string|number): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
       .select('companies.company_name', 'companies.tel', 'companies.contact_person')
@@ -264,7 +263,7 @@ export class DataService {
   // get count data , /alert_data
   async getCountingAlertData() {
     return await this.knex('alert_data')
-    .where('msgType','A')
+    .where('msg_type','A')
     .count('id');
   }
   // get count data by searching, /alert_data
@@ -277,7 +276,7 @@ export class DataService {
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
             , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true
-            ,'alert_data.msgType':'A'})
+            ,'alert_data.msg_type':'A'})
       .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
       .count('alert_data.id');
   }
@@ -291,7 +290,7 @@ export class DataService {
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
             , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true
-            ,'alert_data.msgType':'A'})
+            ,'alert_data.msg_type':'A'})
       .andWhereRaw(`alert_data.date >= ${date} 00:00:00 AND alert_data.date < ${nextDate} 00:00:00`)
       .count('alert_data.id');
   }
@@ -366,7 +365,7 @@ export class DataService {
       .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
       'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
       'companies.company_name', 'companies.tel', 'companies.contact_person', 'alert_data.created_at', 
-      'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msgType')
+      'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msg_type')
       .from('alert_data')
       .leftJoin('devices', 'devices.id', 'alert_data.device_id')
       .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
@@ -375,7 +374,7 @@ export class DataService {
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({'companies.is_active': true, 'devices.is_active': true, 'alert_data.is_active': true
       , 'vehicles.is_active':true, 'company_vehicles.is_active': true, 'vehicle_device.is_active': true
-      ,'alert_data.msgType':'B'})
+      ,'alert_data.msg_type':'B'})
       .orderBy('alert_data.date', 'desc')
       .limit(limit).offset(offset);
   }
@@ -384,7 +383,7 @@ export class DataService {
       .select('alert_data.id', 'devices.device_name', 'devices.device_eui', `alert_data.date`, 
       'alert_data.time', 'alert_data.geolocation', 'alert_data.battery', 'alert_data.address', 
       'companies.company_name', 'companies.tel', 'companies.contact_person', 'alert_data.created_at', 
-      'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msgType')
+      'vehicles.car_plate', 'vehicles.vehicle_model', 'vehicle_type', 'alert_data.msg_type')
       .from('alert_data')
       .leftJoin('devices', 'devices.id', 'alert_data.device_id')
       .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
