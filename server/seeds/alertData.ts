@@ -14,11 +14,11 @@ type InsertDevices = { id:number; device_eui:string;}
 type InsertAlertData = { 
     device_id: number | undefined;
     date: string;
-    time: string;
     geolocation: string;
     address: string;
     battery: string;
     data: string;
+    msgType: string;
 }
 
 export async function seed(knex: Knex): Promise<void> {
@@ -52,11 +52,11 @@ export async function seed(knex: Knex): Promise<void> {
     const alertData:Array<InsertAlertData> = insertedAlertData.map((session)=>({
         device_id: devicesMap.get(session.device_eui),
         date: session.date,
-        time: session.time,
         geolocation: session.geolocation,
         address: session.address,
         battery: session.battery,
         data: session.data,
+        msgType: session.msgType,
     }));
     await knex("alert_data").insert(alertData);
 

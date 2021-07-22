@@ -42,7 +42,9 @@ export class DataController {
       }
       const counting =
         newSearchType === ''
-          ? await this.dataService.getCountingAlertData()
+          ? await this.dataService.getCountingAlertData() : 
+        newSearchType === 'date'
+          ? await this.dataService.getAlertDataBySearchDate(1,1,'','')//// push
           : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
@@ -86,7 +88,19 @@ export class DataController {
       const queryMethod = req.query;
       const dataResult = req.body;
       //check query join / up first
+      
       if (queryMethod.event != 'up') {
+        if(queryMethod.event == 'join'){
+          const deviceID = await this.dataService.getDevicesID(dataResult.deviceName, dataResult.devEUI);
+          console.log(JSON.stringify(deviceID));
+          if (deviceID == undefined || deviceID == null) {
+            await this.dataService.postDevices(dataResult.deviceName, dataResult.devEUI);
+            res.status(httpStatusCodes.CREATED).json({ message: 'new device join the network' });
+            return;
+          }
+          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'duplicate device join'});
+          return;
+      }
         res
           .status(httpStatusCodes.NOT_ACCEPTABLE)
           .json({ message: 'query is not accept to insert, return.' });
@@ -103,6 +117,15 @@ export class DataController {
       JsonStr = JsonStr.replace(/\\\"/gi, `\"`);
       const newJSON = JSON.parse(JsonStr);
 
+      //check handbrake is sending real data
+      if(newJSON.data && newJSON.objectJSON[0].msgtype === 'A'){
+        res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
+        return;
+      }
+      if(newJSON.data && newJSON.objectJSON[0].msgtype === 'B'){
+
+      }
+
       //check data code is alive
       if (!newJSON.data) {
         res
@@ -111,10 +134,10 @@ export class DataController {
         return;
       }
       //check json is undefined or good
+      // newJSON.objectJSON[0].latitude == '0' ||
+      // newJSON.objectJSON[0].longitude == '0' ||
       if (
         newJSON.objectJSON[0].date == '0-0-0' ||
-        newJSON.objectJSON[0].latitude == '0' ||
-        newJSON.objectJSON[0].longitude == '0' ||
         newJSON.objectJSON[0].time == '00:00:00'
       ) {
         res
@@ -122,11 +145,7 @@ export class DataController {
           .json({ message: 'Income data is not accept to insert, return.' });
         return;
       }
-      //check handbrake is sending real data
-      if(newJSON.data && newJSON.objectJSON[0].msgtype != 'A'){
-          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'handbrake type is not A.'});
-          return;
-      }
+      
       // require device id
       const deviceID = await this.dataService.getDevicesID(newJSON.deviceName, newJSON.devEUI);
       if (deviceID == undefined || deviceID == null) {
@@ -134,16 +153,20 @@ export class DataController {
         return;
       }
       let addressJSON:string[] = [];
-      await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-      ).then(response => response.json())
-      .then(data => {
-        // console.log(data.address);
-        (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-        (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : '';
-      });
+      if(newJSON.objectJSON[0].latitude === '0' || newJSON.objectJSON[0].longitude === '0'){
+        addressJSON.push('GPS not found');
+      }else{
+        await fetch(
+          `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
+        ).then(response => response.json())
+        .then(data => {
+          (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+          (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+          (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+          (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
+          addressJSON.push('GPS not found');
+        });
+      }
 
       await this.dataService.postAlertData(
         deviceID.id,
@@ -153,11 +176,16 @@ export class DataController {
         newJSON.objectJSON[0].latitude,
         newJSON.objectJSON[0].longitude,
         addressJSON[0],
-        newJSON.objectJSON[0].battery
+        newJSON.objectJSON[0].battery,
+        newJSON.objectJSON[0].msgType
       );
 
       //logger.info(JSON.stringify(newJSON));
-      io.emit('get-new-alertData');
+      (newJSON.objectJSON[0].msgType == 'A')?
+      io.emit('get-new-alertData'):
+      (newJSON.objectJSON[0].msgType == 'B')?
+      io.emit('get-new-batteryData'): 
+      io.emit('get-new-allMsgTypeData');
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
     } catch (err) {
@@ -375,6 +403,19 @@ export class DataController {
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  };
+
+  getProfileData = async (req: Request, res: Response) => {
+    try {
+      const companyID = req.params;
+      console.log(JSON.stringify(companyID));
+      const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)))
+      res.status(httpStatusCodes.OK).json({data: result, message: 'test'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error'});
     }
   };
 }

@@ -24,6 +24,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('device_name', 20).notNullable();
     table.string('device_eui', 30).notNullable();
     table.string('version').notNullable().defaultTo('0.0.0');
+    table.boolean('is_register').defaultTo(false).notNullable();
     table.boolean('is_active').defaultTo(true).notNullable();
     table.timestamps(false, true);
   });
@@ -32,10 +33,12 @@ export async function up(knex: Knex): Promise<void> {
     table.increments();
     table.integer('device_id').notNullable().unsigned();
     table.foreign('device_id').references('devices.id');
-    table.date('date').notNullable(); // data detail
-    table.time('time').notNullable(); // data detail
+    // table.date('date').notNullable(); // data detail
+    // table.time('time').notNullable(); // data detail
+    table.dateTime('date');
     table.specificType('geolocation','POINT').notNullable().comment('latitude and longitude');
     table.string('address').notNullable().comment('fetch geolocation and return address');
+    table.string('msgType').notNullable().comment('A for alert, B for battery');
     table.string('battery', 20).notNullable(); // data detail
     table.string('data', 100).notNullable(); // encoding data, need to decode, detail is above 5 types
     table.boolean('is_active').defaultTo(true).notNullable();

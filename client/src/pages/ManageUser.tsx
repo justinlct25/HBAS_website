@@ -13,6 +13,7 @@ import { getCompaniesDataListThunk, postCompaniesDataThunk } from "../redux/comp
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
 import { io } from 'socket.io-client';
+// import { getProfileListThunk } from "../redux/profile/thunk";
 
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;
@@ -225,7 +226,10 @@ function ManageUser() {
                   <div
                     key={item.id}
                     className="flex-center tableRow"
-                    onClick={() => dispatch(push("/profile"))}
+                    onClick={() => {
+                      //dispatch something ...
+                      dispatch(push(`/profile/${item.id}`, {id: item.id}));
+                    }}
                   >
                     <div key={idx} className="flex-center tdItem">
                       {item.company_name}
