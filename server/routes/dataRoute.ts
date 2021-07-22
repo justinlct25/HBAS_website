@@ -27,3 +27,6 @@ dataRoutes.get(`/devices/version`, dataController.getDevicesVersion);
 dataRoutes.post(`/devices/version`);
 dataRoutes.put(`/devices/version`);
 dataRoutes.delete(`/devices/version`);
+
+dataRoutes.get(`/profile`);
+dataRoutes.get(`/profile/:id`, dataController.getProfileData);

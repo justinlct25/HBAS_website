@@ -19,6 +19,7 @@ import { ICompaniesDataState } from "./companies/state";
 import { IDevicesDataActions } from "./devices/action";
 import { IDevicesDataReducer } from "./devices/reducer";
 import { IDevicesDataState } from "./devices/state";
+//incidentPage
 import { IIncidentPageAction } from "./incidentPage/action";
 import { IIncidentPageReducer } from "./incidentPage/reducer";
 import { IIncidentPageState } from "./incidentPage/state";
@@ -26,7 +27,10 @@ import { IIncidentPageState } from "./incidentPage/state";
 import { ILoadingPageAction } from "./loading/action";
 import { ILoadingReducer } from "./loading/reducer";
 import { ILoadingState } from "./loading/state";
-//incidentPage
+//profile
+import { IProfileActions } from './profile/action';
+import { IProfileReducer } from './profile/reducer';
+import { IProfileState } from './profile/state';
 
 export const history = createBrowserHistory();
 
@@ -38,6 +42,7 @@ export interface IRootState {
   router: RouterState;
   loading: ILoadingState;
   incidentPage: IIncidentPageState;
+  profileList: IProfileState;
 }
 
 // initState
@@ -47,7 +52,8 @@ type IRootAction =
   | IDevicesDataActions
   | CallHistoryMethodAction
   | ILoadingPageAction
-  | IIncidentPageAction;
+  | IIncidentPageAction
+  | IProfileActions;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
@@ -60,6 +66,7 @@ const rootReducer = combineReducers<IRootState>({
   router: connectRouter(history),
   loading: ILoadingReducer,
   incidentPage: IIncidentPageReducer,
+  profileList: IProfileReducer,
 });
 
 declare global {
