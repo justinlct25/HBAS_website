@@ -31,7 +31,6 @@ export const companyDevices = [
     deviceName: "ramp_meter_003",
     carPlate: "EC8390",
   },
-
   {
     deviceId: "RzrIaAAqADe=",
     deviceName: "ramp_meter_003",

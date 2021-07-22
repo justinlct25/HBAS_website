@@ -163,6 +163,7 @@ export const BackButton = (props: BackButtonProps) => {
         stroke={color}
         strokeWidth="1.875"
         strokeMiterlimit="10"
+        style={{ transition: "all 0.4s" }}
       />
       <path
         d="M17.3438 20.625L11.7188 15L17.3438 9.375"
@@ -170,6 +171,7 @@ export const BackButton = (props: BackButtonProps) => {
         strokeWidth="1.875"
         strokeLinecap="round"
         strokeLinejoin="round"
+        style={{ transition: "all 0.4s" }}
       />
     </svg>
   );

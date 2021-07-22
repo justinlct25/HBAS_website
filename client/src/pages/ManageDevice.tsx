@@ -18,16 +18,23 @@ const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
-type DeviceType = "New" | "All";
+type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-  const [selectDeviceModalOpen, setSelectDeviceModalOpen] = useState(false);
-  const [deviceType, setDeviceType] = useState<DeviceType>("New");
-  const [selectedDevice, setSelectedDevice] = useState("");
+  const [selectModalOpen, setSelectModalOpen] = useState<{
+    isOpen: boolean;
+    target: ModalType;
+  }>({ isOpen: false, target: "company" });
+
+  const [selectedItem, setSelectedItem] = useState({
+    companyName: "",
+    deviceId: "",
+    carPlate: "",
+  });
 
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
@@ -229,16 +236,16 @@ function ManageDevice() {
             <div
               className="flex-center"
               style={{
-                height: "100%",
                 width: "100%",
                 flexDirection: "column",
+                justifyContent: "flex-start",
               }}
             >
               <div className="flex-center form">
                 <div className="flex-center companySection">
                   <div className="titleText">Add new device</div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Device ID :</div>
+                    <div className="formLeftColumn">Company name</div>
                     <div
                       className="flex-center"
                       style={{
@@ -246,9 +253,9 @@ function ManageDevice() {
                         justifyContent: "flex-start",
                         cursor: "pointer",
                       }}
-                      onClick={() =>
-                        setSelectDeviceModalOpen(!selectDeviceModalOpen)
-                      }
+                      onClick={() => {
+                        setSelectModalOpen({ isOpen: true, target: "company" });
+                      }}
                     >
                       <div
                         className="flex-center"
@@ -257,9 +264,9 @@ function ManageDevice() {
                           paddingLeft: "8px",
                         }}
                       >
-                        {selectedDevice === ""
-                          ? "Select device"
-                          : selectedDevice}
+                        {selectedItem.companyName === ""
+                          ? "Select Company"
+                          : selectedItem.companyName}
                       </div>
                       <div
                         style={{
@@ -272,102 +279,113 @@ function ManageDevice() {
                     </div>
                   </div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Car plate :</div>
-                    <div className="formRightColumn">
-                      <input className="formInput" />
+                    <div className="formLeftColumn">Car Plate</div>
+                    <div
+                      className="flex-center"
+                      style={{
+                        width: "50%",
+                        justifyContent: "flex-start",
+                        cursor: "pointer",
+                      }}
+                      onClick={
+                        selectedItem.companyName === ""
+                          ? () => {}
+                          : () =>
+                              setSelectModalOpen({
+                                isOpen: true,
+                                target: "carPlate",
+                              })
+                      }
+                    >
+                      <div
+                        className="flex-center"
+                        style={{
+                          justifyContent: "flex-start",
+                          paddingLeft: "8px",
+                          color:
+                            selectedItem.companyName === "" ? "#AAA" : "#555",
+                          transition: "all 0.4s",
+                        }}
+                      >
+                        {selectedItem.carPlate === ""
+                          ? "Select car plate"
+                          : selectedItem.carPlate}
+                      </div>
+                      <div
+                        style={{
+                          transform: "rotate(180deg)",
+                          paddingRight: "8px",
+                        }}
+                      >
+                        <BackButton
+                          color={
+                            selectedItem.companyName === "" ? "#AAA" : "#555"
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                   <div className="flex-center formRow">
-                    <div className="formLeftColumn">Company name :</div>
-                    <div className="formRightColumn">
-                      <input className="formInput" />
-                    </div>
-                  </div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Contact number :</div>
-                    <div className="formRightColumn">
-                      <input className="formInput" />
-                    </div>
-                  </div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Contact person :</div>
-                    <div className="formRightColumn">
-                      <input className="formInput" />
+                    <div className="formLeftColumn">Device ID :</div>
+                    <div
+                      className="flex-center"
+                      style={{
+                        width: "50%",
+                        justifyContent: "flex-start",
+                        cursor: "pointer",
+                      }}
+                      onClick={() =>
+                        selectedItem.carPlate === ""
+                          ? () => {}
+                          : setSelectModalOpen({
+                              isOpen: true,
+                              target: "device",
+                            })
+                      }
+                    >
+                      <div
+                        className="flex-center"
+                        style={{
+                          justifyContent: "flex-start",
+                          paddingLeft: "8px",
+                          color: selectedItem.carPlate === "" ? "#AAA" : "#555",
+                          transition: "all 0.4s",
+                        }}
+                      >
+                        {selectedItem.deviceId === ""
+                          ? "Select device"
+                          : selectedItem.deviceId}
+                      </div>
+                      <div
+                        style={{
+                          transform: "rotate(180deg)",
+                          paddingRight: "8px",
+                        }}
+                      >
+                        <BackButton
+                          color={selectedItem.carPlate === "" ? "#AAA" : "#555"}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
-                {selectDeviceModalOpen && (
+                {selectModalOpen.isOpen && (
                   <div
                     className="clickElsewhere"
-                    onClick={() => setSelectDeviceModalOpen(false)}
+                    onClick={() =>
+                      setSelectModalOpen({
+                        isOpen: false,
+                        target: selectModalOpen.target,
+                      })
+                    }
                   />
                 )}
-                <div
-                  className="selectDeviceModal"
-                  style={{
-                    right: selectDeviceModalOpen ? 0 : "-100%",
-                  }}
-                >
-                  <div
-                    className="titleText flex-center"
-                    style={{ margin: "16px" }}
-                  >
-                    <div
-                      onClick={() => setDeviceType("New")}
-                      className="selectDeviceHeader"
-                      style={{
-                        borderRadius: "8px 0px 0px 8px",
-                        background:
-                          deviceType === "New"
-                            ? "rgba(94, 147, 220, 0.76)"
-                            : "transparent",
-                      }}
-                    >
-                      Unassigned devices
-                    </div>
-                    <div
-                      onClick={() => setDeviceType("All")}
-                      className="selectDeviceHeader"
-                      style={{
-                        borderRadius: "0px 8px 8px 0px",
-                        background:
-                          deviceType === "All"
-                            ? "rgba(94, 147, 220, 0.76)"
-                            : "transparent",
-                      }}
-                    >
-                      All devices
-                    </div>
-                  </div>
-                  <div className="deviceListContainer">
-                    {deviceType === "New"
-                      ? mockNewDevices.map((item) => {
-                          return (
-                            <div
-                              className="eachDevice"
-                              onClick={() => {
-                                setSelectedDevice(item);
-                              }}
-                            >
-                              {item}
-                            </div>
-                          );
-                        })
-                      : deviceType === "All" &&
-                        mockAllDevices.map((item) => {
-                          return (
-                            <div
-                              className="eachDevice"
-                              onClick={() => {
-                                setSelectedDevice(item);
-                              }}
-                            >
-                              {item}
-                            </div>
-                          );
-                        })}
-                  </div>
-                </div>
+                <Modal
+                  isOpen={selectModalOpen.isOpen}
+                  modalType={selectModalOpen.target}
+                  setSelectedItem={setSelectedItem}
+                  selectedItem={selectedItem}
+                />
               </div>
               <div className="flex-center formButtonContainer">
                 <div className="button" onClick={() => setPopUpIsActive(false)}>
@@ -443,5 +461,105 @@ function ManageDevice() {
     </>
   );
 }
+
+interface ModalProps {
+  isOpen: boolean;
+  modalType: ModalType;
+  selectedItem: {
+    companyName: string;
+    deviceId: string;
+    carPlate: string;
+  };
+  setSelectedItem: React.Dispatch<
+    React.SetStateAction<{
+      companyName: string;
+      deviceId: string;
+      carPlate: string;
+    }>
+  >;
+}
+
+const Modal = (props: ModalProps) => {
+  const { isOpen, modalType, setSelectedItem, selectedItem } = props;
+  const headerText =
+    modalType === "device"
+      ? "New device"
+      : modalType === "carPlate"
+      ? "Car plate"
+      : modalType === "company" && "Select company";
+  return (
+    <div
+      className="selectDeviceModal"
+      style={{
+        right: isOpen ? 0 : "-100%",
+      }}
+    >
+      <div className="titleText flex-center" style={{ margin: "16px" }}>
+        <div className="selectDeviceHeader">{headerText}</div>
+      </div>
+      <div className="deviceListContainer">
+        {modalType === "device"
+          ? mockNewDevices.map((item) => {
+              return (
+                <div
+                  className="eachDevice"
+                  onClick={
+                    selectedItem.carPlate === ""
+                      ? () => {}
+                      : () => {
+                          setSelectedItem({
+                            companyName: selectedItem.companyName,
+                            deviceId: item,
+                            carPlate: selectedItem.carPlate,
+                          });
+                        }
+                  }
+                >
+                  {item}
+                </div>
+              );
+            })
+          : modalType === "carPlate"
+          ? mockNewDevices.map((item) => {
+              return (
+                <div
+                  className="eachDevice"
+                  onClick={
+                    selectedItem.companyName === ""
+                      ? () => {}
+                      : () => {
+                          setSelectedItem({
+                            companyName: selectedItem.companyName,
+                            deviceId: "",
+                            carPlate: item,
+                          });
+                        }
+                  }
+                >
+                  {item}
+                </div>
+              );
+            })
+          : modalType === "company" &&
+            mockNewDevices.map((item) => {
+              return (
+                <div
+                  className="eachDevice"
+                  onClick={() => {
+                    setSelectedItem({
+                      companyName: item,
+                      deviceId: "",
+                      carPlate: "",
+                    });
+                  }}
+                >
+                  {item}
+                </div>
+              );
+            })}
+      </div>
+    </div>
+  );
+};
 
 export default ManageDevice;
