@@ -130,6 +130,7 @@
   border-radius: 10px;
   color: #eee;
   overflow-y: scroll;
+  align-items: flex-start;
 }
 
 .closeIconContainer {
@@ -145,7 +146,7 @@
   justify-content: flex-start;
   width: var(--formWidth);
   max-height: calc(90% - var(--topNavHeight));
-  min-height: 80%;
+  /* min-height: 80%; */
   overflow-y: scroll;
   overflow-x: hidden;
   max-height: 70%;
@@ -231,13 +232,11 @@ h1 {
 }
 .selectDeviceHeader {
   font-size: 20px;
-  border: solid #eee 0.5px;
   padding: 8px;
   width: 50%;
   color: #eee;
   cursor: pointer;
   transition: all 0.4s;
-  background: rgb(36, 97, 250);
 }
 .deviceListContainer {
   width: 100%;
