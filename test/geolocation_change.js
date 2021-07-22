@@ -14,12 +14,12 @@ let y = 114.27389;
 //         dataArray[i]['location'] = {error: 'network error'};
 //       }
 // }
-const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
 function test(){
   console.log(new Date().toISOString());
-  console.log(new Date().toUTCString());
+  console.log(new Date().getFullYear());
   console.log(new Date('2080-01-02').getFullYear());
-  console.log(new Date('2021-07-22T15:32:00').toLocaleDateString(undefined, options));
+  console.log(new Date('2021-07-22 15:32:00').toLocaleDateString('en-US', options));
   console.log(Date.parse("2021-07-22"));
 }
 test();

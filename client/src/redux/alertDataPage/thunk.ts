@@ -47,7 +47,6 @@ export function getAlertDataListThunk(
 
         if (res.status === 200) {
           const data = await res.json();
-          console.log(data.alertData.date);
           // const dataWithLocation = await getLocationName(data.alertData);
           dispatch(
             setAlertDataList(

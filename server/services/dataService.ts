@@ -32,7 +32,7 @@ export class DataService {
         battery:string,
         msg_type:string){
         return await this.knex('alert_data').insert({
-            device_id, data, date: new Date(date).toLocaleDateString('en-CA'), geolocation:`${latitude},${longitude}`, address , battery, msg_type
+            device_id, data, date: new Date(date).toLocaleDateString('en-CA', {year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'}), geolocation:`${latitude},${longitude}`, address , battery, msg_type
         }).returning('id');
     }
     // RESTful Put /alertData
@@ -171,13 +171,7 @@ export class DataService {
       .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
       .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'devices.is_active': true,
-        'vehicle_device.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-        'companies.is_active': true,
-      })
+      .where('devices.is_active', true)
       .select(
         'devices.id',
         'devices.device_name',
@@ -202,16 +196,13 @@ export class DataService {
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({
         'devices.is_active': true,
-        'vehicle_device.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-        'companies.is_active': true,
       })
       .andWhere(`${searchType}`,'ILIKE',`%${searchString}%`)
       .select(
         'devices.id',
         'devices.device_name',
         'devices.device_eui',
+        'devices.is_register',
         'vehicles.car_plate',
         'vehicles.vehicle_model',
         'vehicles.vehicle_type',
@@ -221,10 +212,10 @@ export class DataService {
       )
       .offset(offset).limit(limit)
   }
-  // get only devices
-  async getOnlyDevices(){
+  // get only devices for not register
+  async getNotRegDevices(){
     return this.knex('devices')
-      .where('is_active', true)
+      .where({'is_active': true, 'is_register': false})
       .select(
         'id', 'device_name', 'device_eui', 'version',
         'is_register', 'is_active'

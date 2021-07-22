@@ -115,11 +115,12 @@ export class DataController {
       //check json is undefined or good
       // newJSON.objectJSON[0].latitude == '0' ||
       // newJSON.objectJSON[0].longitude == '0' ||
-      let checkDate = new Date(newJSON.objectJSON[0].date).getFullYear();
+      let jsonDate = new Date(newJSON.objectJSON[0].date).getFullYear();
+      let checkDate = new Date().getFullYear();
       if (
         newJSON.objectJSON[0].date == '0-0-0' ||
         newJSON.objectJSON[0].time == '00:00:00' ||
-        checkDate == 2080
+        jsonDate !== checkDate
       ) {
         res
           .status(httpStatusCodes.NOT_ACCEPTABLE)
@@ -133,8 +134,9 @@ export class DataController {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
+
       let addressJSON:string[] = [];
-      let mixDateTime = new Date(`${newJSON.objectJSON[0].date} ${newJSON.objectJSON[0].time}`).toLocaleDateString('en-CA');
+      let mixDateTime = `${newJSON.objectJSON[0].date}T${newJSON.objectJSON[0].time}`;
       if(newJSON.objectJSON[0].latitude === '0' || newJSON.objectJSON[0].longitude === '0'){
         addressJSON.push('GPS not found');
       }else{
@@ -142,11 +144,12 @@ export class DataController {
           `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
         ).then(response => response.json())
         .then(data => {
+          (!data.error)?
           (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
           (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
           (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
           (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-          addressJSON.push('GPS not found');
+          addressJSON.push('GPS not found'):addressJSON.push('GPS not found');
         });
       }
 
@@ -166,7 +169,7 @@ export class DataController {
       (newJSON.objectJSON[0].msgtype == 'B')?
       io.emit('get-new-batteryData'): 
       io.emit('get-new-allMsgTypeData');
-      
+
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
     } catch (err) {
