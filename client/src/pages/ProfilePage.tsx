@@ -2,25 +2,28 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { BackButton } from "../components/IconsOnly";
+import { useRouter } from "../helpers/useRouter";
 import userImage from "../images/userImage.png";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 import { companyDevices } from "./mockUpData";
 
-interface comingData{
-  id:number;
+interface comingData {
+  id: number;
 }
 
 function ProfilePage() {
   const history = useHistory();
   const { state } = useLocation<comingData>();
-  const profileList = useSelector((state: IRootState)=> state.profileList.profileList);
+  const profileList = useSelector(
+    (state: IRootState) => state.profileList.profileList
+  );
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(state);
     dispatch(getProfileListThunk(parseInt(String(state.id))));
-  },[dispatch]);
+  }, [dispatch]);
   console.log(profileList);
 
   return (
@@ -46,6 +49,7 @@ function ProfilePage() {
           width: "100%",
           maxHeight: "80%",
           alignItems: "flex-start",
+          padding: "0 32px",
         }}
       >
         <div style={{ width: "50%" }}>
@@ -77,7 +81,7 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].company_name : ''}
+                  {profileList.length > 0 ? profileList[0].company_name : ""}
                 </div>
               </div>
               <div className="flex-center">
@@ -91,7 +95,7 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].contact_person : ''}
+                  {profileList.length > 0 ? profileList[0].contact_person : ""}
                 </div>
               </div>
               <div className="flex-center">
@@ -105,7 +109,7 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].tel : ''}
+                  {profileList.length > 0 ? profileList[0].tel : ""}
                 </div>
               </div>
             </div>
@@ -122,11 +126,21 @@ function ProfilePage() {
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            {profileList.length > 0 ? profileList.map((item, idx)=>(
-            <div>
-              <div style={(item.device_eui === null)?{backgroundColor: '#F00'}:{backgroundColor: '#0F0'}}>{item.car_plate}</div>
-            </div>
-          )) : ''}
+            {profileList.length > 0
+              ? profileList.map((item, idx) => (
+                  <div>
+                    <div
+                      style={
+                        item.device_eui === null
+                          ? { backgroundColor: "#F00" }
+                          : { backgroundColor: "#0F0" }
+                      }
+                    >
+                      {item.car_plate}
+                    </div>
+                  </div>
+                ))
+              : ""}
             {companyDevices.map((item, idx) => {
               return (
                 <div className="deviceVehicleCard" key={idx}>

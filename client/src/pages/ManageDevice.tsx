@@ -253,9 +253,9 @@ function ManageDevice() {
                         justifyContent: "flex-start",
                         cursor: "pointer",
                       }}
-                      onClick={() =>
-                        setSelectModalOpen({ isOpen: true, target: "company" })
-                      }
+                      onClick={() => {
+                        setSelectModalOpen({ isOpen: true, target: "company" });
+                      }}
                     >
                       <div
                         className="flex-center"
@@ -287,8 +287,14 @@ function ManageDevice() {
                         justifyContent: "flex-start",
                         cursor: "pointer",
                       }}
-                      onClick={() =>
-                        setSelectModalOpen({ isOpen: true, target: "carPlate" })
+                      onClick={
+                        selectedItem.companyName === ""
+                          ? () => {}
+                          : () =>
+                              setSelectModalOpen({
+                                isOpen: true,
+                                target: "carPlate",
+                              })
                       }
                     >
                       <div
@@ -296,6 +302,9 @@ function ManageDevice() {
                         style={{
                           justifyContent: "flex-start",
                           paddingLeft: "8px",
+                          color:
+                            selectedItem.companyName === "" ? "#AAA" : "#555",
+                          transition: "all 0.4s",
                         }}
                       >
                         {selectedItem.carPlate === ""
@@ -308,7 +317,11 @@ function ManageDevice() {
                           paddingRight: "8px",
                         }}
                       >
-                        <BackButton />
+                        <BackButton
+                          color={
+                            selectedItem.companyName === "" ? "#AAA" : "#555"
+                          }
+                        />
                       </div>
                     </div>
                   </div>
@@ -322,7 +335,12 @@ function ManageDevice() {
                         cursor: "pointer",
                       }}
                       onClick={() =>
-                        setSelectModalOpen({ isOpen: true, target: "device" })
+                        selectedItem.carPlate === ""
+                          ? () => {}
+                          : setSelectModalOpen({
+                              isOpen: true,
+                              target: "device",
+                            })
                       }
                     >
                       <div
@@ -330,6 +348,8 @@ function ManageDevice() {
                         style={{
                           justifyContent: "flex-start",
                           paddingLeft: "8px",
+                          color: selectedItem.carPlate === "" ? "#AAA" : "#555",
+                          transition: "all 0.4s",
                         }}
                       >
                         {selectedItem.deviceId === ""
@@ -342,7 +362,9 @@ function ManageDevice() {
                           paddingRight: "8px",
                         }}
                       >
-                        <BackButton />
+                        <BackButton
+                          color={selectedItem.carPlate === "" ? "#AAA" : "#555"}
+                        />
                       </div>
                     </div>
                   </div>
@@ -481,13 +503,17 @@ const Modal = (props: ModalProps) => {
               return (
                 <div
                   className="eachDevice"
-                  onClick={() => {
-                    setSelectedItem({
-                      companyName: selectedItem.companyName,
-                      deviceId: item,
-                      carPlate: selectedItem.carPlate,
-                    });
-                  }}
+                  onClick={
+                    selectedItem.carPlate === ""
+                      ? () => {}
+                      : () => {
+                          setSelectedItem({
+                            companyName: selectedItem.companyName,
+                            deviceId: item,
+                            carPlate: selectedItem.carPlate,
+                          });
+                        }
+                  }
                 >
                   {item}
                 </div>
@@ -498,13 +524,17 @@ const Modal = (props: ModalProps) => {
               return (
                 <div
                   className="eachDevice"
-                  onClick={() => {
-                    setSelectedItem({
-                      companyName: selectedItem.companyName,
-                      deviceId: selectedItem.deviceId,
-                      carPlate: item,
-                    });
-                  }}
+                  onClick={
+                    selectedItem.companyName === ""
+                      ? () => {}
+                      : () => {
+                          setSelectedItem({
+                            companyName: selectedItem.companyName,
+                            deviceId: "",
+                            carPlate: item,
+                          });
+                        }
+                  }
                 >
                   {item}
                 </div>
@@ -518,8 +548,8 @@ const Modal = (props: ModalProps) => {
                   onClick={() => {
                     setSelectedItem({
                       companyName: item,
-                      deviceId: selectedItem.deviceId,
-                      carPlate: selectedItem.carPlate,
+                      deviceId: "",
+                      carPlate: "",
                     });
                   }}
                 >
