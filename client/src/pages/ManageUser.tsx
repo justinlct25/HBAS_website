@@ -27,23 +27,6 @@ function ManageUser() {
   const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-
-  const companiesDataList = useSelector(
-    (state: IRootState) => state.companiesDataList
-  );
-
-  const companiesList = companiesDataList.companiesDataList;
-  const activePage = companiesDataList.activePage;
-  const totalPage = companiesDataList.totalPage;
-  //const limit = companiesDataList.limit;
-
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(
-      getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput)
-    );
-  }, [dispatch]);
-
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
@@ -59,6 +42,22 @@ function ManageUser() {
       tel: string;
     }>
   >([{ companyName: "", contactPerson: "", tel: "" }]);
+
+  const companiesDataList = useSelector(
+    (state: IRootState) => state.companiesDataList
+  );
+
+  const companiesList = companiesDataList.companiesDataList;
+  const activePage = companiesDataList.activePage;
+  const totalPage = companiesDataList.totalPage;
+  //const limit = companiesDataList.limit;
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput)
+    );
+  }, [dispatch, popUpIsActive]);
 
   const handleDeleteVehicle = (idx: number) => {
     const newArr = totalVehicle.slice();
@@ -97,6 +96,12 @@ function ManageUser() {
       socket.disconnect();
     };
   }, []);
+
+  const handleReset = () => {
+    setTotalVehicle([]);
+    setCompanyDetail([{ companyName: "", contactPerson: "", tel: "" }]);
+    setPopUpIsActive(false);
+  };
 
   return (
     <>
@@ -247,7 +252,7 @@ function ManageUser() {
                     className="flex-center tableRow"
                     onClick={() => {
                       //dispatch something ...
-                      dispatch(push(`/profile/${item.id}`, {id: item.id}));
+                      dispatch(push(`/profile/${item.id}`, { id: item.id }));
                     }}
                   >
                     <div key={idx} className="flex-center tdItem">
@@ -275,21 +280,10 @@ function ManageUser() {
           }
         >
           <div className="popUpContent flex-center">
-            <div
-              className="closeIconContainer"
-              onClick={() => setPopUpIsActive(false)}
-            >
+            <div className="closeIconContainer" onClick={handleReset}>
               <CloseIcon color={"#555"} />
             </div>
-            <div
-              className="flex-center"
-              style={{
-                height: "100%",
-                width: "100%",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
+            <div className="formScreen">
               <div className="flex-center form">
                 <div className="flex-center companySection">
                   <div className="titleText">Company Details</div>
@@ -435,7 +429,7 @@ function ManageUser() {
                 </div>
               </div>
               <div className="flex-center formButtonContainer">
-                <div className="button" onClick={() => setPopUpIsActive(false)}>
+                <div className="button" onClick={handleReset}>
                   Cancel
                 </div>
                 <div
@@ -444,7 +438,7 @@ function ManageUser() {
                     dispatch(
                       postCompaniesDataThunk(totalVehicle, companyDetail)
                     );
-                    setPopUpIsActive(false);
+                    handleReset();
                   }}
                 >
                   Confirm

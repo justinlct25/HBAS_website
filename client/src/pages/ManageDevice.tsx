@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
 import {
   AddIcon,
   BackButton,
@@ -7,18 +8,17 @@ import {
   CloseIcon,
   SearchIcon,
 } from "../components/IconsOnly";
+import { Modal } from "../components/Modal";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
-import { io } from "socket.io-client";
-import { mockNewDevices, mockAllDevices } from "./mockUpData";
 
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "75%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
-type ModalType = "company" | "carPlate" | "device";
+export type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,6 +65,12 @@ function ManageDevice() {
       socket.disconnect();
     };
   });
+
+  const handleReset = () => {
+    setSelectModalOpen({ isOpen: false, target: "company" });
+    setSelectedItem({ companyName: "", deviceId: "", carPlate: "" });
+    setPopUpIsActive(false);
+  };
 
   return (
     <>
@@ -227,10 +233,7 @@ function ManageDevice() {
           }
         >
           <div className="popUpContent flex-center">
-            <div
-              className="closeIconContainer"
-              onClick={() => setPopUpIsActive(false)}
-            >
+            <div className="closeIconContainer" onClick={handleReset}>
               <CloseIcon color={"#555"} />
             </div>
             <div
@@ -388,7 +391,7 @@ function ManageDevice() {
                 />
               </div>
               <div className="flex-center formButtonContainer">
-                <div className="button" onClick={() => setPopUpIsActive(false)}>
+                <div className="button" onClick={handleReset}>
                   Cancel
                 </div>
                 <div className="button">Confirm</div>
@@ -461,105 +464,5 @@ function ManageDevice() {
     </>
   );
 }
-
-interface ModalProps {
-  isOpen: boolean;
-  modalType: ModalType;
-  selectedItem: {
-    companyName: string;
-    deviceId: string;
-    carPlate: string;
-  };
-  setSelectedItem: React.Dispatch<
-    React.SetStateAction<{
-      companyName: string;
-      deviceId: string;
-      carPlate: string;
-    }>
-  >;
-}
-
-const Modal = (props: ModalProps) => {
-  const { isOpen, modalType, setSelectedItem, selectedItem } = props;
-  const headerText =
-    modalType === "device"
-      ? "New device"
-      : modalType === "carPlate"
-      ? "Car plate"
-      : modalType === "company" && "Select company";
-  return (
-    <div
-      className="selectDeviceModal"
-      style={{
-        right: isOpen ? 0 : "-100%",
-      }}
-    >
-      <div className="titleText flex-center" style={{ margin: "16px" }}>
-        <div className="selectDeviceHeader">{headerText}</div>
-      </div>
-      <div className="deviceListContainer">
-        {modalType === "device"
-          ? mockNewDevices.map((item) => {
-              return (
-                <div
-                  className="eachDevice"
-                  onClick={
-                    selectedItem.carPlate === ""
-                      ? () => {}
-                      : () => {
-                          setSelectedItem({
-                            companyName: selectedItem.companyName,
-                            deviceId: item,
-                            carPlate: selectedItem.carPlate,
-                          });
-                        }
-                  }
-                >
-                  {item}
-                </div>
-              );
-            })
-          : modalType === "carPlate"
-          ? mockNewDevices.map((item) => {
-              return (
-                <div
-                  className="eachDevice"
-                  onClick={
-                    selectedItem.companyName === ""
-                      ? () => {}
-                      : () => {
-                          setSelectedItem({
-                            companyName: selectedItem.companyName,
-                            deviceId: "",
-                            carPlate: item,
-                          });
-                        }
-                  }
-                >
-                  {item}
-                </div>
-              );
-            })
-          : modalType === "company" &&
-            mockNewDevices.map((item) => {
-              return (
-                <div
-                  className="eachDevice"
-                  onClick={() => {
-                    setSelectedItem({
-                      companyName: item,
-                      deviceId: "",
-                      carPlate: "",
-                    });
-                  }}
-                >
-                  {item}
-                </div>
-              );
-            })}
-      </div>
-    </div>
-  );
-};
 
 export default ManageDevice;
