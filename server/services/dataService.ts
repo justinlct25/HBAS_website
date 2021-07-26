@@ -227,6 +227,7 @@ export class DataService {
       .select('companies.company_name', 'companies.tel', 'companies.contact_person')
       .count('company_vehicles.company_id')
       .havingRaw(`${searchType} ILIKE ?`, [searchString])
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
   }
@@ -247,8 +248,19 @@ export class DataService {
         `(companies.id, count(company_vehicles.company_id)) in 
       (select distinct(company_id), count(id) from company_vehicles group by company_id having count(id) = ${searchString})`
       )
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
+  }
+  //get companies data for add devices
+  async getCompaniesByAddDevice(){
+    return await this.knex('companies')
+      .leftJoin('company_vehicles','company_vehicles.company_id','companies.id')
+      .leftJoin('vehicles','vehicles.id','company_vehicles.vehicle_id')
+      .leftJoin('vehicle_device','vehicle_device.vehicle_id', 'vehicles.id')
+      .where({'companies.is_active': true, 'vehicles.is_active': true})
+      .select('companies.id','companies.company_name','companies.tel','companies.contact_person'
+              ,'company.id')
   }
   // post /companies
   async postCompaniesData(
@@ -284,6 +296,7 @@ export class DataService {
         'companies.tel',
         'companies.contact_person'
       )
+      .orderBy('devices.updated_at', 'desc')
       .offset(offset)
       .limit(limit);
   }
@@ -316,6 +329,7 @@ export class DataService {
         'companies.tel',
         'companies.contact_person'
       )
+      .orderBy('devices.updated_at', 'desc')
       .offset(offset)
       .limit(limit);
   }
@@ -323,7 +337,7 @@ export class DataService {
   async getNotRegDevices() {
     return this.knex('devices')
       .where({ is_active: true, is_register: false })
-      .select('id', 'device_name', 'device_eui', 'version', 'is_register', 'is_active');
+      .select('id', 'device_name', 'device_eui');
   }
   // post devices , for device join
   async postDevices(name: string, deviceID: string) {
@@ -436,9 +450,9 @@ export class DataService {
   }
   ////---- others ----////
   // get device id to confirm
-  async getDevicesID(reqName: string, reqEUI: string): Promise<any> {
+  async getDevicesID(reqName: string, reqEUI: string) {
     return await this.knex
-      .select('id')
+      .select<{ id: number }>('id')
       .from('devices')
       .where({ device_name: reqName, device_eui: reqEUI })
       .first();
@@ -459,6 +473,7 @@ export class DataService {
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
       .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
       .where('companies.id', id)
+      .orderBy('vehicles.updated_at', 'desc')
       .select(
         'companies.id',
         'companies.company_name',
@@ -470,7 +485,7 @@ export class DataService {
         'devices.device_eui',
         'devices.device_name',
         'devices.is_active'
-      );
+      )
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
