@@ -250,6 +250,16 @@ export class DataService {
       .limit(limit)
       .offset(offset);
   }
+  //get companies data for add devices
+  async getCompaniesByAddDevice(){
+    return await this.knex('companies')
+      .leftJoin('company_vehicles','company_vehicles.company_id','companies.id')
+      .leftJoin('vehicles','vehicles.id','company_vehicles.vehicle_id')
+      .leftJoin('vehicle_device','vehicle_device.vehicle_id', 'vehicles.id')
+      .where({'companies.is_active': true, 'vehicles.is_active': true})
+      .select('companies.id','companies.company_name','companies.tel','companies.contact_person'
+              ,'company.id')
+  }
   // post /companies
   async postCompaniesData(
     companyName: string,
@@ -323,7 +333,7 @@ export class DataService {
   async getNotRegDevices() {
     return this.knex('devices')
       .where({ is_active: true, is_register: false })
-      .select('id', 'device_name', 'device_eui', 'version', 'is_register', 'is_active');
+      .select('id', 'device_name', 'device_eui');
   }
   // post devices , for device join
   async postDevices(name: string, deviceID: string) {
