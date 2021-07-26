@@ -57,7 +57,14 @@ export async function seed(knex: Knex): Promise<void> {
 
   const alertData: Array<InsertAlertData> = insertedAlertData.map((session) => ({
     device_id: devicesMap.get(session.device_eui),
-    date: session.date,
+    date: new Date(session.date).toLocaleDateString('en-CA', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    }),
     geolocation: session.geolocation,
     address: session.address,
     battery: session.battery,

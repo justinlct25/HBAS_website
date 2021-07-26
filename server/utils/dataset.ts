@@ -322,16 +322,16 @@ export const insertedDevices = [
     },
     {
         device_name: "ramp_meter_003", 
-        device_eui: "RzrIaAAqADe=",
+        device_eui: "jPlXIAADvTY=",
         is_register: true
     },
     {
-        device_name: "ramp_meter_004", 
+        device_name: "ramp_meter_498", 
         device_eui: "RzrIaAAqADf=",
         is_register: true
     },
     {
-        device_name: "ramp_meter_005", 
+        device_name: "ramp_meter_499", 
         device_eui: "RzrIaAAqADg=",
         is_register: true
     },
@@ -440,7 +440,14 @@ export const insertedDevices = [
 export const insertedAlertData = [
     { 
         device_eui: "RzrIaAAqADc=", 
-        date: new Date("2021-06-03 05:19:53").toLocaleDateString('en-CA'),
+        date: new Date("2021-06-03T05:19:53").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),
         geolocation: "22.277112,114.27389",
         address: "Sai Kung District", 
         battery: "1.95", 
@@ -449,7 +456,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "RzrIaAAqADc=", 
-        date: new Date("2021-06-04 10:25:23").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-04T10:25:23").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.94", 
@@ -458,7 +472,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "RzrIaAAqADc=", 
-        date: new Date("2021-06-14 16:12:30").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-14T16:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.93", 
@@ -467,7 +488,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-15 18:12:30").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-15T18:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277091,114.27387", 
         address: "Sai Kung District",
         battery: "1.93", 
@@ -476,7 +504,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-18 19:12:30").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-18T19:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277024,114.27382", 
         address: "Sai Kung District",
         battery: "1.71", 
@@ -485,7 +520,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-23 20:12:30").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-23T20:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.83", 
@@ -494,7 +536,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-23 18:12:35").toLocaleDateString('en-CA'), 
+        date: new Date("2021-06-23T18:12:35").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }), 
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.82", 
@@ -503,7 +552,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-23 20:12:40").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-23T20:12:40").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.84", 
@@ -512,7 +568,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvQ0=", 
-        date: new Date("2021-06-27 21:12:30").toLocaleDateString('en-CA'), 
+        date: new Date("2021-06-27T21:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }), 
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.91", 
@@ -521,7 +584,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "jPlXIAADvTk=", 
-        date: new Date("2021-06-24 18:12:30").toLocaleDateString('en-CA'), 
+        date: new Date("2021-06-24T18:12:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }), 
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.89", 
@@ -529,8 +599,15 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "RzrIaAAqADe=", 
-        date: new Date("2021-06-28 13:52:30").toLocaleDateString('en-CA'),  
+        device_eui: "jPlXIAADvTY=", 
+        date: new Date("2021-06-28T13:52:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.62", 
@@ -539,7 +616,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "RzrIaAAqADf=", 
-        date: new Date("2021-06-29 14:22:30").toLocaleDateString('en-CA'), 
+        date: new Date("2021-06-29T14:22:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }), 
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.52", 
@@ -548,7 +632,14 @@ export const insertedAlertData = [
     },
     { 
         device_eui: "RzrIaAAqADf=", 
-        date: new Date("2021-06-20 15:13:30").toLocaleDateString('en-CA'),  
+        date: new Date("2021-06-20T15:13:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.73", 
@@ -556,8 +647,15 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "RzrIaAAqADe=", 
-        date: new Date("2021-07-04 20:15:30").toLocaleDateString('en-CA'),  
+        device_eui: "jPlXIAADvTY=", 
+        date: new Date("2021-07-04T20:15:30").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.65", 
@@ -565,8 +663,15 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     {
-        device_eui: "RzrIaAAqADe=", 
-        date: new Date("2021-07-15 15:13:23").toLocaleDateString('en-CA'),  
+        device_eui: "jPlXIAADvTY=", 
+        date: new Date("2021-07-15T15:13:23").toLocaleDateString('en-CA', {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+        }),  
         geolocation: "22.315136,114.21664", 
         address: "Kwun Tong District",
         battery: "1.75", 
@@ -732,7 +837,7 @@ export const insertedVehiclesDevice = [
         car_plate:"BM7414"
     },
     {
-        device_eui: "RzrIaAAqADe=", 
+        device_eui: "jPlXIAADvTY=", 
         car_plate:"GV1032"
     },
     {

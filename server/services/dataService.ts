@@ -227,6 +227,7 @@ export class DataService {
       .select('companies.company_name', 'companies.tel', 'companies.contact_person')
       .count('company_vehicles.company_id')
       .havingRaw(`${searchType} ILIKE ?`, [searchString])
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
   }
@@ -247,6 +248,7 @@ export class DataService {
         `(companies.id, count(company_vehicles.company_id)) in 
       (select distinct(company_id), count(id) from company_vehicles group by company_id having count(id) = ${searchString})`
       )
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
   }
@@ -294,6 +296,7 @@ export class DataService {
         'companies.tel',
         'companies.contact_person'
       )
+      .orderBy('devices.updated_at', 'desc')
       .offset(offset)
       .limit(limit);
   }
@@ -326,6 +329,7 @@ export class DataService {
         'companies.tel',
         'companies.contact_person'
       )
+      .orderBy('devices.updated_at', 'desc')
       .offset(offset)
       .limit(limit);
   }
@@ -469,6 +473,7 @@ export class DataService {
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
       .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
       .where('companies.id', id)
+      .orderBy('vehicles.updated_at', 'desc')
       .select(
         'companies.id',
         'companies.company_name',
@@ -480,7 +485,7 @@ export class DataService {
         'devices.device_eui',
         'devices.device_name',
         'devices.is_active'
-      );
+      )
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
