@@ -446,9 +446,9 @@ export class DataService {
   }
   ////---- others ----////
   // get device id to confirm
-  async getDevicesID(reqName: string, reqEUI: string): Promise<any> {
+  async getDevicesID(reqName: string, reqEUI: string) {
     return await this.knex
-      .select('id')
+      .select<{ id: number }>('id')
       .from('devices')
       .where({ device_name: reqName, device_eui: reqEUI })
       .first();
