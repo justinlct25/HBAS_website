@@ -18,15 +18,25 @@ dataRoutes.post(`/companies`, dataController.postCompaniesData);
 dataRoutes.put(`/companies`);
 dataRoutes.delete(`/companies`);
 
+dataRoutes.get(`/vehicles`);
+dataRoutes.post(`/vehicles/:id`, dataController.postVehicles);
+dataRoutes.put(`/vehicles`);
+dataRoutes.delete(`/vehicles`);
+
 dataRoutes.get(`/devices`, dataController.getDevicesData);
 dataRoutes.post(`/devices`);
 dataRoutes.put(`/devices`);
 dataRoutes.delete(`/devices`);
+
+dataRoutes.get(`/vehicle_device`);
+dataRoutes.post(`/vehicle_device`);// profile add new link
+dataRoutes.put(`/vehicle_device`);
+dataRoutes.delete(`/vehicle_device`);
 
 dataRoutes.get(`/devices/version`, dataController.getDevicesVersion);
 dataRoutes.post(`/devices/version`);
 dataRoutes.put(`/devices/version`);
 dataRoutes.delete(`/devices/version`);
 
-dataRoutes.get(`/profile`);
+// dataRoutes.get(`/profile`);
 dataRoutes.get(`/profile/:id`, dataController.getProfileData);

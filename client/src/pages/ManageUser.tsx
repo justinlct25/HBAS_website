@@ -55,7 +55,7 @@ function ManageUser() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(
-      getCompaniesDataListThunk(activePage, false, placeHolderText, searchInput)
+      getCompaniesDataListThunk(activePage, true, placeHolderText, searchInput)
     );
   }, [dispatch, popUpIsActive]);
 
@@ -79,23 +79,23 @@ function ManageUser() {
   //   console.log(companyDetail);
   // }, [companyDetail]);
 
-  useEffect(() => {
-    const socket = io(`${serverUrl}`);
+  // useEffect(() => {
+  //   const socket = io(`${serverUrl}`);
 
-    socket.on("get-new-companies", () => {
-      dispatch(
-        getCompaniesDataListThunk(
-          activePage,
-          false,
-          placeHolderText,
-          searchInput
-        )
-      );
-    });
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
+  //   socket.on("get-new-companies", () => {
+  //     dispatch(
+  //       getCompaniesDataListThunk(
+  //         activePage,
+  //         false,
+  //         placeHolderText,
+  //         searchInput
+  //       )
+  //     );
+  //   });
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // }, []);
 
   const handleReset = () => {
     setTotalVehicle([]);
@@ -252,7 +252,7 @@ function ManageUser() {
                     className="flex-center tableRow"
                     onClick={() => {
                       //dispatch something ...
-                      dispatch(push(`/profile/${item.id}`, { id: item.id }));
+                      dispatch(push(`/profile`, { id: item.id }));
                     }}
                   >
                     <div key={idx} className="flex-center tdItem">

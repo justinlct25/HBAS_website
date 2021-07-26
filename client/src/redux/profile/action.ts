@@ -7,7 +7,12 @@ export function setProfileList(profileList: Array<IProfile>){
         profileList,
     };
 }
+export function resetProfileList(){
+    return{
+        type: "@@Profile/resetProfileList" as const,
+    }
+}
 
-type profileActionCreators = typeof setProfileList;
+type profileActionCreators = typeof setProfileList | typeof resetProfileList;
 
 export type IProfileActions = ReturnType<profileActionCreators> | CallHistoryMethodAction;

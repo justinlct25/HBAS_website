@@ -4,7 +4,6 @@ import { logger } from '../utils/logger';
 import httpStatusCodes from 'http-status-codes';
 import { io } from '../main';
 import fetch from 'node-fetch';
-import { check } from 'prettier';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -303,33 +302,16 @@ export class DataController {
   // post /companies
   postCompaniesData = async (req: Request, res: Response) => {
     try {
-      // const mQuery = req.query;
       const mBody = req.body;
-      let vehiclesArray: number[] = [];
-      // console.log('mQuery' + JSON.stringify(mQuery));
-      // console.log('mBody' + JSON.stringify(mBody));
-      // console.log(mBody[0]);
+
       const companiesResult: number = await this.dataService.postCompaniesData(
         mBody[0].companyName,
         mBody[0].contactPerson,
         mBody[0].tel
       );
-      if(mBody.length > 1){
-        for (let i = 1; i < mBody.length; i++) {
-          let vehiclesResult: number = await this.dataService.postVehicles(
-            mBody[i].carPlate,
-            mBody[i].vehicleType,
-            mBody[i].vehicleModel
-          );
-          vehiclesArray.push(vehiclesResult);
-        }
-        for (let i = 0; i < vehiclesArray.length; i++) {
-          await this.dataService.postCompanyVehicles(companiesResult[0], vehiclesArray[i][0]);
-        }
-      }
 
-      io.emit('get-new-companies');
-      res.status(httpStatusCodes.CREATED).json({ message: 'record created' });
+      // io.emit('get-new-companies');
+      res.status(httpStatusCodes.CREATED).json({data: companiesResult[0], message: 'company created' });
       return;
     } catch (err) {
       logger.error(err.message);
@@ -395,6 +377,34 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+  //post vehicles
+  postVehicles = async(req: Request, res: Response)=>{
+    try {
+      const mBody = req.body;
+      console.log(JSON.stringify(req.params.id));
+      const companyID:number = parseInt(String(req.params.id));
+      let vehiclesArray: number[] = [];
+      if(mBody.length > 0){
+        for (let i = 0; i < mBody.length; i++) {
+          let vehiclesResult: number = await this.dataService.postVehicles(
+            mBody[i].carPlate,
+            mBody[i].vehicleType,
+            mBody[i].vehicleModel
+          );
+          vehiclesArray.push(vehiclesResult);
+        }
+        for (let i = 0; i < vehiclesArray.length; i++) {
+          await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
+        }
+      }
+      res.status(httpStatusCodes.CREATED).json({message:'Vehicles created'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
+
   // check meter's version to update
   getDevicesVersion = async (req: Request, res: Response) => {
     try {

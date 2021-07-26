@@ -3,6 +3,7 @@ export interface IProfile {
     company_name: string;
     contact_person: string;
     tel: string;
+    vehicle_id: number;
     car_plate: string;
     vehicle_model: string;
     vehicle_type: string; 

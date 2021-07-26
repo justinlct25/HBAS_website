@@ -22,7 +22,7 @@ function ProfilePage() {
 
   useEffect(() => {
     console.log(state);
-    dispatch(getProfileListThunk(parseInt(String(state.id))));
+    dispatch(getProfileListThunk(parseInt(String(state.id)), true));
   }, [dispatch]);
   console.log(profileList);
 
@@ -127,7 +127,6 @@ function ProfilePage() {
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                console.log(profileList);
                 return (
                   <div className="deviceVehicleCard" key={idx}>
                     <div className="flex-center">

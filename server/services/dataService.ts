@@ -267,11 +267,11 @@ export class DataService {
     companyName: string,
     contactPerson: string,
     tel: string
-  ): Promise<number> {
+  ) {
     //console.log(companyName + ' ' + contactPerson + ' ' + tel);
     return await this.knex('companies')
       .insert({ company_name: companyName, contact_person: contactPerson, tel: tel })
-      .returning('id');
+      .returning<number>('id');
   }
   // put /companies
   // delete /companies
@@ -346,11 +346,11 @@ export class DataService {
   ////---- vehicles ----////
   //get vehicles
   //post vehicles
-  async postVehicles(carPlate: string, vehicleType: string, vehicleModel: string): Promise<number> {
+  async postVehicles(carPlate: string, vehicleType: string, vehicleModel: string) {
     //console.log(carPlate + ' ' + vehicleType + ' ' + vehicleModel);
     return this.knex('vehicles')
       .insert({ car_plate: carPlate, vehicle_type: vehicleType, vehicle_model: vehicleModel })
-      .returning('id');
+      .returning<number>('id');
   }
   //put vehicles
   //delete vehicles
@@ -479,6 +479,7 @@ export class DataService {
         'companies.company_name',
         'companies.tel',
         'companies.contact_person',
+        'vehicles.id as vehicles_id',
         'vehicles.car_plate',
         'vehicles.vehicle_model',
         'vehicles.vehicle_type',

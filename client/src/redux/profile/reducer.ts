@@ -8,6 +8,11 @@ export const IProfileReducer = (state: IProfileState = initProfileState, action:
                 ...state,
                 profileList: action.profileList,
             };
+        case "@@Profile/resetProfileList":
+            return{
+                ...state,
+                profileList: initProfileState.profileList,
+            }
         default:
             return state;
     }
