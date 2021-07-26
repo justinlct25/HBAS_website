@@ -200,8 +200,15 @@ export class DataService {
       .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
-      .select('companies.id', 'companies.company_name', 'companies.tel', 'companies.contact_person')
+      .select(
+        'companies.id',
+        'companies.company_name',
+        'companies.tel',
+        'companies.contact_person',
+        'companies.updated_at'
+      )
       .count('company_vehicles.company_id')
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
   }

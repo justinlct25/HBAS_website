@@ -17,7 +17,7 @@ function LoginPage() {
       login.password === validLogin.password &&
       login.username === validLogin.username
     ) {
-      dispatch(push("/alertDataPage"));
+      dispatch(push("/alert-data-page"));
     }
   };
   return (

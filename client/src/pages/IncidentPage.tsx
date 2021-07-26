@@ -28,8 +28,8 @@ function IncidentPage() {
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
   const [incidentLocation, setIncidentLocation] = useState<{
-    latitude: number;
     longitude: number;
+    latitude: number;
   }>();
 
   const companiesDataList = useSelector(
@@ -49,8 +49,8 @@ function IncidentPage() {
     };
     //fetch action
     setIncidentLocation({
-      latitude: incidentPageData.latitude,
       longitude: incidentPageData.longitude,
+      latitude: incidentPageData.latitude,
     });
     fetchIncidentById();
   }, [dispatch, router.pathname]);
@@ -58,11 +58,18 @@ function IncidentPage() {
   useEffect(() => {
     dispatch(getAlertDataListThunk(1, false));
   }, []);
+
   useEffect(() => {
     //dispatch(getCompaniesDataListThunk(false));
   }, []);
 
-  console.log(Number(data.longitude));
+  const date = new Date(data.date);
+  const dateString = date.toLocaleString("en-CA", {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  });
+  const timeString = date.toTimeString().substr(0, 8);
 
   return (
     <div className="flex-center pageContainer">
@@ -81,17 +88,7 @@ function IncidentPage() {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          padding: "24px 80px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          position: "relative",
-        }}
-      >
+      <div className="flex-center tableContainer">
         <div
           style={{
             position: "relative",
@@ -148,32 +145,16 @@ function IncidentPage() {
           </Map>
           <div
             className={
-              isReportOpen ? "flex-center" : "flex-center hiddenReport"
+              isReportOpen
+                ? "flex-center caretButton"
+                : "flex-center caretButton hiddenReport"
             }
             style={{
-              position: "absolute",
-              background: "rgba(255, 255, 255, 0.85)",
               width: isReportOpen ? "30%" : "3%",
-              top: 0,
-              right: 0,
-              height: "100%",
-              paddingLeft: "24px",
-              transition: "all 0.4s",
             }}
           >
             <div
-              className="flex-center"
-              style={{
-                position: "absolute",
-                height: "100%",
-                width: "10%",
-                left: 0,
-                top: 0,
-                color: "#000",
-                zIndex: 1,
-                padding: "8px 24px",
-                cursor: "pointer",
-              }}
+              className="flex-center caretContainer"
               onClick={() => setIsReportOpen(!isReportOpen)}
             >
               <div
@@ -198,11 +179,11 @@ function IncidentPage() {
                 <>
                   <div className="flex-center">
                     <div className="incidentReportText">Date:</div>
-                    <div className="incidentReportText">{data.date}</div>
+                    <div className="incidentReportText">{dateString}</div>
                   </div>
                   <div className="flex-center">
                     <div className="incidentReportText">Time:</div>
-                    <div className="incidentReportText">{data.time}</div>
+                    <div className="incidentReportText">{timeString}</div>
                   </div>
                   <div className="flex-center">
                     <div className="incidentReportText">Longitude:</div>

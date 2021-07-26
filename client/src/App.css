@@ -85,6 +85,26 @@ body {
   cursor: pointer;
   transition: all 0.3s linear;
 }
+.caretButton {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.85);
+  top: 0;
+  right: 0;
+  height: 100%;
+  padding-left: 24px;
+  transition: all 0.4s;
+}
+.caretContainer {
+  position: absolute;
+  height: 100%;
+  width: 10%;
+  left: 0;
+  top: 0;
+  color: #000;
+  z-index: 1;
+  padding: 8px 24px;
+  cursor: pointer;
+}
 .hiddenReport {
   width: 0;
   transition: all 0.4s;

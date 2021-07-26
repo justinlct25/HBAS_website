@@ -119,49 +119,58 @@ function ProfilePage() {
           <div className="flex-center">
             <div className="titleText">{"Devices & Vehicles"}</div>
           </div>
-
           <div
             style={{
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
             }}
           >
-            {profileList.length > 0
-              ? profileList.map((item, idx) => (
-                  <div>
-                    <div
-                      style={
-                        item.device_eui === null
-                          ? { backgroundColor: "#F00" }
-                          : { backgroundColor: "#0F0" }
-                      }
-                    >
-                      {item.car_plate}
+            {profileList.length > 0 &&
+              profileList.map((item, idx) => {
+                console.log(profileList);
+                return (
+                  <div className="deviceVehicleCard" key={idx}>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Device ID:</div>
+                      <div
+                        className="incidentReportText"
+                        style={{
+                          color: item.device_eui === null ? "#AAA" : "#333",
+                        }}
+                      >
+                        {item.device_eui === null
+                          ? "No device yet"
+                          : item.device_eui}
+                      </div>
                     </div>
-                  </div>
-                ))
-              : ""}
-            {companyDevices.map((item, idx) => {
-              return (
-                <div className="deviceVehicleCard" key={idx}>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Device ID:</div>
-                    <div className="incidentReportText">{item.deviceId}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Device Name:</div>
-                    <div className="incidentReportText deviceName">
-                      {item.deviceName}
+                    <div className="flex-center">
+                      <div className="incidentReportText">Device Name:</div>
+                      <div
+                        className="incidentReportText deviceName"
+                        style={{
+                          color: item.device_name === null ? "#AAA" : "#333",
+                        }}
+                      >
+                        {item.device_name === null
+                          ? "No device yet"
+                          : item.device_name}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="flex-center">
-                    <div className="incidentReportText">Car plate:</div>
-                    <div className="incidentReportText">{item.carPlate}</div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Car plate:</div>
+                      <div
+                        className="incidentReportText"
+                        style={{
+                          color: "#333",
+                        }}
+                      >
+                        {item.car_plate}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
       </div>
