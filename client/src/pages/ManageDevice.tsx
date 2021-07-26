@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
+import AssignDeviceModal from "../components/AssignDeviceModal";
+import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import {
-  AddIcon,
-  BackButton,
-  CaretIcon,
-  CloseIcon,
-  SearchIcon,
-} from "../components/IconsOnly";
-import { Modal } from "../components/Modal";
+  setDeviceIdAction,
+  setPopUpIsActiveAction,
+} from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
@@ -22,19 +20,8 @@ export type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
   const [isOpen, setIsOpen] = useState(false);
-  const [popUpIsActive, setPopUpIsActive] = useState(false);
   const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-  const [selectModalOpen, setSelectModalOpen] = useState<{
-    isOpen: boolean;
-    target: ModalType;
-  }>({ isOpen: false, target: "company" });
-
-  const [selectedItem, setSelectedItem] = useState({
-    companyName: "",
-    deviceId: "",
-    carPlate: "",
-  });
 
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
@@ -55,6 +42,7 @@ function ManageDevice() {
   useEffect(() => {
     const socket = io(`${serverUrl}`);
 
+    //????????????
     socket.on("get-new-devices", () => {
       dispatch(
         getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
@@ -66,36 +54,10 @@ function ManageDevice() {
     };
   });
 
-  const handleReset = () => {
-    setSelectModalOpen({ isOpen: false, target: "company" });
-    setSelectedItem({ companyName: "", deviceId: "", carPlate: "" });
-    setPopUpIsActive(false);
-  };
-
   return (
     <>
       <div className="flex-center pageContainer">
         <div className="flex-center topRowContainer">
-          <div
-            className="flex-center"
-            style={{
-              position: "absolute",
-              cursor: "pointer",
-              left: 32,
-            }}
-            onClick={() => {
-              setPopUpIsActive(true);
-            }}
-          >
-            <AddIcon />
-            <div
-              style={{
-                paddingLeft: "8px",
-              }}
-            >
-              Manage new device
-            </div>
-          </div>
           <div className="flex-center">
             <div style={{ padding: "8px" }}>Search by:</div>
             <div
@@ -133,7 +95,6 @@ function ManageDevice() {
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        // dispatch() something use value: searchInput & tableHeaders[0]
                         dispatch(
                           getDeviceDataListThunk(
                             1,
@@ -151,7 +112,6 @@ function ManageDevice() {
             </div>
           </div>
           <div />
-          {/* <div style={{ position: "relative" }}> */}
           <div
             className="dropDownListContainer"
             style={{
@@ -176,7 +136,6 @@ function ManageDevice() {
                 );
               })}
           </div>
-          {/* </div> */}
         </div>
         <div
           className="table"
@@ -206,7 +165,10 @@ function ManageDevice() {
                   <div
                     key={item.id}
                     className="flex-center tableRow"
-                    // onClick={() => dispatch(push("/profile"))}
+                    onClick={() => {
+                      dispatch(setPopUpIsActiveAction(true));
+                      dispatch(setDeviceIdAction(item.id, item.device_eui));
+                    }}
                   >
                     <div key={idx} className="flex-center tdItem">
                       {item.device_eui}
@@ -225,180 +187,8 @@ function ManageDevice() {
               })}
           </div>
         </div>
-        <div
-          className={
-            popUpIsActive
-              ? "flex-center popUpContainer popUp"
-              : "flex-center popUpContainer"
-          }
-        >
-          <div className="popUpContent flex-center">
-            <div className="closeIconContainer" onClick={handleReset}>
-              <CloseIcon color={"#555"} />
-            </div>
-            <div
-              className="flex-center"
-              style={{
-                width: "100%",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-              }}
-            >
-              <div className="flex-center form">
-                <div className="flex-center companySection">
-                  <div className="titleText">Add new device</div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Company name</div>
-                    <div
-                      className="flex-center"
-                      style={{
-                        width: "50%",
-                        justifyContent: "flex-start",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => {
-                        setSelectModalOpen({ isOpen: true, target: "company" });
-                      }}
-                    >
-                      <div
-                        className="flex-center"
-                        style={{
-                          justifyContent: "flex-start",
-                          paddingLeft: "8px",
-                        }}
-                      >
-                        {selectedItem.companyName === ""
-                          ? "Select Company"
-                          : selectedItem.companyName}
-                      </div>
-                      <div
-                        style={{
-                          transform: "rotate(180deg)",
-                          paddingRight: "8px",
-                        }}
-                      >
-                        <BackButton />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Car Plate</div>
-                    <div
-                      className="flex-center"
-                      style={{
-                        width: "50%",
-                        justifyContent: "flex-start",
-                        cursor: "pointer",
-                      }}
-                      onClick={
-                        selectedItem.companyName === ""
-                          ? () => {}
-                          : () =>
-                              setSelectModalOpen({
-                                isOpen: true,
-                                target: "carPlate",
-                              })
-                      }
-                    >
-                      <div
-                        className="flex-center"
-                        style={{
-                          justifyContent: "flex-start",
-                          paddingLeft: "8px",
-                          color:
-                            selectedItem.companyName === "" ? "#AAA" : "#555",
-                          transition: "all 0.4s",
-                        }}
-                      >
-                        {selectedItem.carPlate === ""
-                          ? "Select car plate"
-                          : selectedItem.carPlate}
-                      </div>
-                      <div
-                        style={{
-                          transform: "rotate(180deg)",
-                          paddingRight: "8px",
-                        }}
-                      >
-                        <BackButton
-                          color={
-                            selectedItem.companyName === "" ? "#AAA" : "#555"
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-center formRow">
-                    <div className="formLeftColumn">Device ID :</div>
-                    <div
-                      className="flex-center"
-                      style={{
-                        width: "50%",
-                        justifyContent: "flex-start",
-                        cursor: "pointer",
-                      }}
-                      onClick={() =>
-                        selectedItem.carPlate === ""
-                          ? () => {}
-                          : setSelectModalOpen({
-                              isOpen: true,
-                              target: "device",
-                            })
-                      }
-                    >
-                      <div
-                        className="flex-center"
-                        style={{
-                          justifyContent: "flex-start",
-                          paddingLeft: "8px",
-                          color: selectedItem.carPlate === "" ? "#AAA" : "#555",
-                          transition: "all 0.4s",
-                        }}
-                      >
-                        {selectedItem.deviceId === ""
-                          ? "Select device"
-                          : selectedItem.deviceId}
-                      </div>
-                      <div
-                        style={{
-                          transform: "rotate(180deg)",
-                          paddingRight: "8px",
-                        }}
-                      >
-                        <BackButton
-                          color={selectedItem.carPlate === "" ? "#AAA" : "#555"}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {selectModalOpen.isOpen && (
-                  <div
-                    className="clickElsewhere"
-                    onClick={() =>
-                      setSelectModalOpen({
-                        isOpen: false,
-                        target: selectModalOpen.target,
-                      })
-                    }
-                  />
-                )}
-                <Modal
-                  isOpen={selectModalOpen.isOpen}
-                  modalType={selectModalOpen.target}
-                  setSelectedItem={setSelectedItem}
-                  selectedItem={selectedItem}
-                />
-              </div>
-              <div className="flex-center formButtonContainer">
-                <div className="button" onClick={handleReset}>
-                  Cancel
-                </div>
-                <div className="button">Confirm</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AssignDeviceModal />
+
         <div className="flex-center" style={{ width: "100%" }}>
           <div
             style={{

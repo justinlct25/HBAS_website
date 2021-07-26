@@ -11,6 +11,9 @@ import thunk, { ThunkDispatch as OldThunkDispatch } from "redux-thunk";
 import { IAlertDataPageActions } from "./alertDataPage/action";
 import { IAlertDataPageReducer } from "./alertDataPage/reducer";
 import { IAlertDataPageState } from "./alertDataPage/state";
+import { AssignDeviceAction } from "./assignDeviceModal/action";
+import { assignDeviceReducer } from "./assignDeviceModal/reducer";
+import { AssignDeviceState } from "./assignDeviceModal/state";
 //companies
 import { ICompaniesDataActions } from "./companies/action";
 import { ICompaniesDataReducer } from "./companies/reducer";
@@ -28,9 +31,9 @@ import { ILoadingPageAction } from "./loading/action";
 import { ILoadingReducer } from "./loading/reducer";
 import { ILoadingState } from "./loading/state";
 //profile
-import { IProfileActions } from './profile/action';
-import { IProfileReducer } from './profile/reducer';
-import { IProfileState } from './profile/state';
+import { IProfileActions } from "./profile/action";
+import { IProfileReducer } from "./profile/reducer";
+import { IProfileState } from "./profile/state";
 
 export const history = createBrowserHistory();
 
@@ -43,6 +46,7 @@ export interface IRootState {
   loading: ILoadingState;
   incidentPage: IIncidentPageState;
   profileList: IProfileState;
+  assignDevice: AssignDeviceState;
 }
 
 // initState
@@ -53,7 +57,8 @@ type IRootAction =
   | CallHistoryMethodAction
   | ILoadingPageAction
   | IIncidentPageAction
-  | IProfileActions;
+  | IProfileActions
+  | AssignDeviceAction;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
@@ -67,6 +72,7 @@ const rootReducer = combineReducers<IRootState>({
   loading: ILoadingReducer,
   incidentPage: IIncidentPageReducer,
   profileList: IProfileReducer,
+  assignDevice: assignDeviceReducer,
 });
 
 declare global {

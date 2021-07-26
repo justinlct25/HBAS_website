@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
+import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
 import { BackButton } from "../components/IconsOnly";
-import { useRouter } from "../helpers/useRouter";
-import userImage from "../images/userImage.png";
+import {
+  setDeviceIdAction,
+  setPopUpIsActiveAction,
+  setSelectedItemAction,
+} from "../redux/assignDeviceModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
-import { companyDevices } from "./mockUpData";
 
 interface comingData {
   id: number;
@@ -129,7 +132,19 @@ function ProfilePage() {
               profileList.map((item, idx) => {
                 console.log(profileList);
                 return (
-                  <div className="deviceVehicleCard" key={idx}>
+                  <div
+                    className="deviceVehicleCard"
+                    key={idx}
+                    onClick={() => {
+                      dispatch(setPopUpIsActiveAction(true));
+                      dispatch(
+                        setSelectedItemAction({
+                          companyName: item.company_name,
+                          carPlate: item.car_plate,
+                        })
+                      );
+                    }}
+                  >
                     <div className="flex-center">
                       <div className="incidentReportText">Device ID:</div>
                       <div
@@ -173,6 +188,7 @@ function ProfilePage() {
               })}
           </div>
         </div>
+        <AssignDeviceByVehicleModal />
       </div>
     </div>
   );

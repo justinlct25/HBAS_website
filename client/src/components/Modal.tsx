@@ -1,31 +1,35 @@
+import { useDispatch, useSelector } from "react-redux";
 import { ModalType } from "../pages/ManageDevice";
 import { mockNewDevices } from "../pages/mockUpData";
+import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
+import { IRootState } from "../redux/store";
 
 interface ModalProps {
   isOpen: boolean;
   modalType: ModalType;
-  selectedItem: {
-    companyName: string;
-    deviceId: string;
-    carPlate: string;
-  };
-  setSelectedItem: React.Dispatch<
+  setSelectModalOpen: React.Dispatch<
     React.SetStateAction<{
-      companyName: string;
-      deviceId: string;
-      carPlate: string;
+      isOpen: boolean;
+      target: ModalType;
     }>
   >;
 }
 
 export const Modal = (props: ModalProps) => {
-  const { isOpen, modalType, setSelectedItem, selectedItem } = props;
+  const { isOpen, modalType, setSelectModalOpen } = props;
+
+  const dispatch = useDispatch();
+  const selectedItem = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
+  );
+
   const headerText =
     modalType === "device"
       ? "New device"
       : modalType === "carPlate"
       ? "Car plate"
       : modalType === "company" && "Select company";
+
   return (
     <div
       className="selectDeviceModal"
@@ -42,17 +46,11 @@ export const Modal = (props: ModalProps) => {
               return (
                 <div
                   className="eachDevice"
-                  onClick={
-                    selectedItem.carPlate === ""
-                      ? () => {}
-                      : () => {
-                          setSelectedItem({
-                            companyName: selectedItem.companyName,
-                            deviceId: item,
-                            carPlate: selectedItem.carPlate,
-                          });
-                        }
-                  }
+                  style={{ cursor: "pointer" }}
+                  onClick={() => {
+                    dispatch(setSelectedItemAction({ deviceId: item }));
+                    setSelectModalOpen({ isOpen: false, target: "device" });
+                  }}
                 >
                   {item}
                 </div>
@@ -67,10 +65,10 @@ export const Modal = (props: ModalProps) => {
                     selectedItem.companyName === ""
                       ? () => {}
                       : () => {
-                          setSelectedItem({
-                            companyName: selectedItem.companyName,
-                            deviceId: "",
-                            carPlate: item,
+                          dispatch(setSelectedItemAction({ carPlate: item }));
+                          setSelectModalOpen({
+                            isOpen: false,
+                            target: "carPlate",
                           });
                         }
                   }
@@ -85,11 +83,8 @@ export const Modal = (props: ModalProps) => {
                 <div
                   className="eachDevice"
                   onClick={() => {
-                    setSelectedItem({
-                      companyName: item,
-                      deviceId: "",
-                      carPlate: "",
-                    });
+                    dispatch(setSelectedItemAction({ companyName: item }));
+                    setSelectModalOpen({ isOpen: false, target: "company" });
                   }}
                 >
                   {item}
