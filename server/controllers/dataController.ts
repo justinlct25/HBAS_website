@@ -151,16 +151,7 @@ export class DataController {
       let mixDateTime = `${newJSON.objectJSON[0].date}T${newJSON.objectJSON[0].time}`;
       let checkLalatitude = parseFloat(String(newJSON.objectJSON[0].latitude));
       let checkLongitude = parseFloat(String(newJSON.objectJSON[0].longitude));
-      console.log(newJSON.objectJSON[0].latitude + ' ' + newJSON.objectJSON[0].longitude);
-      console.log(
-        typeof checkLalatitude +
-          ' ' +
-          checkLalatitude +
-          ' ' +
-          typeof checkLongitude +
-          ' ' +
-          checkLongitude
-      );
+      
       if (
         checkLalatitude >= 22.1 &&
         checkLalatitude <= 22.65 &&
@@ -344,7 +335,13 @@ export class DataController {
   postCompaniesData = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-
+      let duplicateCompany:string[] = [];
+      let checkDuplicate:number = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
+      if(checkDuplicate > 0){
+        duplicateCompany.push(mBody[0].companyName);
+        res.status(httpStatusCodes.BAD_REQUEST).json({data: duplicateCompany, message: 'duplicate company found'});
+        return;
+      }
       const companiesResult: number = await this.dataService.postCompaniesData(
         mBody[0].companyName,
         mBody[0].contactPerson,
@@ -423,8 +420,7 @@ export class DataController {
   // put devices
   putDevices = async (req: Request, res: Response) => {
     try {
-      const mBody = req.body;
-      console.log(mBody);
+      // const mBody = req.body;
       // await this.dataService.putDevices();
       res.status(httpStatusCodes.ACCEPTED).json({ message: '' });
     } catch (err) {
@@ -437,23 +433,33 @@ export class DataController {
   postVehicles = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-      console.log(JSON.stringify(req.params.id));
       const companyID: number = parseInt(String(req.params.id));
       let vehiclesArray: number[] = [];
+      let vehiclesResult:number;
+      let duplicateResult:string[] = [];
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
-          let vehiclesResult: number = await this.dataService.postVehicles(
-            mBody[i].carPlate,
-            mBody[i].vehicleType,
-            mBody[i].vehicleModel
-          );
-          vehiclesArray.push(vehiclesResult);
+          let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
+          if(checkDuplicate === 0){
+            vehiclesResult = await this.dataService.postVehicles(
+              mBody[i].carPlate,
+              mBody[i].vehicleType,
+              mBody[i].vehicleModel
+            );
+            vehiclesArray.push(vehiclesResult);
+          }else{
+            duplicateResult.push(mBody[i].carPlate)
+          }
         }
         for (let i = 0; i < vehiclesArray.length; i++) {
           await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
         }
       }
-      res.status(httpStatusCodes.CREATED).json({ message: 'Vehicles created' });
+      if(duplicateResult.length > 0){
+        res.status(httpStatusCodes.CREATED).json({data: duplicateResult, message: 'Vehicles created but some vehicles are duplicate' });
+      }else{
+        res.status(httpStatusCodes.CREATED).json({data: [], message: 'Vehicles created' });
+      }
       return;
     } catch (err) {
       logger.error(err.message);
@@ -465,11 +471,11 @@ export class DataController {
   getDevicesVersion = async (req: Request, res: Response) => {
     try {
       const ver = req.query;
-      console.log(ver);
+      // console.log(ver);
       const newVer = String(ver);
-      console.log(newVer);
+      // console.log(newVer);
       const verData = await this.dataService.getDevicesVersion(newVer);
-      console.log(verData);
+      // console.log(verData);
       res
         .status(httpStatusCodes.ACCEPTED)
         .json({ version: verData[0], message: 'get version data' });
@@ -483,7 +489,6 @@ export class DataController {
   getProfileData = async (req: Request, res: Response) => {
     try {
       const companyID = req.params;
-      console.log(JSON.stringify(companyID));
       const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)));
       res.status(httpStatusCodes.OK).json({ data: result, message: 'test' });
       return;
@@ -496,18 +501,15 @@ export class DataController {
   postVehicleDevice = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-      console.log(mBody.length);
-      let aa = await this.dataService.getVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      console.log(aa);
-      console.log(mBody);
-      if(aa === undefined || aa === null){
+      let checkResult = await this.dataService.getVehicleDevice(mBody.vehicleID, mBody.deviceID);
+      if(checkResult === undefined || checkResult === null){
         // insert new link
         await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
       }else{
         // set first data 'is_active' to be false
-        await this.dataService.putVehicleDevice(aa.vehicle_device_id);
+        await this.dataService.putVehicleDevice(checkResult.vehicle_device_id);
         // set devices 'is_register' to be false
-        await this.dataService.putDevices(aa.device_id)
+        await this.dataService.putDevices(checkResult.device_id)
         // insert new link
         await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);        
       }

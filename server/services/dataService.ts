@@ -546,6 +546,20 @@ export class DataService {
         'devices.is_active'
       );
   }
+  // check duplicate #company_name
+  async checkCompanyDuplicate(company_name: string){
+    return await this.knex('companies')
+      .where('company_name', 'ILIKE', `${company_name}`)
+      .andWhere('is_active', true)
+      .count<number>('id')
+  }
+  // check duplicate #car_plate
+  async checkCarPlateDuplicate(car_plate: string){
+    return await this.knex('vehicles')
+      .where('car_plate','ILIKE',`${car_plate}`)
+      .andWhere('is_active', true)
+      .count<number>('id')
+  }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
     return await this.knex
