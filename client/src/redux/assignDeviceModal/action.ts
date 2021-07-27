@@ -16,6 +16,7 @@ export function setSelectedItemAction(selectedItem: {
   companyName?: string;
   deviceId?: string;
   carPlate?: string;
+  vehicleId?: number;
 }) {
   return {
     type: "@@assignDeviceModal/setSelectedItem" as const,

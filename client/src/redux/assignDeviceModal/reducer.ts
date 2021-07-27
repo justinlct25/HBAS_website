@@ -5,11 +5,13 @@ export const initialState: AssignDeviceState = {
   assignDeviceModal: {
     popUpIsActive: false,
     deviceId: -1,
+
     selectedItem: {
       companyId: -1,
       companyName: "",
       deviceId: "",
       carPlate: "",
+      vehicleId: -1,
     },
   },
 };
@@ -49,6 +51,9 @@ export const assignDeviceReducer = (
             carPlate:
               action.selectedItem.carPlate ??
               state.assignDeviceModal.selectedItem.carPlate,
+            vehicleId:
+              action.selectedItem.vehicleId ??
+              state.assignDeviceModal.selectedItem.vehicleId,
           },
         },
       };

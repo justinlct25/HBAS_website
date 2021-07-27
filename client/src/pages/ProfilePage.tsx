@@ -28,7 +28,7 @@ function ProfilePage() {
     // console.log(state);
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
-    dispatch(getProfileListThunk(parseInt(routeId)));
+    dispatch(getProfileListThunk(parseInt(routeId), true));
   }, [dispatch]);
   console.log(profileList);
 
@@ -139,10 +139,12 @@ function ProfilePage() {
                     key={idx}
                     onClick={() => {
                       dispatch(setPopUpIsActiveAction(true));
+                      //get item.vehicle_id
                       dispatch(
                         setSelectedItemAction({
                           companyName: item.company_name,
                           carPlate: item.car_plate,
+                          vehicleId: item.vehicle_id,
                         })
                       );
                     }}

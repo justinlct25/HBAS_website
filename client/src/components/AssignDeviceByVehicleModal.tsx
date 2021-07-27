@@ -28,34 +28,6 @@ function AssignDeviceByVehicleModal() {
     //POST API here
     // use assignDeviceModal.deviceId
     // use selectedItem.companyId for POST API
-    //API: "http://localhost:8085/allDevices",
-
-    //  const deleteInRoutesPool = () => {
-    //
-    //     try {
-    //       const token = localStorage.getItem("token");
-    //       const res = await fetch(
-    //         `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/admin/routes-pool`,
-    //         {
-    //           method: "DELETE",
-    //           headers: {
-    //             Authorization: "Bearer " + token,
-    //             "Content-type": "application/json; charset=utf-8",
-    //           },
-    //           body: JSON.stringify({ routeId }),
-    //         }
-    //       );
-    //       const result = await res.json();
-    //       if (res.status === httpStatusCodes.OK) {
-    //         alert(result.message);
-    //       } else {
-    //         dispatch(handleFetchErrors(res.status, result.message));
-    //       }
-    //     } catch (e) {
-    //       console.error(e.message);
-    //     }
-    // };
-
     dispatch(resetPopUpAction());
   };
 
