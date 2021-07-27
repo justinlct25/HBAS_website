@@ -423,7 +423,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-
+  // get profile data
   getProfileData = async (req: Request, res: Response) => {
     try {
       const companyID = req.params;
@@ -433,7 +433,17 @@ export class DataController {
       return;
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
     }
   };
+  // get all devices only
+  getAllDeviceOnly = async(req:Request, res: Response)=>{
+    try {
+      const result = await this.dataService.getAllDevices();
+      res.status(httpStatusCodes.OK).json({data: result, message: 'get all devices data'});
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+    }
+  }
 }

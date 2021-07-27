@@ -333,11 +333,12 @@ export class DataService {
       .offset(offset)
       .limit(limit);
   }
-  // get only devices for not register
-  async getNotRegDevices() {
+  // get only devices for register
+  async getAllDevices() {
     return this.knex('devices')
-      .where({ is_active: true, is_register: false })
-      .select('id', 'device_name', 'device_eui');
+      .where({ is_active: true })
+      .select('id', 'device_name', 'device_eui', 'is_register')
+      .orderBy('updated_at')
   }
   // post devices , for device join
   async postDevices(name: string, deviceID: string) {

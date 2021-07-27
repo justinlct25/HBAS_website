@@ -40,3 +40,4 @@ dataRoutes.delete(`/devices/version`);
 
 // dataRoutes.get(`/profile`);
 dataRoutes.get(`/profile/:id`, dataController.getProfileData);
+dataRoutes.get(`/allDevices`, dataController.getAllDeviceOnly)
