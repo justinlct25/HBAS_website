@@ -262,8 +262,7 @@ export class DataService {
       .where({
         'companies.is_active': true, 
         'company_vehicles.is_active': true , 
-        'vehicles.is_active': true ,
-        // 'vehicle_device.is_active':true
+        'vehicles.is_active': true 
       })
       .select(
         'companies.id as company_id',
@@ -294,8 +293,7 @@ export class DataService {
       .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
       .where({
-        'devices.is_active': true, 
-        'vehicle_device.is_active': true
+        'devices.is_active': true
       })
       .select(
         'devices.id',
@@ -353,7 +351,12 @@ export class DataService {
       .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
       .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({'devices.is_active': true, 'vehicle_device.is_active': true, 'company_vehicles.is_active': true})
+      .where({
+        'devices.is_active': true, 
+        // 'vehicle_device.is_active': true, 
+        // 'company_vehicles.is_active': true
+      })
+      // .andWhereNot('vehicle_device.is_active', false)
       .orderBy('devices.updated_at', 'desc')
       .select(
         'devices.id',
@@ -524,9 +527,10 @@ export class DataService {
       .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
       .where({
         'companies.id': id, 
-        'vehicle_device.is_active': true, 
-        'company_vehicles.is_active': true
+        //'vehicle_device.is_active': true, 
+        // 'company_vehicles.is_active': true
       })
+      // .andWhereNot('vehicle_device.is_active', false)
       .orderBy('vehicles.updated_at', 'desc')
       .select(
         'companies.id',
