@@ -6,6 +6,7 @@ export interface AssignDeviceData {
     companyName: string;
     deviceId: string;
     carPlate: string;
+    vehicleId: number;
   };
 }
 

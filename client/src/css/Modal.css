@@ -13,3 +13,32 @@
   justify-content: flex-start;
   cursor: default;
 }
+.toggle {
+  width: 50%;
+  border: solid 0.5px #eee;
+  padding: 4px;
+  transition: all 0.4s;
+}
+.modalToggleContainer {
+  font-size: 20px;
+  padding: 8px;
+  width: 100%;
+  color: #eee;
+  cursor: pointer;
+  transition: all 0.4s;
+}
+.modalInput {
+  width: 50%;
+  height: 36px;
+  font-size: 20px;
+  color: #555;
+  border-radius: 5px;
+  padding-left: 8px;
+  border: none;
+  margin-top: 16px;
+}
+.modalInput::placeholder {
+}
+.modalInput:focus {
+  outline-style: none;
+}

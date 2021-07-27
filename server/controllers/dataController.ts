@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
 import fetch from 'node-fetch';
+import { io } from '../main';
+import { DataService } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -349,7 +352,9 @@ export class DataController {
       );
 
       // io.emit('get-new-companies');
-      res.status(httpStatusCodes.CREATED).json({data: companiesResult[0], message: 'company created' });
+      res
+        .status(httpStatusCodes.CREATED)
+        .json({ data: companiesResult[0], message: 'company created' });
       return;
     } catch (err) {
       logger.error(err.message);
@@ -416,26 +421,26 @@ export class DataController {
     }
   };
   // put devices
-  putDevices = async(req: Request, res: Response)=>{
+  putDevices = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
       console.log(mBody);
       // await this.dataService.putDevices();
-      res.status(httpStatusCodes.ACCEPTED).json({message:''})
+      res.status(httpStatusCodes.ACCEPTED).json({ message: '' });
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message:'Internal server error!'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 
   //post vehicles
-  postVehicles = async(req: Request, res: Response)=>{
+  postVehicles = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
       console.log(JSON.stringify(req.params.id));
-      const companyID:number = parseInt(String(req.params.id));
+      const companyID: number = parseInt(String(req.params.id));
       let vehiclesArray: number[] = [];
-      if(mBody.length > 0){
+      if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
           let vehiclesResult: number = await this.dataService.postVehicles(
             mBody[i].carPlate,
@@ -448,13 +453,13 @@ export class DataController {
           await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
         }
       }
-      res.status(httpStatusCodes.CREATED).json({message:'Vehicles created'});
+      res.status(httpStatusCodes.CREATED).json({ message: 'Vehicles created' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 
   // check meter's version to update
   getDevicesVersion = async (req: Request, res: Response) => {
@@ -484,35 +489,35 @@ export class DataController {
       return;
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
   // post vehicle_device
-  postVehicleDevice = async (req: Request, res: Response)=>{ 
+  postVehicleDevice = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
       console.log(mBody.length);
       let aa = await this.dataService.getVehicleDevice(mBody[0].vehicleID, mBody[0].deviceID);
       console.log(aa);
-      for(let i = 0; i < mBody.length; i++){
+      for (let i = 0; i < mBody.length; i++) {
         console.log(mBody[i].vehicleID + ' ' + mBody[i].deviceID);
         // await this.dataService.postVehicleDevice(mBody[i].vehicleID, mBody[i].deviceID);
       }
-      res.status(httpStatusCodes.CREATED).json({message:'vehicle & device link created'});
+      res.status(httpStatusCodes.CREATED).json({ message: 'vehicle & device link created' });
       return;
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   // get all devices only
-  getAllDeviceOnly = async(req:Request, res: Response)=>{
+  getAllDeviceOnly = async (req: Request, res: Response) => {
     try {
       const result = await this.dataService.getAllDevices();
-      res.status(httpStatusCodes.OK).json({data: result, message: 'get all devices data'});
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'get all devices data' });
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 }
