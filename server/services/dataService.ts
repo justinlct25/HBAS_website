@@ -344,6 +344,13 @@ export class DataService {
   async postDevices(name: string, deviceID: string) {
     return this.knex('devices').insert({ device_name: name, device_eui: deviceID });
   }
+  // put devices
+  async putDevices(id: number){
+    return this.knex('devices')
+      .where('id', id)
+      .update({is_register: true}, ['id', 'is_register'])
+  }
+  // delete devices
   ////---- vehicles ----////
   //get vehicles
   //post vehicles
@@ -362,6 +369,16 @@ export class DataService {
     return this.knex('company_vehicles').insert({ company_id: companyID, vehicle_id: vehiclesID });
   }
   ////---- vehicle_device ----////
+  // get vehicle_device
+  async getVehicleDevice(vehicleID:number, deviceID: number){
+    return this.knex('vehicle_device')
+      .where('is_active', true)
+      .groupBy('id')
+      .having('device_id','=',deviceID)
+      .orHaving('vehicle_id','=',vehicleID)
+      .select('id','device_id','vehicle_id')
+      .orderBy('updated_at', 'desc')
+  }
   // post vehicle_device
   async postVehicleDevice(vehicleID: number, deviceID: number) {
     return this.knex('vehicle_device').insert({ vehicle_id: vehicleID, device_id: deviceID });

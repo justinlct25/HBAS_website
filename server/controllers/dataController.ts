@@ -377,6 +377,19 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+  // put devices
+  putDevices = async(req: Request, res: Response)=>{
+    try {
+      const mBody = req.body;
+      console.log(mBody);
+      // await this.dataService.putDevices();
+      res.status(httpStatusCodes.ACCEPTED).json({message:''})
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message:'Internal server error!'});
+    }
+  }
+
   //post vehicles
   postVehicles = async(req: Request, res: Response)=>{
     try {
@@ -436,6 +449,24 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
     }
   };
+  // post vehicle_device
+  postVehicleDevice = async (req: Request, res: Response)=>{ 
+    try {
+      const mBody = req.body;
+      console.log(mBody.length);
+      let aa = await this.dataService.getVehicleDevice(mBody[0].vehicleID, mBody[0].deviceID);
+      console.log(aa);
+      for(let i = 0; i < mBody.length; i++){
+        console.log(mBody[i].vehicleID + ' ' + mBody[i].deviceID);
+        // await this.dataService.postVehicleDevice(mBody[i].vehicleID, mBody[i].deviceID);
+      }
+      res.status(httpStatusCodes.CREATED).json({message:'vehicle & device link created'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+    }
+  }
   // get all devices only
   getAllDeviceOnly = async(req:Request, res: Response)=>{
     try {
