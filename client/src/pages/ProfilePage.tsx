@@ -1,31 +1,34 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
 import { BackButton } from "../components/IconsOnly";
+import { useRouter } from "../helpers/useRouter";
 import {
-  setDeviceIdAction,
   setPopUpIsActiveAction,
   setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
-interface comingData {
-  id: number;
-}
+// interface comingData {
+//   id: number;
+// }
 
 function ProfilePage() {
+  const router = useRouter();
   const history = useHistory();
-  const { state } = useLocation<comingData>();
+  // const { state } = useLocation<comingData>();
   const profileList = useSelector(
     (state: IRootState) => state.profileList.profileList
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(state);
-    dispatch(getProfileListThunk(parseInt(String(state.id)), true));
+    // console.log(state);
+    const splitRoute = router.pathname.split("/");
+    const routeId = splitRoute[splitRoute.length - 1];
+    dispatch(getProfileListThunk(parseInt(routeId)));
   }, [dispatch]);
   console.log(profileList);
 

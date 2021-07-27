@@ -42,14 +42,7 @@ function AssignDeviceModal() {
         <div className="closeIconContainer" onClick={handleReset}>
           <CloseIcon color={"#555"} />
         </div>
-        <div
-          className="flex-center"
-          style={{
-            width: "100%",
-            flexDirection: "column",
-            justifyContent: "flex-start",
-          }}
-        >
+        <div className="flex-center modalContainer">
           <div className="flex-center form">
             <div className="flex-center companySection">
               <div className="titleText">Assign device</div>

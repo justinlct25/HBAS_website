@@ -252,7 +252,7 @@ function ManageUser() {
                     className="flex-center tableRow"
                     onClick={() => {
                       //dispatch something ...
-                      dispatch(push(`/profile`, { id: item.id }));
+                      dispatch(push(`/profile/${item.id}`, { id: item.id }));
                     }}
                   >
                     <div key={idx} className="flex-center tdItem">

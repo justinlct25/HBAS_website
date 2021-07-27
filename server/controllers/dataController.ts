@@ -1,8 +1,5 @@
-import { DataService } from '../services/dataService';
 import { Request, Response } from 'express';
-import { logger } from '../utils/logger';
 import httpStatusCodes from 'http-status-codes';
-import { io } from '../main';
 import fetch from 'node-fetch';
 
 export class DataController {
@@ -42,9 +39,9 @@ export class DataController {
       }
       const counting =
         newSearchType === ''
-          ? await this.dataService.getCountingAlertData() : 
-        newSearchType === 'date'
-          ? await this.dataService.getAlertDataBySearchDate(1,1,'','')//// push
+          ? await this.dataService.getCountingAlertData()
+          : newSearchType === 'date'
+          ? await this.dataService.getAlertDataBySearchDate(1, 1, '', '') //// push
           : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
@@ -88,15 +85,18 @@ export class DataController {
       const queryMethod = req.query;
       const dataResult = req.body;
       //check query join / up first
-      const deviceID = await this.dataService.getDevicesID(dataResult.deviceName, dataResult.devEUI);
+      const deviceID = await this.dataService.getDevicesID(
+        dataResult.deviceName,
+        dataResult.devEUI
+      );
       if (queryMethod.event != 'up') {
-        if(queryMethod.event == 'join'){
+        if (queryMethod.event == 'join') {
           if (deviceID == undefined || deviceID == null) {
             await this.dataService.postDevices(dataResult.deviceName, dataResult.devEUI);
             res.status(httpStatusCodes.CREATED).json({ message: 'new device join the network' });
             return;
           }
-          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({message:'duplicate device join'});
+          res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'duplicate device join' });
           return;
         }
         res
@@ -137,31 +137,69 @@ export class DataController {
           .json({ message: 'Income data is not accept to insert, return.' });
         return;
       }
-      
+
       // require device id
       if (deviceID == undefined || deviceID == null) {
         res.status(httpStatusCodes.NOT_ACCEPTABLE).json({ message: 'Wrong device unique code.' });
         return;
       }
 
-      let addressJSON:string[] = [];
+      let addressJSON: string[] = [];
       let mixDateTime = `${newJSON.objectJSON[0].date}T${newJSON.objectJSON[0].time}`;
       let checkLalatitude = parseFloat(String(newJSON.objectJSON[0].latitude));
       let checkLongitude = parseFloat(String(newJSON.objectJSON[0].longitude));
       console.log(newJSON.objectJSON[0].latitude + ' ' + newJSON.objectJSON[0].longitude);
-      console.log(typeof(checkLalatitude) + ' ' +checkLalatitude + ' ' + typeof(checkLongitude) + ' ' + checkLongitude);
-      if(checkLalatitude >= 22.1 && checkLalatitude <= 22.65 && checkLongitude >= 113.75 && checkLongitude <= 114.45){
+      console.log(
+        typeof checkLalatitude +
+          ' ' +
+          checkLalatitude +
+          ' ' +
+          typeof checkLongitude +
+          ' ' +
+          checkLongitude
+      );
+      if (
+        checkLalatitude >= 22.1 &&
+        checkLalatitude <= 22.65 &&
+        checkLongitude >= 113.75 &&
+        checkLongitude <= 114.45
+      ) {
         await fetch(
           `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-        ).then(response => response.json())
-        .then(data => {
-          (data.address.county)? addressJSON.push(JSON.stringify(data.address.county).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-          (data.address.city_district)? addressJSON.push(JSON.stringify(data.address.city_district).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-          (data.address.quarter)? addressJSON.push(JSON.stringify(data.address.quarter).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-          (data.address.suburb)? addressJSON.push(JSON.stringify(data.address.suburb).replace(/\ /,`++`).split('++')[1].replace(/\"/,``)) : 
-          addressJSON.push('GPS not found');
-        });
-      }else{
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            data.address.county
+              ? addressJSON.push(
+                  JSON.stringify(data.address.county)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.city_district
+              ? addressJSON.push(
+                  JSON.stringify(data.address.city_district)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.quarter
+              ? addressJSON.push(
+                  JSON.stringify(data.address.quarter)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : data.address.suburb
+              ? addressJSON.push(
+                  JSON.stringify(data.address.suburb)
+                    .replace(/\ /, `++`)
+                    .split('++')[1]
+                    .replace(/\"/, ``)
+                )
+              : addressJSON.push('GPS not found');
+          });
+      } else {
         addressJSON.push('GPS not found');
       }
 
@@ -176,11 +214,11 @@ export class DataController {
         newJSON.objectJSON[0].msgtype
       );
 
-      (newJSON.objectJSON[0].msgtype == 'A')?
-      io.emit('get-new-alertData'):
-      (newJSON.objectJSON[0].msgtype == 'B')?
-      io.emit('get-new-batteryData'): 
-      io.emit('get-new-allMsgTypeData');
+      newJSON.objectJSON[0].msgtype == 'A'
+        ? io.emit('get-new-alertData')
+        : newJSON.objectJSON[0].msgtype == 'B'
+        ? io.emit('get-new-batteryData')
+        : io.emit('get-new-allMsgTypeData');
 
       res.status(httpStatusCodes.CREATED).json({ message: 'success created' });
       return;
@@ -428,8 +466,8 @@ export class DataController {
     try {
       const companyID = req.params;
       console.log(JSON.stringify(companyID));
-      const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)))
-      res.status(httpStatusCodes.OK).json({data: result, message: 'test'});
+      const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)));
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'test' });
       return;
     } catch (err) {
       logger.error(err.message);
