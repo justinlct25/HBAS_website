@@ -454,11 +454,17 @@ export class DataController {
     try {
       const mBody = req.body;
       console.log(mBody.length);
-      let aa = await this.dataService.getVehicleDevice(mBody[0].vehicleID, mBody[0].deviceID);
+      let aa = await this.dataService.getVehicleDevice(mBody.vehicleID, mBody.deviceID);
       console.log(aa);
-      for(let i = 0; i < mBody.length; i++){
-        console.log(mBody[i].vehicleID + ' ' + mBody[i].deviceID);
-        // await this.dataService.postVehicleDevice(mBody[i].vehicleID, mBody[i].deviceID);
+      console.log(mBody);
+      if(aa === undefined || aa === null){
+        // insert new link
+        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
+      }else{
+        // set first data 'is_active' to be false
+        await this.dataService.putVehicleDevice(aa.vehicle_device_id);
+        // insert new link
+        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);        
       }
       res.status(httpStatusCodes.CREATED).json({message:'vehicle & device link created'});
       return;
@@ -467,7 +473,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
     }
   }
-  // get all devices only
+  // get all devices only, company name & car plate
   getAllDeviceOnly = async(req:Request, res: Response)=>{
     try {
       const result = await this.dataService.getAllDevices();
