@@ -253,21 +253,22 @@ export class DataService {
       .offset(offset);
   }
   //get companies data for add devices
-  async getCompaniesByAddDevice(){
+  async getCompaniesByAddDevice() {
     return await this.knex('companies')
-      .leftJoin('company_vehicles','company_vehicles.company_id','companies.id')
-      .leftJoin('vehicles','vehicles.id','company_vehicles.vehicle_id')
-      .leftJoin('vehicle_device','vehicle_device.vehicle_id', 'vehicles.id')
-      .where({'companies.is_active': true, 'vehicles.is_active': true})
-      .select('companies.id','companies.company_name','companies.tel','companies.contact_person'
-              ,'company.id')
+      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+      .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
+      .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
+      .where({ 'companies.is_active': true, 'vehicles.is_active': true })
+      .select(
+        'companies.id',
+        'companies.company_name',
+        'companies.tel',
+        'companies.contact_person',
+        'company.id'
+      );
   }
   // post /companies
-  async postCompaniesData(
-    companyName: string,
-    contactPerson: string,
-    tel: string
-  ) {
+  async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
     //console.log(companyName + ' ' + contactPerson + ' ' + tel);
     return await this.knex('companies')
       .insert({ company_name: companyName, contact_person: contactPerson, tel: tel })
@@ -521,14 +522,14 @@ export class DataService {
         'companies.company_name',
         'companies.tel',
         'companies.contact_person',
-        'vehicles.id as vehicles_id',
+        'vehicles.id as vehicle_id',
         'vehicles.car_plate',
         'vehicles.vehicle_model',
         'vehicles.vehicle_type',
         'devices.device_eui',
         'devices.device_name',
         'devices.is_active'
-      )
+      );
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {

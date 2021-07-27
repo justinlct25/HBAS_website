@@ -5,8 +5,6 @@ import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
 import { useRouter } from "../helpers/useRouter";
-import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { getCompaniesDataListThunk } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
@@ -46,22 +44,16 @@ function IncidentPage() {
     const fetchIncidentById = async () => {
       const splitRoute = router.pathname.split("/");
       const routeId = splitRoute[splitRoute.length - 1];
+      //fetch action
+      // fetch(`http:\\gsregsergsreg${routeId}`)
     };
-    //fetch action
+
     setIncidentLocation({
       longitude: incidentPageData.longitude,
       latitude: incidentPageData.latitude,
     });
     fetchIncidentById();
   }, [dispatch, router.pathname]);
-
-  useEffect(() => {
-    dispatch(getAlertDataListThunk(1, false));
-  }, []);
-
-  useEffect(() => {
-    //dispatch(getCompaniesDataListThunk(false));
-  }, []);
 
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
