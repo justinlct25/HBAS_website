@@ -506,6 +506,8 @@ export class DataController {
       }else{
         // set first data 'is_active' to be false
         await this.dataService.putVehicleDevice(aa.vehicle_device_id);
+        // set devices 'is_register' to be false
+        await this.dataService.putDevices(aa.device_id)
         // insert new link
         await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);        
       }

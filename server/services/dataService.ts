@@ -207,7 +207,7 @@ export class DataService {
         'companies.contact_person',
         'companies.updated_at'
       )
-      .count('company_vehicles.company_id')
+      .count<number>('company_vehicles.company_id')
       .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
@@ -225,7 +225,7 @@ export class DataService {
       .groupBy('companies.id')
       .distinct('companies.id')
       .select('companies.company_name', 'companies.tel', 'companies.contact_person')
-      .count('company_vehicles.company_id')
+      .count<number>('company_vehicles.company_id')
       .havingRaw(`${searchType} ILIKE ?`, [searchString])
       .orderBy('companies.updated_at', 'desc')
       .limit(limit)
@@ -375,7 +375,7 @@ export class DataService {
   async putDevices(id: number){
     return await this.knex('devices')
       .where('id', id)
-      .update({is_register: true}, ['id', 'is_register'])
+      .update({is_register: false}, ['id', 'is_register'])
   }
   // delete devices
   ////---- vehicles ----////
