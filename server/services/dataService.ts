@@ -197,7 +197,7 @@ export class DataService {
   async getCompaniesData(offset: number, limit: number): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true })
+      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true})
       .groupBy('companies.id')
       .distinct('companies.id')
       .select(
@@ -221,7 +221,7 @@ export class DataService {
   ): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true })
+      .where({ 'companies.is_active': true , 'company_vehicles.is_active': true})
       .groupBy('companies.id')
       .distinct('companies.id')
       .select('companies.company_name', 'companies.tel', 'companies.contact_person')
@@ -253,19 +253,27 @@ export class DataService {
       .offset(offset);
   }
   //get companies data for add devices
-  async getCompaniesByAddDevice() {
+  async getCompaniesByDevicePage() {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
       .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .where({ 'companies.is_active': true, 'vehicles.is_active': true })
+      .leftJoin('devices','devices.id', 'vehicle_device.device_id')
+      .where({
+        'companies.is_active': true, 
+        'company_vehicles.is_active': true , 
+        'vehicles.is_active': true ,
+        // 'vehicle_device.is_active':true
+      })
       .select(
-        'companies.id',
+        'companies.id as company_id',
         'companies.company_name',
-        'companies.tel',
-        'companies.contact_person',
-        'company.id'
-      );
+        'vehicles.id as vehicle_id',
+        'vehicles.car_plate',
+        'devices.id as device_id',
+        'devices.device_eui',
+        'devices.is_register'
+      )
   }
   // post /companies
   async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
@@ -285,7 +293,10 @@ export class DataService {
       .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
       .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
       .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where('devices.is_active', true)
+      .where({
+        'devices.is_active': true, 
+        'vehicle_device.is_active': true
+      })
       .select(
         'devices.id',
         'devices.device_name',

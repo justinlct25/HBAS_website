@@ -524,4 +524,15 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
     }
   }
+
+  // get all companies only, car plate & device eui
+  getAllCompaniesOnly = async(req: Request, res: Response)=>{
+    try {
+      const result = await this.dataService.getCompaniesByDevicePage();
+      res.status(httpStatusCodes.OK).json({data: result, message: 'get all companies & belong their vehicles'});
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+    }
+  }
 }

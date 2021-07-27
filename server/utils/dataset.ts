@@ -338,7 +338,7 @@ export const insertedDevices = [
     {
         device_name: "ramp_meter_500", 
         device_eui: "RzrIaAAqADh=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_501", 
@@ -373,7 +373,7 @@ export const insertedDevices = [
     {
         device_name: "ramp_meter_507", 
         device_eui: "RzrIaAAqAAe=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_508", 
@@ -383,7 +383,7 @@ export const insertedDevices = [
     {
         device_name: "ramp_meter_509", 
         device_eui: "RzrIaAAqAAg=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_510", 
@@ -403,12 +403,12 @@ export const insertedDevices = [
     {
         device_name: "ramp_meter_513", 
         device_eui: "RzrIaAAqAAk=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_514", 
         device_eui: "RzrIaAAqAAl=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_515", 
@@ -418,7 +418,7 @@ export const insertedDevices = [
     {
         device_name: "ramp_meter_516", 
         device_eui: "RzrIaAAqAAn=",
-        is_register: false
+        is_register: true
     },
     {
         device_name: "ramp_meter_517", 
@@ -861,7 +861,7 @@ export const insertedVehiclesDevice = [
         car_plate:"MK1101"
     },
     {
-        device_eui: "RzrIaAAqADg=", 
+        device_eui: "RzrIaAAqADh=", 
         car_plate:"WL112"
     },
     {
