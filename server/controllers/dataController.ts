@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
 import fetch from 'node-fetch';
+import { io } from '../main';
+import { DataService } from '../services/dataService';
+import { logger } from '../utils/logger';
 
 export class DataController {
   constructor(private dataService: DataService) {}
