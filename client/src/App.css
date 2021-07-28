@@ -97,7 +97,7 @@ body {
 .caretContainer {
   position: absolute;
   height: 100%;
-  width: 10%;
+  width: 56px;
   left: 0;
   top: 0;
   color: #000;
