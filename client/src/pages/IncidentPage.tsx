@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactMapboxGl, { Feature, Layer } from "react-mapbox-gl";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
-import { useRouter } from "../helpers/useRouter";
 import { IRootState } from "../redux/store";
 
 const MAPBOX_TOKEN =
