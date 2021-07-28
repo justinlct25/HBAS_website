@@ -336,8 +336,8 @@ export class DataController {
     try {
       const mBody = req.body;
       let duplicateCompany:string[] = [];
-      let checkDuplicate:number = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
-      if(checkDuplicate > 0){
+      let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
+      if(parseInt(String(checkDuplicate[0].count)) > 0){
         duplicateCompany.push(mBody[0].companyName);
         res.status(httpStatusCodes.BAD_REQUEST).json({data: duplicateCompany, message: 'duplicate company found'});
         return;
@@ -349,9 +349,9 @@ export class DataController {
       );
 
       // io.emit('get-new-companies');
-      res
-        .status(httpStatusCodes.CREATED)
-        .json({ data: companiesResult[0], message: 'company created' });
+        res
+          .status(httpStatusCodes.CREATED)
+          .json({ data: companiesResult[0], message: 'company created' });
       return;
     } catch (err) {
       logger.error(err.message);
@@ -439,8 +439,8 @@ export class DataController {
       let duplicateResult:string[] = [];
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
-          let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-          if(checkDuplicate > 0){
+          let checkDuplicate= await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
+          if(parseInt(String(checkDuplicate[0].count)) > 0){
             duplicateResult.push(mBody[i].carPlate);
           }else{
             vehiclesResult = await this.dataService.postVehicles(
@@ -537,7 +537,7 @@ export class DataController {
   getAllCompaniesOnly = async(req: Request, res: Response)=>{
     try {
       const result = await this.dataService.getCompaniesByDevicePage();
-      res.status(httpStatusCodes.OK).json({data: result, message: 'get all companies & belong their vehicles'});
+      res.status(httpStatusCodes.OK).json({data: result, count: result.length ,message: 'get all companies & belong their vehicles'});
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});

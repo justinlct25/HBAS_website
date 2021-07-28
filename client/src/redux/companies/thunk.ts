@@ -83,7 +83,7 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
       }
       if(res.status === 400){
           const data = await res.json();
-          console.log(data.data+' '+data.message);
+          console.log(`${data.message}:{ ${data.data} }`);
           dispatch(errorCompaniesInput(true));
       }
       console.log(res);
