@@ -545,6 +545,7 @@ export class DataService {
         'vehicles.car_plate',
         'vehicles.vehicle_model',
         'vehicles.vehicle_type',
+        'devices.id as device_id',
         'devices.device_eui',
         'devices.device_name',
         'devices.is_active'

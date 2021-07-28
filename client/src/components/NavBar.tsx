@@ -1,28 +1,16 @@
-import React, { useState } from "react";
-import {
-  Collapse,
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-} from "reactstrap";
-import { push } from "connected-react-router";
-import { useDispatch } from "react-redux";
-import { CompanyName } from "./CompanyName";
-import { CaretIcon, GraphViewIcon, SearchIcon } from "./IconsOnly";
-import "../css/NavBar.css";
-import { incidentRecordsTableHeaders } from "../table/tableHeader";
-import MenuButton from "./MenuButton";
 import anime from "animejs";
+import { push } from "connected-react-router";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import "../css/NavBar.css";
 import { useRouter } from "../helpers/useRouter";
+import { CompanyName } from "./CompanyName";
+import MenuButton from "./MenuButton";
 
 function NavBar() {
   const router = useRouter();
   const splitRoute = router.pathname;
-  console.log(splitRoute);
 
   const [collapsed, setCollapsed] = useState(true);
   const dispatch = useDispatch();
@@ -141,36 +129,6 @@ function NavBar() {
         />
       )}
     </div>
-
-    // <div>
-    //   <Navbar color="faded" light>
-    //     <NavbarBrand onClick={HomeBand} className="mr-auto">
-    //       <label>Handbrake System</label>
-    //     </NavbarBrand>
-    //     <NavbarToggler onClick={toggleNavbar} className="mr-2" />
-    //     <Collapse isOpen={!collapsed} navbar>
-    //       <Nav navbar>
-    //         <NavItem
-    //           style={{
-    //             position: "absolute",
-    //             width: "10vw",
-    //             height: "100vh",
-    //             backgroundColor: " red",
-    //           }}
-    //         >
-    //           <NavLink onClick={HomeClick}>
-    //             <label>Home page</label>
-    //           </NavLink>
-    //         </NavItem>
-    //         <NavItem>
-    //           <NavLink onClick={AlertDataPage}>
-    //             <label>Alert page</label>
-    //           </NavLink>
-    //         </NavItem>
-    //       </Nav>
-    //     </Collapse>
-    //   </Navbar>
-    // </div>
   );
 }
 

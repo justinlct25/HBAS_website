@@ -51,7 +51,6 @@ function ManageUser() {
   const companiesList = companiesDataList.companiesDataList;
   const activePage = companiesDataList.activePage;
   const totalPage = companiesDataList.totalPage;
-  //const limit = companiesDataList.limit;
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -71,32 +70,6 @@ function ManageUser() {
       ...totalVehicle,
     ]);
   };
-
-  // useEffect(() => {
-  //   console.log(totalVehicle);
-  // }, [totalVehicle]);
-
-  // useEffect(() => {
-  //   console.log(companyDetail);
-  // }, [companyDetail]);
-
-  // useEffect(() => {
-  //   const socket = io(`${serverUrl}`);
-
-  //   socket.on("get-new-companies", () => {
-  //     dispatch(
-  //       getCompaniesDataListThunk(
-  //         activePage,
-  //         false,
-  //         placeHolderText,
-  //         searchInput
-  //       )
-  //     );
-  //   });
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // }, []);
 
   const handleReset = () => {
     setTotalVehicle([]);

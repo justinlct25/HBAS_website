@@ -167,8 +167,6 @@ function ManageDevice() {
             {devicesList &&
               devicesList.length > 0 &&
               devicesList.map((item, idx) => {
-                console.log("item");
-                console.log(item);
                 return (
                   <div
                     key={item.id}

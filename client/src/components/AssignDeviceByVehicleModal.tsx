@@ -39,7 +39,6 @@ function AssignDeviceByVehicleModal() {
         });
         if (res.status === 201 || res.status === 200) {
           const data = await res.json();
-          console.log(data);
         }
       } catch (e) {
         console.error(e.message);
@@ -106,9 +105,9 @@ function AssignDeviceByVehicleModal() {
                       color: "#555",
                     }}
                   >
-                    {selectedItem.deviceId === ""
+                    {selectedItem.deviceEui === ""
                       ? "Select device"
-                      : selectedItem.deviceId}
+                      : selectedItem.deviceEui}
                   </div>
                   <div
                     style={{

@@ -41,7 +41,6 @@ function AssignDeviceModal() {
         });
         if (res.status === 201 || res.status === 200) {
           const data = await res.json();
-          console.log(data);
         }
       } catch (e) {
         console.error(e.message);
@@ -78,7 +77,7 @@ function AssignDeviceModal() {
                   }}
                 >
                   <div className="flex-center deviceId">
-                    {selectedItem.deviceId}
+                    {selectedItem.deviceEui}
                   </div>
                 </div>
               </div>

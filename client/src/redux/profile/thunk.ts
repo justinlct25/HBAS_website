@@ -6,9 +6,7 @@ const { REACT_APP_API_SERVER } = process.env;
 export function getProfileListThunk(id: number, isInit: boolean) {
   return async (dispatch: Dispatch<IProfileActions>) => {
     try {
-      if (isInit) {
-        dispatch(resetProfileList());
-      }
+      dispatch(resetProfileList());
       const res = await fetch(`${REACT_APP_API_SERVER}/profile/${id}`);
 
       if (res.status === 200) {

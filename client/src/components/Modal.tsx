@@ -86,9 +86,9 @@ export const Modal = (props: ModalProps) => {
           });
           if (res.status === 201 || res.status === 200) {
             const data: fetchedData = await res.json();
-            const allDevices = data.data.slice();
-            const notAssigned = data.data.filter((dt) => !dt.is_register);
-            setAllDevices({
+            const allDevices = await data.data.slice();
+            const notAssigned = await data.data.filter((dt) => !dt.is_register);
+            await setAllDevices({
               allDevices: allDevices,
               notAssigned: notAssigned,
             });
@@ -127,7 +127,6 @@ export const Modal = (props: ModalProps) => {
         });
         if (res.status === 201 || res.status === 200) {
           const result = await res.json();
-          console.log(result);
           setAllVehicles(result.data);
         }
       } catch (e) {
@@ -135,7 +134,7 @@ export const Modal = (props: ModalProps) => {
       }
     };
     fetchAllVehicles();
-  }, [popUpIsActive]);
+  }, [popUpIsActive, isOpen, modalType]);
 
   return (
     <div
