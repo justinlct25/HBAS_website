@@ -258,21 +258,27 @@ export class DataService {
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
       .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
+      .whereNotNull('company_vehicles.id')
       .where({
         'companies.is_active': true,
         'company_vehicles.is_active': true,
         'vehicles.is_active': true,
       })
+      .orWhereNot('vehicle_device.is_active', false)
+      // .orWhere('vehicle_device.is_active',true)
+      // .groupBy('companies.id','vehicles.id','vehicle_device.is_active')
+      // .having('vehicle_device.is_active','=',true)
+      // .havingNull('vehicle_device.is_active')
       .select(
         'companies.id as company_id',
         'companies.company_name',
         'vehicles.id as vehicle_id',
         'vehicles.car_plate',
-        'devices.id as device_id',
-        'devices.device_eui',
-        'devices.is_register'
-      );
+        'vehicle_device.is_active'
+        // 'devices.id as device_id',
+        // 'devices.device_eui',
+        // 'devices.is_register'
+      )
   }
   // post /companies
   async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
@@ -556,14 +562,14 @@ export class DataService {
     return await this.knex('companies')
       .where('company_name', 'ILIKE', `${company_name}`)
       .andWhere('is_active', true)
-      .count<number>('id');
+      .count('id')
   }
   // check duplicate #car_plate
   async checkCarPlateDuplicate(car_plate: string) {
     return await this.knex('vehicles')
       .where('car_plate', 'ILIKE', `${car_plate}`)
       .andWhere('is_active', true)
-      .count<number>('id');
+      .count('id')
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {

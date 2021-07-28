@@ -84,10 +84,10 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
         //@ts-ignore
         dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
       }
-      if (res.status === 400) {
-        const data = await res.json();
-        console.log(data.data + " " + data.message);
-        dispatch(errorCompaniesInput(true));
+      if(res.status === 400){
+          const data = await res.json();
+          console.log(`${data.message}:{ ${data.data} }`);
+          dispatch(errorCompaniesInput(true));
       }
       //@ts-ignore
       dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
