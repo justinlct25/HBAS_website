@@ -6,6 +6,7 @@ import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
 import "../css/Modal.css";
+import { useEffect } from "react";
 
 function AssignDeviceModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{
@@ -24,9 +25,30 @@ function AssignDeviceModal() {
     setSelectModalOpen({ isOpen: false, target: "company" });
     dispatch(resetPopUpAction());
   };
+
   const handleSubmit = () => {
-    //POST API here
-    // use assignDeviceModal.deviceId
+    const assignDevice = async () => {
+      try {
+        const res = await fetch(`http://localhost:8085/vehicle_device`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            vehicleID: assignDeviceModal.selectedItem.vehicleId,
+            deviceID: assignDeviceModal.deviceId,
+          }),
+        });
+        if (res.status === 201 || res.status === 200) {
+          const data = await res.json();
+          console.log(data);
+        }
+      } catch (e) {
+        console.error(e.message);
+      }
+    };
+    assignDevice();
+
     dispatch(resetPopUpAction());
   };
 

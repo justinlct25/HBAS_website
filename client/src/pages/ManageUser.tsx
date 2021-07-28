@@ -38,6 +38,7 @@ function ManageUser() {
   const [companyDetail, setCompanyDetail] = useState<
     Array<{
       companyName: string;
+
       contactPerson: string;
       tel: string;
     }>
@@ -452,6 +453,7 @@ function ManageUser() {
             style={{
               margin: "16px",
               fontSize: "30px",
+              cursor: "pointer",
               color: activePage === 1 ? "#CCC" : "#555",
             }}
             onClick={
@@ -485,6 +487,7 @@ function ManageUser() {
             style={{
               margin: "16px",
               fontSize: "30px",
+              cursor: "pointer",
               color: activePage !== totalPage ? "#555" : "#CCC",
             }}
             onClick={

@@ -15,7 +15,8 @@ export const manageUserTableHeaders = [
 ];
 export const manageDeviceTableHeaders = [
   "Device ID",
-  "Device Name",
-  "User",
+  "Car Plate",
+  "Company",
   "Phone number",
+  "Contact Person",
 ];

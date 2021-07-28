@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ModalType } from "../pages/ManageDevice";
 import { mockNewDevices } from "../pages/mockUpData";
-import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
+import {
+  setDeviceIdAction,
+  setSelectedItemAction,
+} from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import "../css/Modal.css";
 
@@ -17,39 +20,54 @@ interface ModalProps {
     }>
   >;
 }
+type deviceDetails = {
+  id: number;
+  device_name: string;
+  device_eui: string;
+  is_register: boolean;
+};
 
 type fetchedData = {
-  data: Array<{
-    id: number;
-    device_name: string;
-    device_eui: string;
-    is_register: boolean;
-  }>;
+  data: Array<deviceDetails>;
 };
+
+type companyDetails = {
+  company_name: string;
+  contact_person: string;
+  count: string;
+  id: number;
+  tel: string;
+  updated_at: string;
+};
+
+type vehicleList = Array<{
+  car_plate: string;
+  company_id: number;
+  company_name: string;
+  device_eui: string;
+  device_id: number;
+  is_register: true;
+  vehicle_id: number;
+}>;
 
 export const Modal = (props: ModalProps) => {
   const { isOpen, modalType, setSelectModalOpen } = props;
   const [focusNewDevice, setFocusNewDevice] = useState(true);
   const [searchField, setSearchField] = useState("");
   const [allDevices, setAllDevices] = useState<{
-    allDevices: Array<{
-      device_eui: string;
-      device_name: string;
-      id: number;
-      is_register: boolean;
-    }>;
-    notAssigned: Array<{
-      device_eui: string;
-      device_name: string;
-      id: number;
-      is_register: boolean;
-    }>;
+    allDevices: Array<deviceDetails>;
+    notAssigned: Array<deviceDetails>;
   }>();
+  const [companyList, setCompanyList] = useState<Array<companyDetails>>();
+  const [allVehicles, setAllVehicles] = useState<vehicleList>([]);
 
   const dispatch = useDispatch();
-  const selectedItem = useSelector(
-    (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
+  const assignDeviceModal = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal
   );
+
+  const selectedItem = assignDeviceModal.selectedItem;
+  const popUpIsActive = assignDeviceModal.popUpIsActive;
 
   const headerText =
     modalType === "carPlate"
@@ -57,30 +75,67 @@ export const Modal = (props: ModalProps) => {
       : modalType === "company" && "Select company";
 
   useEffect(() => {
-    const fetchAllDevices = async () => {
+    if (modalType === "device") {
+      const fetchAllDevices = async () => {
+        try {
+          const res = await fetch(`http://localhost:8085/allDevices`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          });
+          if (res.status === 201 || res.status === 200) {
+            const data: fetchedData = await res.json();
+            const allDevices = data.data.slice();
+            const notAssigned = data.data.filter((dt) => !dt.is_register);
+            setAllDevices({
+              allDevices: allDevices,
+              notAssigned: notAssigned,
+            });
+          }
+        } catch (e) {
+          console.error(e.message);
+        }
+      };
+      fetchAllDevices();
+    } else {
+      const fetchAllCompanies = async () => {
+        try {
+          const res = await fetch(`http://localhost:8085/companies`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          });
+          if (res.status === 201 || res.status === 200) {
+            const result = await res.json();
+            setCompanyList(result.companies);
+          }
+        } catch (e) {
+          console.error(e.message);
+        }
+      };
+      fetchAllCompanies();
+    }
+    const fetchAllVehicles = async () => {
       try {
-        const res = await fetch(`http://localhost:8085/allDevices`, {
+        const res = await fetch(`http://localhost:8085/allCompanies`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json; charset=utf-8",
           },
         });
         if (res.status === 201 || res.status === 200) {
-          const data: fetchedData = await res.json();
-          const allDevices = data.data.slice();
-          const notAssigned = data.data.filter((dt) => !dt.is_register);
-          console.log(data);
-          setAllDevices({
-            allDevices: allDevices,
-            notAssigned: notAssigned,
-          });
+          const result = await res.json();
+          console.log(result);
+          setAllVehicles(result.data);
         }
       } catch (e) {
         console.error(e.message);
       }
     };
-    fetchAllDevices();
-  }, []);
+    fetchAllVehicles();
+  }, [popUpIsActive]);
 
   return (
     <div
@@ -144,12 +199,11 @@ export const Modal = (props: ModalProps) => {
                 .map((item) => {
                   return (
                     <div
+                      key={item.id}
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(
-                          setSelectedItemAction({ deviceId: item.device_eui })
-                        );
+                        dispatch(setDeviceIdAction(item.id, item.device_eui));
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
@@ -162,12 +216,11 @@ export const Modal = (props: ModalProps) => {
                 .map((item) => {
                   return (
                     <div
+                      key={item.id}
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(
-                          setSelectedItemAction({ deviceId: item.device_eui })
-                        );
+                        dispatch(setDeviceIdAction(item.id, item.device_eui));
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
@@ -176,37 +229,52 @@ export const Modal = (props: ModalProps) => {
                   );
                 })
           : modalType === "carPlate"
-          ? mockNewDevices.map((item) => {
-              return (
-                <div
-                  className="eachDevice"
-                  onClick={
-                    selectedItem.companyName === ""
-                      ? () => {}
-                      : () => {
-                          dispatch(setSelectedItemAction({ carPlate: item }));
-                          setSelectModalOpen({
-                            isOpen: false,
-                            target: "carPlate",
-                          });
-                        }
-                  }
-                >
-                  {item}
-                </div>
-              );
-            })
+          ? allVehicles
+              .filter((i) => i.company_id === selectedItem.companyId)
+              .map((item) => {
+                return (
+                  <div
+                    className="eachDevice"
+                    onClick={
+                      selectedItem.companyName === ""
+                        ? () => {}
+                        : () => {
+                            dispatch(
+                              setSelectedItemAction({
+                                vehicleId: item.vehicle_id,
+                                carPlate: item.car_plate,
+                              })
+                            );
+                            setSelectModalOpen({
+                              isOpen: false,
+                              target: "carPlate",
+                            });
+                          }
+                    }
+                  >
+                    {item.car_plate}
+                  </div>
+                );
+              })
           : modalType === "company" &&
-            mockNewDevices.map((item) => {
+            companyList &&
+            companyList.map((item) => {
               return (
                 <div
+                  key={item.id}
                   className="eachDevice"
                   onClick={() => {
-                    dispatch(setSelectedItemAction({ companyName: item }));
+                    dispatch(
+                      setSelectedItemAction({
+                        companyId: item.id,
+                        companyName: item.company_name,
+                        carPlate: "",
+                      })
+                    );
                     setSelectModalOpen({ isOpen: false, target: "company" });
                   }}
                 >
-                  {item}
+                  {item.company_name}
                 </div>
               );
             })}

@@ -30,15 +30,20 @@
 .modalInput {
   width: 50%;
   height: 36px;
-  font-size: 20px;
+  font-size: 18px;
   color: #555;
   border-radius: 5px;
   padding-left: 8px;
   border: none;
   margin-top: 16px;
+  transition: all 0.4s;
 }
 .modalInput::placeholder {
+  font-size: 16px;
+  transition: all 0.4s;
 }
 .modalInput:focus {
+  font-size: 18px;
   outline-style: none;
+  transition: all 0.4s;
 }

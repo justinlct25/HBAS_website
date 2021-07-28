@@ -9,7 +9,7 @@ import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
-import { io }  from 'socket.io-client';
+import { io } from "socket.io-client";
 
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
@@ -37,10 +37,10 @@ function AlertDataPage() {
     dispatch(getAlertDataListThunk(activePage, false));
   }, [dispatch]);
 
-  useEffect(()=>{
+  useEffect(() => {
     const socket = io(`${REACT_APP_API_SERVER}`);
 
-    socket.on('get-new-alertData', ()=>{
+    socket.on("get-new-alertData", () => {
       dispatch(getAlertDataListThunk(activePage, false));
     });
 
@@ -95,8 +95,13 @@ function AlertDataPage() {
                   ? () => {
                       // dispatch() something use value: searchInput & tableHeaders[0]
                       dispatch(
-                        getAlertDataListThunk(1, true, placeHolderText ,searchInput)
-                      )
+                        getAlertDataListThunk(
+                          1,
+                          true,
+                          placeHolderText,
+                          searchInput
+                        )
+                      );
                     }
                   : () => {}
               }
@@ -210,6 +215,7 @@ function AlertDataPage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage === 1 ? "#CCC" : "#555",
+            cursor: "pointer",
           }}
           onClick={
             activePage === 1
@@ -236,6 +242,7 @@ function AlertDataPage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage !== totalPage ? "#555" : "#CCC",
+            cursor: "pointer",
           }}
           onClick={
             activePage !== totalPage

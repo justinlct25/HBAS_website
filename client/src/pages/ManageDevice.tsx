@@ -6,6 +6,7 @@ import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import {
   setDeviceIdAction,
   setPopUpIsActiveAction,
+  setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
@@ -13,7 +14,7 @@ import { manageDeviceTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
-const TABLE_WIDTH = "75%";
+const TABLE_WIDTH = "80%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
 export type ModalType = "company" | "carPlate" | "device";
@@ -26,33 +27,38 @@ function ManageDevice() {
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
   );
+
+  const popUpIsActive = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal.popUpIsActive
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
       getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
     );
-  }, [dispatch]);
+  }, [dispatch, popUpIsActive]);
 
   const devicesList = devicesDataList.devicesDataList;
   const activePage = devicesDataList.activePage;
   const totalPage = devicesDataList.totalPage;
+
   // const limit = devicesDataList.limit;
 
-  useEffect(() => {
-    const socket = io(`${serverUrl}`);
+  // useEffect(() => {
+  //   const socket = io(`${serverUrl}`);
 
-    //????????????
-    socket.on("get-new-devices", () => {
-      dispatch(
-        getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
-      );
-    });
+  //   //????????????
+  //   socket.on("get-new-devices", () => {
+  //     dispatch(
+  //       getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
+  //     );
+  //   });
 
-    return () => {
-      socket.disconnect();
-    };
-  });
+  //   return () => {
+  //     socket.disconnect();
+  //   };
+  // });
 
   return (
     <>
@@ -147,7 +153,7 @@ function ManageDevice() {
         >
           <div
             className="flex-center tableHeader"
-            style={{ width: TABLE_WIDTH, height: "64px" }}
+            style={{ width: TABLE_WIDTH, minHeight: "64px" }}
           >
             {tableHeaders.map((item, idx) => {
               return (
@@ -161,6 +167,8 @@ function ManageDevice() {
             {devicesList &&
               devicesList.length > 0 &&
               devicesList.map((item, idx) => {
+                console.log("item");
+                console.log(item);
                 return (
                   <div
                     key={item.id}
@@ -168,19 +176,30 @@ function ManageDevice() {
                     onClick={() => {
                       dispatch(setPopUpIsActiveAction(true));
                       dispatch(setDeviceIdAction(item.id, item.device_eui));
+                      dispatch(
+                        setSelectedItemAction({
+                          vehicleId: item.vehicle_id,
+                          carPlate: item.car_plate,
+                          companyId: item.company_id,
+                          companyName: item.company_name,
+                        })
+                      );
                     }}
                   >
                     <div key={idx} className="flex-center tdItem">
                       {item.device_eui}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.device_name}
+                      {item.car_plate}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.company_name}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.tel}
+                    </div>
+                    <div key={idx} className="tdItem">
+                      {item.contact_person}
                     </div>
                   </div>
                 );
@@ -194,6 +213,7 @@ function ManageDevice() {
             style={{
               margin: "16px",
               fontSize: "30px",
+              cursor: "pointer",
               color: activePage === 1 ? "#CCC" : "#555",
             }}
             onClick={
@@ -227,6 +247,7 @@ function ManageDevice() {
             style={{
               margin: "16px",
               fontSize: "30px",
+              cursor: "pointer",
               color: activePage !== totalPage ? "#555" : "#CCC",
             }}
             onClick={
