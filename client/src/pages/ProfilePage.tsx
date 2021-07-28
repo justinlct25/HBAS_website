@@ -11,25 +11,20 @@ import {
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
-// interface comingData {
-//   id: number;
-// }
-
 function ProfilePage() {
   const router = useRouter();
   const history = useHistory();
-  // const { state } = useLocation<comingData>();
   const profileList = useSelector(
     (state: IRootState) => state.profileList.profileList
   );
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log(state);
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
     dispatch(getProfileListThunk(parseInt(routeId), true));
   }, [dispatch]);
+
   console.log(profileList);
 
   return (
