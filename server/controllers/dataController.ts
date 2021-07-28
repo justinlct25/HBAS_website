@@ -440,25 +440,27 @@ export class DataController {
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
           let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-          if(checkDuplicate === 0){
+          if(checkDuplicate > 0){
+            duplicateResult.push(mBody[i].carPlate);
+          }else{
             vehiclesResult = await this.dataService.postVehicles(
               mBody[i].carPlate,
               mBody[i].vehicleType,
               mBody[i].vehicleModel
             );
             vehiclesArray.push(vehiclesResult);
-          }else{
-            duplicateResult.push(mBody[i].carPlate)
           }
         }
-        for (let i = 0; i < vehiclesArray.length; i++) {
-          await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
+        if(vehiclesArray.length > 0){
+          for (let i = 0; i < vehiclesArray.length; i++) {
+            await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
+          }
         }
       }
       if(duplicateResult.length > 0){
         res.status(httpStatusCodes.CREATED).json({data: duplicateResult, message: 'Vehicles created but some vehicles are duplicate' });
       }else{
-        res.status(httpStatusCodes.CREATED).json({data: [], message: 'Vehicles created' });
+        res.status(httpStatusCodes.CREATED).json({data: [], message: 'Vehicles created successful' });
       }
       return;
     } catch (err) {
