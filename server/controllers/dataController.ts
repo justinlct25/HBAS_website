@@ -296,10 +296,7 @@ export class DataController {
               sqlLike
             );
 
-      let totalPage =
-        newSearchType === ''
-          ? parseInt(String(counting[0].count)) / LIMIT
-          : parseInt(String(counting.length)) / LIMIT;
+      let totalPage = parseInt(String(counting.length)) / LIMIT;
       totalPage > Math.floor(totalPage)
         ? (totalPage = Math.ceil(totalPage))
         : (totalPage = Math.floor(totalPage));

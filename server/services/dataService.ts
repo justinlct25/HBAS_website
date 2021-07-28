@@ -194,21 +194,20 @@ export class DataService {
   }
   ////---- RESTful /companies ----////
   // get /companies
-  async getCompaniesData(offset: number, limit: number): Promise<any> {
+  async getCompaniesData(offset: number, limit: number) {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
+      .orderBy('companies.updated_at', 'desc')
       .distinct('companies.id')
       .select(
-        'companies.id',
         'companies.company_name',
         'companies.tel',
         'companies.contact_person',
         'companies.updated_at'
       )
       .count<number>('company_vehicles.company_id')
-      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
       .offset(offset);
   }
@@ -221,10 +220,15 @@ export class DataService {
   ): Promise<any> {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
-      .select('companies.company_name', 'companies.tel', 'companies.contact_person')
+      .select(
+        'companies.company_name', 
+        'companies.tel', 
+        'companies.contact_person',
+        'companies.updated_at'
+      )
       .count<number>('company_vehicles.company_id')
       .havingRaw(`${searchType} ILIKE ?`, [searchString])
       .orderBy('companies.updated_at', 'desc')
@@ -258,26 +262,25 @@ export class DataService {
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
       .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .whereNotNull('company_vehicles.id')
+      .whereNotIn('company_vehicles.id', function(){
+        this.from('companies')
+            .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+            .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
+            .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
+            .where('vehicle_device.is_active', false)
+            .select('company_vehicles.id')
+      })
       .where({
         'companies.is_active': true,
         'company_vehicles.is_active': true,
         'vehicles.is_active': true,
       })
-      .orWhereNot('vehicle_device.is_active', false)
-      // .orWhere('vehicle_device.is_active',true)
-      // .groupBy('companies.id','vehicles.id','vehicle_device.is_active')
-      // .having('vehicle_device.is_active','=',true)
-      // .havingNull('vehicle_device.is_active')
       .select(
         'companies.id as company_id',
         'companies.company_name',
         'vehicles.id as vehicle_id',
         'vehicles.car_plate',
-        'vehicle_device.is_active'
-        // 'devices.id as device_id',
-        // 'devices.device_eui',
-        // 'devices.is_register'
+        'vehicle_device.is_active as vehicle_device_active'
       )
   }
   // post /companies
@@ -475,7 +478,11 @@ export class DataService {
   }
   // get count data, /companies
   async getCountingCompanies() {
-    return await this.knex('companies').count('id');
+    return await this.knex('companies')
+      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+      .where({ 'companies.is_active': true })
+      .groupBy('companies.id')
+      .distinct('companies.id')
   }
   // get searching , /companies
   async getCountingCompaniesBySearch(
@@ -485,7 +492,7 @@ export class DataService {
   ) {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
+      .where({ 'companies.is_active': true })
       .groupBy('companies.id')
       .distinct('companies.id')
       .havingRaw(`${searchType} ${sqlLike} ?`, [searchString]);

@@ -56,3 +56,16 @@ left join company_vehicles on company_vehicles.vehicle_id = vehicles.id
 left join companies on companies.id = company_vehicles.company_id
 where devices.is_active = true
 devices.device_eui ilike '%aaa%';
+
+-- get all company vehicles have install devices before
+select companies.id as cid, companies.company_name, vehicles.id as vid, vehicles.car_plate,
+ vehicle_device.is_active as vehicle_device_active
+from companies 
+left join company_vehicles on company_vehicles.company_id = companies.id
+left join vehicles on vehicles.id = company_vehicles.vehicle_id
+left join vehicle_device on vehicle_device.vehicle_id = vehicles.id
+where company_vehicles.id not in (select company_vehicles.id from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+left join vehicles on vehicles.id = company_vehicles.vehicle_id
+left join vehicle_device on vehicle_device.vehicle_id = vehicles.id 
+where vehicle_device.is_active = false)
