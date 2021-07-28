@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
-// import "../css/TablePage.css";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
@@ -25,13 +24,11 @@ function AlertDataPage() {
   const alertDataList = alertDataPage.alertDataList;
   const activePage = alertDataPage.activePage;
   const totalPage = alertDataPage.totalPage;
-  //const limit = alertDataPage.limit;
 
   const isLoading = useSelector(
     (state: IRootState) => state.loading.loading.isLoading
   );
   const dispatch = useDispatch();
-  //let [socket, setSocket] = useState< SocketIOClient.Socket | null>(null);
 
   useEffect(() => {
     dispatch(getAlertDataListThunk(activePage, false));
@@ -50,7 +47,6 @@ function AlertDataPage() {
   }, []);
 
   return (
-    // <div className="flex-center pageContainer">
     <div className={`flex-center ${styles.pageContainer}`}>
       <div
         className="flex-center topRowContainer"
@@ -93,7 +89,6 @@ function AlertDataPage() {
               onClick={
                 placeHolderText !== "Select"
                   ? () => {
-                      // dispatch() something use value: searchInput & tableHeaders[0]
                       dispatch(
                         getAlertDataListThunk(
                           1,
@@ -109,7 +104,6 @@ function AlertDataPage() {
               <SearchIcon />
             </div>
           </div>
-          {/* </div> */}
           <div
             className="dropDownListContainer"
             style={{
@@ -184,24 +178,12 @@ function AlertDataPage() {
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >
-                  <div key={idx} className="flex-center tdItem">
-                    {item.device_eui}
-                    {/* {item.id} */}
-                  </div>
-                  <div key={idx} className="flex-center tdItem">
-                    {item.car_plate}
-                  </div>
-                  <div key={idx} className="flex-center tdItem">
-                    {item.company_name}
-                  </div>
-                  <div key={idx} className="flex-center tdItem">
-                    {item.tel}
-                  </div>
-                  <div key={idx} className="flex-center tdItem">
-                    {/* { item.location.county || item.location.city_district || item.location.quarter || item.location.road || item.location.error || ''} */}
-                    {item.address}
-                  </div>
-                  <div key={idx} className="flex-center tdItem">
+                  <div className="flex-center tdItem">{item.device_eui}</div>
+                  <div className="flex-center tdItem">{item.car_plate}</div>
+                  <div className="flex-center tdItem">{item.company_name}</div>
+                  <div className="flex-center tdItem">{item.tel}</div>
+                  <div className="flex-center tdItem">{item.address}</div>
+                  <div className="flex-center tdItem">
                     {item.date.substr(0, 10)}
                   </div>
                 </div>

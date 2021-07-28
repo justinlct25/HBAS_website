@@ -4,7 +4,7 @@ export interface AssignDeviceData {
   selectedItem: {
     companyId: number;
     companyName: string;
-    deviceId: string;
+    deviceEui: string;
     carPlate: string;
     vehicleId: number;
   };

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { io } from "socket.io-client";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import {
@@ -167,8 +166,6 @@ function ManageDevice() {
             {devicesList &&
               devicesList.length > 0 &&
               devicesList.map((item, idx) => {
-                console.log("item");
-                console.log(item);
                 return (
                   <div
                     key={item.id}

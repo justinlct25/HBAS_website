@@ -14,7 +14,8 @@ export function resetPopUpAction() {
 export function setSelectedItemAction(selectedItem: {
   companyId?: number;
   companyName?: string;
-  deviceId?: string;
+  deviceId?: number;
+  deviceEui?: string;
   carPlate?: string;
   vehicleId?: number;
 }) {

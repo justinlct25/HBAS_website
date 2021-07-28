@@ -151,7 +151,7 @@ export class DataController {
       let mixDateTime = `${newJSON.objectJSON[0].date}T${newJSON.objectJSON[0].time}`;
       let checkLalatitude = parseFloat(String(newJSON.objectJSON[0].latitude));
       let checkLongitude = parseFloat(String(newJSON.objectJSON[0].longitude));
-      
+
       if (
         checkLalatitude >= 22.1 &&
         checkLalatitude <= 22.65 &&
@@ -332,11 +332,13 @@ export class DataController {
   postCompaniesData = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-      let duplicateCompany:string[] = [];
+      let duplicateCompany: string[] = [];
       let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
-      if(parseInt(String(checkDuplicate[0].count)) > 0){
+      if (parseInt(String(checkDuplicate[0].count)) > 0) {
         duplicateCompany.push(mBody[0].companyName);
-        res.status(httpStatusCodes.BAD_REQUEST).json({data: duplicateCompany, message: 'duplicate company found'});
+        res
+          .status(httpStatusCodes.BAD_REQUEST)
+          .json({ data: duplicateCompany, message: 'Duplicate company found' });
         return;
       }
       const companiesResult: number = await this.dataService.postCompaniesData(
@@ -346,9 +348,9 @@ export class DataController {
       );
 
       // io.emit('get-new-companies');
-        res
-          .status(httpStatusCodes.CREATED)
-          .json({ data: companiesResult[0], message: 'company created' });
+      res
+        .status(httpStatusCodes.CREATED)
+        .json({ data: companiesResult[0], message: 'company created' });
       return;
     } catch (err) {
       logger.error(err.message);
@@ -432,14 +434,14 @@ export class DataController {
       const mBody = req.body;
       const companyID: number = parseInt(String(req.params.id));
       let vehiclesArray: number[] = [];
-      let vehiclesResult:number;
-      let duplicateResult:string[] = [];
+      let vehiclesResult: number;
+      let duplicateResult: string[] = [];
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
-          let checkDuplicate= await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-          if(parseInt(String(checkDuplicate[0].count)) > 0){
+          let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
+          if (parseInt(String(checkDuplicate[0].count)) > 0) {
             duplicateResult.push(mBody[i].carPlate);
-          }else{
+          } else {
             vehiclesResult = await this.dataService.postVehicles(
               mBody[i].carPlate,
               mBody[i].vehicleType,
@@ -448,16 +450,23 @@ export class DataController {
             vehiclesArray.push(vehiclesResult);
           }
         }
-        if(vehiclesArray.length > 0){
+        if (vehiclesArray.length > 0) {
           for (let i = 0; i < vehiclesArray.length; i++) {
             await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
           }
         }
       }
-      if(duplicateResult.length > 0){
-        res.status(httpStatusCodes.CREATED).json({data: duplicateResult, message: 'Vehicles created but some vehicles are duplicate' });
-      }else{
-        res.status(httpStatusCodes.CREATED).json({data: [], message: 'Vehicles created successful' });
+      if (duplicateResult.length > 0) {
+        res
+          .status(httpStatusCodes.CREATED)
+          .json({
+            data: duplicateResult,
+            message: 'Vehicles created but some vehicles are duplicate',
+          });
+      } else {
+        res
+          .status(httpStatusCodes.CREATED)
+          .json({ data: [], message: 'Vehicles created successful' });
       }
       return;
     } catch (err) {
@@ -501,16 +510,16 @@ export class DataController {
     try {
       const mBody = req.body;
       let checkResult = await this.dataService.getVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      if(checkResult === undefined || checkResult === null){
+      if (checkResult === undefined || checkResult === null) {
         // insert new link
         await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      }else{
+      } else {
         // set first data 'is_active' to be false
         await this.dataService.putVehicleDevice(checkResult.vehicle_device_id);
         // set devices 'is_register' to be false
-        await this.dataService.putDevices(checkResult.device_id)
+        await this.dataService.putDevices(checkResult.device_id);
         // insert new link
-        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);        
+        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
       }
       res.status(httpStatusCodes.CREATED).json({ message: 'vehicle & device link created' });
       return;
@@ -518,9 +527,9 @@ export class DataController {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   // get all devices only, company name & car plate
-  getAllDeviceOnly = async(req:Request, res: Response)=>{
+  getAllDeviceOnly = async (req: Request, res: Response) => {
     try {
       const result = await this.dataService.getAllDevices();
       res.status(httpStatusCodes.OK).json({ data: result, message: 'get all devices data' });
@@ -528,16 +537,22 @@ export class DataController {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 
   // get all companies only, car plate & device eui
-  getAllCompaniesOnly = async(req: Request, res: Response)=>{
+  getAllCompaniesOnly = async (req: Request, res: Response) => {
     try {
       const result = await this.dataService.getCompaniesByDevicePage();
-      res.status(httpStatusCodes.OK).json({data: result, count: result.length ,message: 'get all companies & belong their vehicles'});
+      res
+        .status(httpStatusCodes.OK)
+        .json({
+          data: result,
+          count: result.length,
+          message: 'get all companies & belong their vehicles',
+        });
     } catch (err) {
       logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!'});
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 }

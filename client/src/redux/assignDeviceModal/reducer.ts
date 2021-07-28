@@ -9,7 +9,7 @@ export const initialState: AssignDeviceState = {
     selectedItem: {
       companyId: -1,
       companyName: "",
-      deviceId: "",
+      deviceEui: "",
       carPlate: "",
       vehicleId: -1,
     },
@@ -38,6 +38,8 @@ export const assignDeviceReducer = (
         ...state,
         assignDeviceModal: {
           ...state.assignDeviceModal,
+          deviceId:
+            action.selectedItem.deviceId ?? state.assignDeviceModal.deviceId,
           selectedItem: {
             companyId:
               action.selectedItem.companyId ??
@@ -45,9 +47,9 @@ export const assignDeviceReducer = (
             companyName:
               action.selectedItem.companyName ??
               state.assignDeviceModal.selectedItem.companyName,
-            deviceId:
-              action.selectedItem.deviceId ??
-              state.assignDeviceModal.selectedItem.deviceId,
+            deviceEui:
+              action.selectedItem.deviceEui ??
+              state.assignDeviceModal.selectedItem.deviceEui,
             carPlate:
               action.selectedItem.carPlate ??
               state.assignDeviceModal.selectedItem.carPlate,
@@ -65,7 +67,7 @@ export const assignDeviceReducer = (
           deviceId: action.id,
           selectedItem: {
             ...state.assignDeviceModal.selectedItem,
-            deviceId: action.eui,
+            deviceEui: action.eui,
           },
         },
       };

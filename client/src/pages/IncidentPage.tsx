@@ -1,34 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ReactMapboxGl, { Feature, Layer } from "react-mapbox-gl";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
-import { useRouter } from "../helpers/useRouter";
 import { IRootState } from "../redux/store";
-import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
-const tableHeaders = incidentRecordsTableHeaders;
-const TABLE_WIDTH = "85%";
 const MAPBOX_TOKEN =
   "pk.eyJ1Ijoic2hpbmppMTEyOSIsImEiOiJja3F5eGcwYzMwYXlwMnVtbjhyOTl2OGI1In0.6BzqsFZ2JUSv2QkMWJy-ng";
 const Map = ReactMapboxGl({
   accessToken: MAPBOX_TOKEN,
 });
+
 function IncidentPage() {
-  const router = useRouter();
   const history = useHistory();
-  const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
-  const alertDataList = alertDataPage.alertDataList;
   const incidentPageData = useSelector(
     (state: IRootState) => state.incidentPage.incidentPage
   );
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
-  const [incidentLocation, setIncidentLocation] = useState<{
-    longitude: number;
-    latitude: number;
-  }>();
 
   const companiesDataList = useSelector(
     (state: IRootState) => state.companiesDataList
@@ -37,23 +27,10 @@ function IncidentPage() {
   const data = useSelector(
     (state: IRootState) => state.incidentPage.incidentPage
   );
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchIncidentById = async () => {
-      const splitRoute = router.pathname.split("/");
-      const routeId = splitRoute[splitRoute.length - 1];
-      //fetch action
-      // fetch(`http:\\gsregsergsreg${routeId}`)
-    };
-
-    setIncidentLocation({
-      longitude: incidentPageData.longitude,
-      latitude: incidentPageData.latitude,
-    });
-    fetchIncidentById();
-  }, [dispatch, router.pathname]);
+  const [incidentLocation, setIncidentLocation] = useState<{
+    longitude: number;
+    latitude: number;
+  }>({ longitude: Number(data.longitude), latitude: Number(data.latitude) });
 
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
@@ -124,14 +101,23 @@ function IncidentPage() {
               width: "100%",
             }}
             zoom={[12]}
-            center={[Number(data.longitude), Number(data.latitude)]}
+            center={[incidentLocation.longitude, incidentLocation.latitude]}
+            onStyleLoad={() =>
+              setIncidentLocation({
+                longitude: incidentPageData.longitude,
+                latitude: incidentPageData.latitude,
+              })
+            }
           >
             <Layer
               type="circle"
               paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
             >
               <Feature
-                coordinates={[Number(data.longitude), Number(data.latitude)]}
+                coordinates={[
+                  incidentLocation.longitude,
+                  incidentLocation.latitude,
+                ]}
               />
             </Layer>
           </Map>
@@ -142,7 +128,7 @@ function IncidentPage() {
                 : "flex-center caretButton hiddenReport"
             }
             style={{
-              width: isReportOpen ? "30%" : "3%",
+              width: isReportOpen ? "480px" : "3%",
             }}
           >
             <div
@@ -161,6 +147,7 @@ function IncidentPage() {
             <div
               className="flex-center"
               style={{
+                minWidth: "400px",
                 flexDirection: "column",
                 alignItems: "flex-start",
                 opacity: isReportOpen ? 1 : 0,

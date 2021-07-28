@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
@@ -24,8 +25,6 @@ function ProfilePage() {
     const routeId = splitRoute[splitRoute.length - 1];
     dispatch(getProfileListThunk(parseInt(routeId), true));
   }, [dispatch]);
-
-  console.log(profileList);
 
   return (
     <div className="flex-center pageContainer">
@@ -133,15 +132,16 @@ function ProfilePage() {
                     className="deviceVehicleCard"
                     key={idx}
                     onClick={() => {
-                      dispatch(setPopUpIsActiveAction(true));
-                      //get item.vehicle_id
-                      dispatch(
-                        setSelectedItemAction({
-                          companyName: item.company_name,
-                          carPlate: item.car_plate,
-                          vehicleId: item.vehicle_id,
-                        })
-                      );
+                      // dispatch(setPopUpIsActiveAction(true));
+                      // dispatch(
+                      //   setSelectedItemAction({
+                      //     companyName: item.company_name,
+                      //     carPlate: item.car_plate,
+                      //     vehicleId: item.vehicle_id,
+                      //     deviceEui: item.device_eui,
+                      //     deviceId: item.device_id,
+                      //   })
+                      // );
                     }}
                   >
                     <div className="flex-center">
