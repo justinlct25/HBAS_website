@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { io } from "socket.io-client";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import {

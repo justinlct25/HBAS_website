@@ -27,16 +27,19 @@ function AssignDeviceByVehicleModal() {
   const handleSubmit = () => {
     const assignDevice = async () => {
       try {
-        const res = await fetch(`http://localhost:8085/vehicle_device`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
-          body: JSON.stringify({
-            vehicleID: assignDeviceModal.selectedItem.vehicleId,
-            deviceID: assignDeviceModal.deviceId,
-          }),
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_API_SERVER}/vehicle_device`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+            body: JSON.stringify({
+              vehicleID: assignDeviceModal.selectedItem.vehicleId,
+              deviceID: assignDeviceModal.deviceId,
+            }),
+          }
+        );
         if (res.status === 201 || res.status === 200) {
           const data = await res.json();
         }

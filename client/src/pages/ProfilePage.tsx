@@ -132,16 +132,16 @@ function ProfilePage() {
                     className="deviceVehicleCard"
                     key={idx}
                     onClick={() => {
-                      dispatch(setPopUpIsActiveAction(true));
-                      dispatch(
-                        setSelectedItemAction({
-                          companyName: item.company_name,
-                          carPlate: item.car_plate,
-                          vehicleId: item.vehicle_id,
-                          deviceEui: item.device_eui,
-                          deviceId: item.device_id,
-                        })
-                      );
+                      // dispatch(setPopUpIsActiveAction(true));
+                      // dispatch(
+                      //   setSelectedItemAction({
+                      //     companyName: item.company_name,
+                      //     carPlate: item.car_plate,
+                      //     vehicleId: item.vehicle_id,
+                      //     deviceEui: item.device_eui,
+                      //     deviceId: item.device_id,
+                      //   })
+                      // );
                     }}
                   >
                     <div className="flex-center">

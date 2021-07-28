@@ -15,9 +15,6 @@ import {
 } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
-import { io } from "socket.io-client";
-import Loading from "../components/Loading";
-import { setIsLoadingAction } from "../redux/loading/action";
 
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;

@@ -78,12 +78,15 @@ export const Modal = (props: ModalProps) => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await fetch(`http://localhost:8085/allDevices`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          });
+          const res = await fetch(
+            `${process.env.REACT_APP_API_SERVER}/allDevices`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+            }
+          );
           if (res.status === 201 || res.status === 200) {
             const data: fetchedData = await res.json();
             const allDevices = await data.data.slice();
@@ -101,12 +104,15 @@ export const Modal = (props: ModalProps) => {
     } else {
       const fetchAllCompanies = async () => {
         try {
-          const res = await fetch(`http://localhost:8085/companies`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          });
+          const res = await fetch(
+            `${process.env.REACT_APP_API_SERVER}/companies`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+            }
+          );
           if (res.status === 201 || res.status === 200) {
             const result = await res.json();
             setCompanyList(result.companies);
@@ -119,12 +125,15 @@ export const Modal = (props: ModalProps) => {
     }
     const fetchAllVehicles = async () => {
       try {
-        const res = await fetch(`http://localhost:8085/allCompanies`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_API_SERVER}/allCompanies`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          }
+        );
         if (res.status === 201 || res.status === 200) {
           const result = await res.json();
           setAllVehicles(result.data);
