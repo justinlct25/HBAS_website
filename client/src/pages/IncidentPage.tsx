@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import ReactMapboxGl, { Feature, Layer } from "react-mapbox-gl";
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
@@ -90,26 +91,28 @@ function IncidentPage() {
             </div>
           </div>
           {/* Map here */}
+          {/* <div>{incidentPageData.longitude}</div>
+          <div>{incidentPageData.latitude}</div> */}
           <Map
             style={
               isLiveView
                 ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
                 : "mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
             }
-            containerStyle={{
-              height: "100%",
-              width: "100%",
-            }}
-            zoom={[12]}
-            center={[incidentLocation.longitude, incidentLocation.latitude]}
-            onStyleLoad={() =>
-              setIncidentLocation({
-                longitude: incidentPageData.longitude,
-                latitude: incidentPageData.latitude,
-              })
-            }
+            // containerStyle={{
+            //   height: "100%",
+            //   width: "100%",
+            // }}
+            // zoom={[12]}
+            // center={[incidentLocation.longitude, incidentLocation.latitude]}
+            // onStyleLoad={() =>
+            //   setIncidentLocation({
+            //     longitude: incidentPageData.longitude,
+            //     latitude: incidentPageData.latitude,
+            //   })
+            // }
           >
-            <Layer
+            {/* <Layer
               type="circle"
               paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
             >
@@ -119,7 +122,7 @@ function IncidentPage() {
                   incidentLocation.latitude,
                 ]}
               />
-            </Layer>
+            </Layer> */}
           </Map>
           <div
             className={

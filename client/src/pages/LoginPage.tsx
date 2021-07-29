@@ -87,6 +87,9 @@ function LoginPage() {
           <div className="button" onClick={handleLogin}>
             Login
           </div>
+          <div>
+            second time
+          </div>
         </div>
       </div>
     </div>
