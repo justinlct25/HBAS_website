@@ -10,6 +10,8 @@ import ManageDevice from "./pages/ManageDevice";
 import ManageUser from "./pages/ManageUser";
 import ProfilePage from "./pages/ProfilePage";
 import Statistics from "./pages/Statistics";
+// import Statistics from "./pages/Statistics.jsx";
+import TestMap from "./pages/TestMap";
 import { history } from "./redux/store";
 
 function App() {
@@ -37,6 +39,7 @@ function App() {
           <Route path="/manage-user" exact={true} component={ManageUser} />
           <Route path="/manage-device" exact={true} component={ManageDevice} />
           <Route path="/statistics" exact={true} component={Statistics} />
+          <Route path="/test-map" exact={true} component={TestMap} />
         </Switch>
       </ConnectedRouter>
     </div>

@@ -16,6 +16,7 @@ function NavBar() {
     { display: "Manage User", link: "/manage-user" },
     { display: "Manage Device", link: "/manage-device" },
     { display: "Statistics (Coming soon)", link: "/statistics" },
+    { display: "Test Map Page", link: "/test-map" },
   ];
 
   const closePathA =
