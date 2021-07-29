@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
-import fetch from 'node-fetch';
+import * as gpsFetch from 'node-fetch';
 import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
@@ -158,7 +158,7 @@ export class DataController {
         checkLongitude >= 113.75 &&
         checkLongitude <= 114.45
       ) {
-        await fetch(
+        await gpsFetch.default(
           `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
         )
           .then((response: any) => response.json())

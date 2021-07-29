@@ -188,21 +188,57 @@ export class DataService {
   ////---- RESTful /companies ----////
   // get /companies
   async getCompaniesData(offset: number, limit: number) {
-    return await this.knex('companies')
+    return await this.knex.raw(`
+    select distinct(companies.id), companies.company_name, 
+    companies.tel, companies.contact_person, 
+    count(company_vehicles.company_id),companies.updated_at as c_updated_at 
+    from companies
+    left join company_vehicles on company_vehicles.company_id = companies.id
+    where companies.is_active = true and company_vehicles.is_active = true
+    group by companies.id
+    union 
+    select distinct(companies.id), companies.company_name, 
+    companies.tel, companies.contact_person, 
+    count(company_vehicles.company_id),companies.updated_at as c_updated_at
+    from companies
+    left join company_vehicles on company_vehicles.company_id = companies.id
+    where companies.is_active = true and company_vehicles.is_active is null
+    group by companies.id
+    order by c_updated_at
+    limit ? offset ?
+  `, [limit, offset]);
+  /*
+    await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true })
-      .groupBy('companies.id')
-      .orderBy('companies.updated_at', 'desc')
-      .distinct('companies.id')
+      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true})
       .select(
+        'companies.id',
         'companies.company_name',
         'companies.tel',
         'companies.contact_person',
         'companies.updated_at'
-      )
-      .count<number>('company_vehicles.company_id')
+        )
+        .count('company_vehicles.company_id')
+        .groupBy('companies.id')
+      .unionAll(function(){
+        this.from('companies')
+          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+          .where({ 'companies.is_active': true})
+          .whereNull('company_vehicles.is_active')
+          .select(
+            'companies.id',
+            'companies.company_name',
+            'companies.tel',
+            'companies.contact_person',
+            'companies.updated_at as company_updated_at'
+            )
+            .count('company_vehicles.company_id')
+            // .groupBy('companies.id')
+        }, false)
+      // .groupBy('companies.id')
+      .orderBy('companies.updated_at', 'desc')
       .limit(limit)
-      .offset(offset);
+      .offset(offset);*/
   }
   // get /companies, when searching string
   async getCompaniesDataBySearch(
@@ -473,9 +509,16 @@ export class DataService {
   async getCountingCompanies() {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true })
+      .where({ 'companies.is_active': true , 'company_vehicles.is_active': true})
+      .select('companies.id')
+      .union(function(){
+        this.from('companies')
+          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+          .where({ 'companies.is_active': true })
+          .whereNull('company_vehicles.is_active')
+          .select('companies.id')
+      })
       .groupBy('companies.id')
-      .distinct('companies.id')
   }
   // get searching , /companies
   async getCountingCompaniesBySearch(
@@ -537,11 +580,11 @@ export class DataService {
       .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
       .where({
         'companies.id': id,
-        //'vehicle_device.is_active': true,
-        // 'company_vehicles.is_active': true
+        'companies.is_active':true,
+        'vehicles.is_active': true,
+        'company_vehicles.is_active': true
       })
       // .andWhereNot('vehicle_device.is_active', false)
-      .orderBy('vehicles.updated_at', 'desc')
       .select(
         'companies.id',
         'companies.company_name',
@@ -555,7 +598,35 @@ export class DataService {
         'devices.device_eui',
         'devices.device_name',
         'devices.is_active'
-      );
+      )
+      .union(function(){
+        this.from('companies')
+          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+          .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
+          .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
+          .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
+          .where({
+            'companies.id': id,
+            'companies.is_active':true,
+            'vehicles.is_active': true,
+          })
+          .whereNull('company_vehicles.is_active')
+          .select(
+            'companies.id',
+            'companies.company_name',
+            'companies.tel',
+            'companies.contact_person',
+            'vehicles.id as vehicle_id',
+            'vehicles.car_plate',
+            'vehicles.vehicle_model',
+            'vehicles.vehicle_type',
+            'devices.id as device_id',
+            'devices.device_eui',
+            'devices.device_name',
+            'devices.is_active'
+          )
+      })
+      .orderBy('vehicle.updated_at', 'desc')
   }
   // check duplicate #company_name
   async checkCompanyDuplicate(company_name: string) {
