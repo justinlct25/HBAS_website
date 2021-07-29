@@ -69,3 +69,75 @@ left join company_vehicles on company_vehicles.company_id = companies.id
 left join vehicles on vehicles.id = company_vehicles.vehicle_id
 left join vehicle_device on vehicle_device.vehicle_id = vehicles.id 
 where vehicle_device.is_active = false)
+
+
+-- get companies table join to devices table
+select companies.id as cid, companies.company_name, 
+companies.tel, companies.contact_person, companies.is_active as c_is_active, 
+company_vehicles.id as cvid, company_vehicles.company_id, company_vehicles.vehicle_id, 
+company_vehicles.is_active as cv_is_active, vehicles.id as vid, 
+vehicles.car_plate, vehicles.vehicle_model, vehicles.vehicle_type, 
+vehicles.is_active as v_is_active, vehicle_device.id as vdid, vehicle_device.device_id, 
+vehicle_device.vehicle_id, vehicle_device.is_active as vd_is_active, 
+devices.id as did, devices.device_name, devices.device_eui, devices.is_active as d_is_active
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+left join vehicles on vehicles.id = company_vehicles.vehicle_id
+left join vehicle_device on vehicle_device.vehicle_id = vehicles.id
+left join devices on devices.id = vehicle_device.device_id
+
+-- get companies table and count vehicles
+select distinct(companies.id), companies.company_name, 
+companies.tel, companies.contact_person, 
+count(company_vehicles.company_id),companies.updated_at as c_updated_at 
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+where companies.is_active = true and company_vehicles.is_active = true
+group by companies.id
+union 
+select distinct(companies.id), companies.company_name, 
+companies.tel, companies.contact_person, 
+count(company_vehicles.company_id),companies.updated_at as c_updated_at
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+where companies.is_active = true and company_vehicles.is_active is null
+group by companies.id
+order by c_updated_at
+
+-- get count length for company below
+select distinct(companies.id)
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+where company_vehicles.is_active = true group by companies.id
+union 
+select distinct(companies.id) 
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+where company_vehicles.is_active is null group by companies.id
+
+-- get profile by id
+select companies.id, companies.company_name, companies.tel, 
+companies.contact_person, vehicles.id as vehicle_id, 
+vehicles.car_plate, vehicles.vehicle_model, 
+vehicles.vehicle_type,  
+devices.id as device_id, devices.device_eui, 
+devices.device_name
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+left join vehicles on vehicles.id = company_vehicles.vehicle_id
+left join vehicle_device on vehicle_device.vehicle_id = vehicles.id
+left join devices on devices.id = vehicle_device.device_id
+where companies.id = 9 and vehicle_device.is_active = true
+union all
+select companies.id, companies.company_name, companies.tel, 
+companies.contact_person, vehicles.id as vehicle_id, 
+vehicles.car_plate, vehicles.vehicle_model, 
+vehicles.vehicle_type, 
+devices.id as device_id, devices.device_eui, 
+devices.device_name
+from companies
+left join company_vehicles on company_vehicles.company_id = companies.id
+left join vehicles on vehicles.id = company_vehicles.vehicle_id
+left join vehicle_device on vehicle_device.vehicle_id = vehicles.id
+left join devices on devices.id = vehicle_device.device_id
+where companies.id = 9 and vehicle_device.is_active is null
