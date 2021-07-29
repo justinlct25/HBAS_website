@@ -11,7 +11,6 @@ export function getProfileListThunk(id: number, isInit: boolean) {
 
       if (res.status === 200) {
         const data = await res.json();
-        console.log(data);
         dispatch(setProfileList(data.data));
       }
       return;

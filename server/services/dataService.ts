@@ -189,7 +189,7 @@ export class DataService {
   // get /companies
   async getCompaniesData(offset: number, limit: number) {
     return await this.knex.raw(`
-    select distinct(companies.id), companies.company_name, 
+    select companies.id, companies.company_name, 
     companies.tel, companies.contact_person, 
     count(company_vehicles.company_id),companies.updated_at as c_updated_at 
     from companies
@@ -197,7 +197,7 @@ export class DataService {
     where companies.is_active = true and company_vehicles.is_active = true
     group by companies.id
     union 
-    select distinct(companies.id), companies.company_name, 
+    select companies.id, companies.company_name, 
     companies.tel, companies.contact_person, 
     count(company_vehicles.company_id),companies.updated_at as c_updated_at
     from companies
@@ -556,11 +556,11 @@ export class DataService {
   }
   ////---- others ----////
   // get device id to confirm
-  async getDevicesID(reqName: string, reqEUI: string) {
+  async getDevicesID(reqEUI: string) {
     return await this.knex
       .select<{ id: number }>('id')
       .from('devices')
-      .where({ device_name: reqName, device_eui: reqEUI })
+      .where({ device_eui: reqEUI })
       .first();
   }
 
@@ -608,9 +608,9 @@ export class DataService {
           .where({
             'companies.id': id,
             'companies.is_active':true,
-            'vehicles.is_active': true,
           })
           .whereNull('company_vehicles.is_active')
+          .whereNull('vehicles.is_active')
           .select(
             'companies.id',
             'companies.company_name',
@@ -626,7 +626,7 @@ export class DataService {
             'devices.is_active'
           )
       })
-      .orderBy('vehicle.updated_at', 'desc')
+      //.orderBy('vehicles.updated_at', 'desc')
   }
   // check duplicate #company_name
   async checkCompanyDuplicate(company_name: string) {
@@ -645,42 +645,40 @@ export class DataService {
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
     return await this.knex
-      .select(
-        'alert_data.id',
-        'devices.device_name',
-        'devices.device_eui',
-        `alert_data.date`,
-        'alert_data.time',
-        'alert_data.geolocation',
-        'alert_data.battery',
-        'alert_data.address',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person',
-        'alert_data.created_at',
-        'vehicles.car_plate',
-        'vehicles.vehicle_model',
-        'vehicle_type',
-        'alert_data.msg_type'
-      )
-      .from('alert_data')
-      .leftJoin('devices', 'devices.id', 'alert_data.device_id')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'companies.is_active': true,
-        'devices.is_active': true,
-        'alert_data.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-        'vehicle_device.is_active': true,
-        'alert_data.msg_type': 'B',
-      })
-      .orderBy('alert_data.date', 'desc')
-      .limit(limit)
-      .offset(offset);
+    .select(
+      'alert_data.id',
+      'devices.device_name',
+      'devices.device_eui',
+      `alert_data.date`,
+      'alert_data.geolocation',
+      'alert_data.battery',
+      'alert_data.address',
+      'companies.company_name',
+      'companies.tel',
+      'companies.contact_person',
+      'vehicles.car_plate',
+      'vehicles.vehicle_model',
+      'vehicle_type',
+      'alert_data.msg_type'
+    )
+    .from('alert_data')
+    .leftJoin('devices', 'devices.id', 'alert_data.device_id')
+    .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+    .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+    .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+    .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+    .where({
+      'companies.is_active': true,
+      'devices.is_active': true,
+      'alert_data.is_active': true,
+      'vehicles.is_active': true,
+      'company_vehicles.is_active': true,
+      'vehicle_device.is_active': true,
+      'alert_data.msg_type': 'B',
+    })
+    .orderBy('alert_data.date', 'desc')
+    .limit(limit)
+    .offset(offset);
   }
   async getAllMsgTypeData(offset: number, limit: number) {
     return await this.knex
@@ -689,14 +687,12 @@ export class DataService {
         'devices.device_name',
         'devices.device_eui',
         `alert_data.date`,
-        'alert_data.time',
         'alert_data.geolocation',
         'alert_data.battery',
         'alert_data.address',
         'companies.company_name',
         'companies.tel',
         'companies.contact_person',
-        'alert_data.created_at',
         'vehicles.car_plate',
         'vehicles.vehicle_model',
         'vehicle_type',

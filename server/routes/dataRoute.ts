@@ -42,3 +42,5 @@ dataRoutes.delete(`/devices/version`);
 dataRoutes.get(`/profile/:id`, dataController.getProfileData);
 dataRoutes.get(`/allDevices`, dataController.getAllDeviceOnly);
 dataRoutes.get(`/allCompanies`, dataController.getAllCompaniesOnly);
+dataRoutes.get(`/batteryData`, dataController.getBatteryData);
+dataRoutes.get(`/alertBatteryData`, dataController.getAllTypeData);

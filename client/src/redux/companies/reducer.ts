@@ -21,6 +21,7 @@ export const ICompaniesDataReducer = (
         activePage: initCompaniesDataState.activePage,
         totalPage: initCompaniesDataState.totalPage,
         limit: initCompaniesDataState.limit,
+        formErrorInput: initCompaniesDataState.formErrorInput,
       };
 
     case "@@ManageUser/ERROR_handle":

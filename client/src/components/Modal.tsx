@@ -50,6 +50,8 @@ type vehicleList = Array<{
   vehicle_id: number;
 }>;
 
+const { REACT_APP_API_SERVER } = process.env;
+
 export const Modal = (props: ModalProps) => {
   const { isOpen, modalType, setSelectModalOpen } = props;
   const [focusNewDevice, setFocusNewDevice] = useState(true);
@@ -79,7 +81,7 @@ export const Modal = (props: ModalProps) => {
       const fetchAllDevices = async () => {
         try {
           const res = await fetch(
-            `${process.env.REACT_APP_API_SERVER}/allDevices`,
+            `${REACT_APP_API_SERVER}/allDevices`,
             {
               method: "GET",
               headers: {
@@ -105,7 +107,7 @@ export const Modal = (props: ModalProps) => {
       const fetchAllCompanies = async () => {
         try {
           const res = await fetch(
-            `${process.env.REACT_APP_API_SERVER}/companies`,
+            `${REACT_APP_API_SERVER}/companies`,
             {
               method: "GET",
               headers: {
@@ -126,7 +128,7 @@ export const Modal = (props: ModalProps) => {
     const fetchAllVehicles = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}/allCompanies`,
+          `${REACT_APP_API_SERVER}/allCompanies`,
           {
             method: "GET",
             headers: {

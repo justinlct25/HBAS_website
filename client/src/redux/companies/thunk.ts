@@ -44,7 +44,7 @@ export function getCompaniesDataListThunk(
 }
 
 export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
-  return async (dispatch: Dispatch<ICompaniesDataActions>) => {
+  return async (dispatch: Dispatch<ICompaniesDataActions>, dispatch2: Dispatch<ICompaniesDataActions>) => {
     try {
       console.log("test input data from thunk");
       const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
@@ -56,9 +56,6 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
       });
       if (res.status === 201 || res.status === 200) {
         const data = await res.json();
-        console.log("returning from service");
-        console.log(data.data);
-        console.log(totalVehicle.length);
         if (totalVehicle.length > 0) {
           const res = await fetch(
             `${REACT_APP_API_SERVER}/vehicles/${data.data}`,
@@ -72,14 +69,15 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
           );
           if (res.status === 201 || res.status === 200) {
             const data = await res.json();
-            console.log(data);
+            if(data.data.length > 0 || data.blank > 0){
+              alert(`${data.message}`);
+            }
             dispatch(errorCompaniesInput(false));
             //@ts-ignore
             dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
             return;
           }
         }
-        console.log("no vehicles");
         dispatch(errorCompaniesInput(false));
         //@ts-ignore
         dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
@@ -91,7 +89,6 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
       }
       //@ts-ignore
       dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
-      console.log(res);
       return;
     } catch (err) {
       console.error(err);

@@ -4,6 +4,7 @@ import * as gpsFetch from 'node-fetch';
 import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
+import { base64ToHex } from '../utils/eui_decoder';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -88,10 +89,8 @@ export class DataController {
       const queryMethod = req.query;
       const dataResult = req.body;
       //check query join / up first
-      const deviceID = await this.dataService.getDevicesID(
-        dataResult.deviceName,
-        dataResult.devEUI
-      );
+      const hex_eui = base64ToHex(dataResult.devEUI);
+      const deviceID = await this.dataService.getDevicesID(hex_eui);
       if (queryMethod.event != 'up') {
         if (queryMethod.event == 'join') {
           if (deviceID == undefined || deviceID == null) {
@@ -261,7 +260,7 @@ export class DataController {
       const searchType = String(req.query.searchType);
       const searchString = String(req.query.searchString);
       const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1);
+      const OFFSET: number = LIMIT * (page - 1) || 0;
       let newSearchType = '';
       let sqlLike = 'ILIKE';
       let newSearchString: string | number = searchString;
@@ -317,7 +316,7 @@ export class DataController {
             newSearchString
           ));
       res.status(httpStatusCodes.OK).json({
-        companies: companyResult,
+        companies: companyResult.rows,
         totalPage: totalPage,
         limit: LIMIT,
         message: 'get company data',
@@ -332,6 +331,10 @@ export class DataController {
   postCompaniesData = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
+      if(mBody[0].companyName === "" || mBody[0].tel === ""){
+        res.status(httpStatusCodes.BAD_REQUEST).json({message:'Blank columns is found, please press valid input.'});
+        return;
+      }
       let duplicateCompany: string[] = [];
       let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
       if (parseInt(String(checkDuplicate[0].count)) > 0) {
@@ -436,18 +439,23 @@ export class DataController {
       let vehiclesArray: number[] = [];
       let vehiclesResult: number;
       let duplicateResult: string[] = [];
+      let blankResult:number = 0;
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
-          let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-          if (parseInt(String(checkDuplicate[0].count)) > 0) {
-            duplicateResult.push(mBody[i].carPlate);
-          } else {
-            vehiclesResult = await this.dataService.postVehicles(
-              mBody[i].carPlate,
-              mBody[i].vehicleType,
-              mBody[i].vehicleModel
-            );
-            vehiclesArray.push(vehiclesResult);
+          if(mBody[i].carPlate === ""){
+            ++blankResult;
+          }else{
+            let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
+            if (parseInt(String(checkDuplicate[0].count)) > 0) {
+              duplicateResult.push(mBody[i].carPlate);
+            } else {
+              vehiclesResult = await this.dataService.postVehicles(
+                mBody[i].carPlate,
+                mBody[i].vehicleType,
+                mBody[i].vehicleModel
+              );
+              vehiclesArray.push(vehiclesResult);
+            }
           }
         }
         if (vehiclesArray.length > 0) {
@@ -456,17 +464,21 @@ export class DataController {
           }
         }
       }
-      if (duplicateResult.length > 0) {
+      if (duplicateResult.length > 0 || blankResult > 0) {
         res
-          .status(httpStatusCodes.CREATED)
+          .status(httpStatusCodes.OK)
           .json({
             data: duplicateResult,
-            message: 'Vehicles created but some vehicles are duplicate',
+            blank: blankResult,
+            message: `Success insert: ${vehiclesArray.length}, 
+            Duplicate car plate: ${duplicateResult.length}, 
+            Empty car plate: ${blankResult}
+            `,
           });
       } else {
         res
           .status(httpStatusCodes.CREATED)
-          .json({ data: [], message: 'Vehicles created successful' });
+          .json({ data: [], blank: 0, message: 'Vehicles created successful' });
       }
       return;
     } catch (err) {
@@ -498,6 +510,7 @@ export class DataController {
     try {
       const companyID = req.params;
       const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)));
+      console.log(result);
       res.status(httpStatusCodes.OK).json({ data: result, message: 'test' });
       return;
     } catch (err) {
@@ -555,4 +568,32 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+
+  getBatteryData = async (req:Request, res:Response)=>{
+    try {
+      const page: number = parseInt(String(req.query.page));
+      const LIMIT: number = 10;
+      const OFFSET: number = LIMIT * (page - 1);
+      const result = await this.dataService.getBatteryData(OFFSET, LIMIT);
+      res.status(httpStatusCodes.OK).json({data:result,message:'get battery data'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
+
+  getAllTypeData = async (req:Request, res:Response)=>{
+    try {
+      const page: number = parseInt(String(req.query.page));
+      const LIMIT: number = 10;
+      const OFFSET: number = LIMIT * (page - 1);
+      const result = await this.dataService.getAllMsgTypeData(OFFSET,LIMIT);
+      res.status(httpStatusCodes.OK).json({data:result,message:'get all type data'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
 }
