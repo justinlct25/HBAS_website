@@ -55,14 +55,7 @@ export class DataService {
       .insert({
         device_id,
         data,
-        date: new Date(date).toLocaleDateString('en-CA', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        }),
+        date: date,
         geolocation: `${latitude},${longitude}`,
         address,
         battery,

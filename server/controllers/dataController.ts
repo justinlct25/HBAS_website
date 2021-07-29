@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
-import fetch from 'node-fetch';
 import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
@@ -161,8 +160,8 @@ export class DataController {
         await fetch(
           `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
         )
-          .then((response) => response.json())
-          .then((data) => {
+          .then((response: any) => response.json())
+          .then((data: any) => {
             data.address.county
               ? addressJSON.push(
                   JSON.stringify(data.address.county)

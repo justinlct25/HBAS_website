@@ -13,7 +13,7 @@ type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
 type InsertAlertData = {
   device_id: number | undefined;
-  date: string;
+  date: any;
   geolocation: string;
   address: string;
   battery: string;
@@ -57,14 +57,7 @@ export async function seed(knex: Knex): Promise<void> {
 
   const alertData: Array<InsertAlertData> = insertedAlertData.map((session) => ({
     device_id: devicesMap.get(session.device_eui),
-    date: new Date(session.date).toLocaleDateString('en-CA', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-    }),
+    date: session.date,
     geolocation: session.geolocation,
     address: session.address,
     battery: session.battery,
