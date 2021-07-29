@@ -1,41 +1,40 @@
-import React from "react";
-import { useState } from "react";
-import ReactMapboxGl, { Feature, Layer } from "react-mapbox-gl";
-import "../css/TablePage.css";
-const MAPBOX_TOKEN =
-  "pk.eyJ1Ijoic2hpbmppMTEyOSIsImEiOiJja3F5eGcwYzMwYXlwMnVtbjhyOTl2OGI1In0.6BzqsFZ2JUSv2QkMWJy-ng";
-const Map = ReactMapboxGl({
-  accessToken: MAPBOX_TOKEN,
-});
-function TestMap() {
-  const [incidentLocation, setIncidentLocation] = useState({
-    longitude: 114.21664,
-    latitude: 22.315136,
-  });
+import React, { Component } from "react";
+import GoogleMapReact from "google-map-react";
 
-  return (
-    <div style={{ width: "100%", height: "90vh" }}>
-      <Map
-        style={"mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"}
-        containerStyle={{
-          height: "100%",
-          width: "100%",
-        }}
-        zoom={[12]}
-        center={[114.21664, 22.315136]}
-        onStyleLoad={() =>
-          setIncidentLocation({ longitude: 114.21664, latitude: 22.315136 })
-        }
-      >
-        <Layer
-          type="circle"
-          paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
+const AnyReactComponent = ({ text }) => (
+  <div
+    style={{
+      width: "25px",
+      height: "25px",
+      background: "#0FF",
+      borderRadius: "50%",
+    }}
+  />
+);
+
+class TestMap extends Component {
+  static defaultProps = {
+    center: {
+      lat: 22.315136,
+      lng: 114.21664,
+    },
+    zoom: 17,
+  };
+
+  render() {
+    return (
+      // Important! Always set the container height explicitly
+      <div style={{ height: "100vh", width: "100%" }}>
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: "AIzaSyBx7Ij27LTfDI9SH8CWe_vVg5UXegxFyF4" }}
+          defaultCenter={this.props.center}
+          defaultZoom={this.props.zoom}
         >
-          <Feature coordinates={[114.21664, 22.315136]} />
-        </Layer>
-      </Map>
-    </div>
-  );
+          <AnyReactComponent lat={22.315136} lng={114.21664} text="My Marker" />
+        </GoogleMapReact>
+      </div>
+    );
+  }
 }
 
 export default TestMap;
