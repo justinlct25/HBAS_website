@@ -29,8 +29,8 @@ dataRoutes.put(`/devices`);
 dataRoutes.delete(`/devices`);
 
 dataRoutes.get(`/vehicle_device`);
-dataRoutes.post(`/vehicle_device`, dataController.postVehicleDevice);// profile add new link
-dataRoutes.put(`/vehicle_device`);// profile update exist vehicle_device
+dataRoutes.post(`/vehicle_device`, dataController.postVehicleDevice); // profile add new link
+dataRoutes.put(`/vehicle_device`); // profile update exist vehicle_device
 dataRoutes.delete(`/vehicle_device`);
 
 dataRoutes.get(`/devices/version`, dataController.getDevicesVersion);

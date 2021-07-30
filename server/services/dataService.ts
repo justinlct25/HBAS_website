@@ -188,7 +188,8 @@ export class DataService {
   ////---- RESTful /companies ----////
   // get /companies
   async getCompaniesData(offset: number, limit: number) {
-    return await this.knex.raw(`
+    return await this.knex.raw(
+      `
     select companies.id, companies.company_name, 
     companies.tel, companies.contact_person, 
     count(company_vehicles.company_id),companies.updated_at as c_updated_at 
@@ -206,8 +207,10 @@ export class DataService {
     group by companies.id
     order by c_updated_at
     limit ? offset ?
-  `, [limit, offset]);
-  /*
+  `,
+      [limit, offset]
+    );
+    /*
     await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
       .where({ 'companies.is_active': true, 'company_vehicles.is_active': true})
@@ -253,8 +256,8 @@ export class DataService {
       .groupBy('companies.id')
       .distinct('companies.id')
       .select(
-        'companies.company_name', 
-        'companies.tel', 
+        'companies.company_name',
+        'companies.tel',
         'companies.contact_person',
         'companies.updated_at'
       )
@@ -291,13 +294,13 @@ export class DataService {
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
       .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
       .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .whereNotIn('company_vehicles.id', function(){
+      .whereNotIn('company_vehicles.id', function () {
         this.from('companies')
-            .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-            .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
-            .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-            .where('vehicle_device.is_active', false)
-            .select('company_vehicles.id')
+          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
+          .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
+          .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
+          .where('vehicle_device.is_active', false)
+          .select('company_vehicles.id');
       })
       .where({
         'companies.is_active': true,
@@ -310,7 +313,7 @@ export class DataService {
         'vehicles.id as vehicle_id',
         'vehicles.car_plate',
         'vehicle_device.is_active as vehicle_device_active'
-      )
+      );
   }
   // post /companies
   async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
@@ -509,16 +512,16 @@ export class DataService {
   async getCountingCompanies() {
     return await this.knex('companies')
       .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .where({ 'companies.is_active': true , 'company_vehicles.is_active': true})
+      .where({ 'companies.is_active': true, 'company_vehicles.is_active': true })
       .select('companies.id')
-      .union(function(){
+      .union(function () {
         this.from('companies')
           .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
           .where({ 'companies.is_active': true })
           .whereNull('company_vehicles.is_active')
-          .select('companies.id')
+          .select('companies.id');
       })
-      .groupBy('companies.id')
+      .groupBy('companies.id');
   }
   // get searching , /companies
   async getCountingCompaniesBySearch(
@@ -580,9 +583,9 @@ export class DataService {
       .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
       .where({
         'companies.id': id,
-        'companies.is_active':true,
+        'companies.is_active': true,
         'vehicles.is_active': true,
-        'company_vehicles.is_active': true
+        'company_vehicles.is_active': true,
       })
       // .andWhereNot('vehicle_device.is_active', false)
       .select(
@@ -599,7 +602,7 @@ export class DataService {
         'devices.device_name',
         'devices.is_active'
       )
-      .union(function(){
+      .union(function () {
         this.from('companies')
           .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
           .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
@@ -607,7 +610,7 @@ export class DataService {
           .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
           .where({
             'companies.id': id,
-            'companies.is_active':true,
+            'companies.is_active': true,
           })
           .whereNull('company_vehicles.is_active')
           .whereNull('vehicles.is_active')
@@ -624,61 +627,61 @@ export class DataService {
             'devices.device_eui',
             'devices.device_name',
             'devices.is_active'
-          )
-      })
-      //.orderBy('vehicles.updated_at', 'desc')
+          );
+      });
+    //.orderBy('vehicles.updated_at', 'desc')
   }
   // check duplicate #company_name
   async checkCompanyDuplicate(company_name: string) {
     return await this.knex('companies')
       .where('company_name', 'ILIKE', `${company_name}`)
       .andWhere('is_active', true)
-      .count('id')
+      .count('id');
   }
   // check duplicate #car_plate
   async checkCarPlateDuplicate(car_plate: string) {
     return await this.knex('vehicles')
       .where('car_plate', 'ILIKE', `${car_plate}`)
       .andWhere('is_active', true)
-      .count('id')
+      .count('id');
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
     return await this.knex
-    .select(
-      'alert_data.id',
-      'devices.device_name',
-      'devices.device_eui',
-      `alert_data.date`,
-      'alert_data.geolocation',
-      'alert_data.battery',
-      'alert_data.address',
-      'companies.company_name',
-      'companies.tel',
-      'companies.contact_person',
-      'vehicles.car_plate',
-      'vehicles.vehicle_model',
-      'vehicle_type',
-      'alert_data.msg_type'
-    )
-    .from('alert_data')
-    .leftJoin('devices', 'devices.id', 'alert_data.device_id')
-    .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-    .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-    .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-    .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-    .where({
-      'companies.is_active': true,
-      'devices.is_active': true,
-      'alert_data.is_active': true,
-      'vehicles.is_active': true,
-      'company_vehicles.is_active': true,
-      'vehicle_device.is_active': true,
-      'alert_data.msg_type': 'B',
-    })
-    .orderBy('alert_data.date', 'desc')
-    .limit(limit)
-    .offset(offset);
+      .select(
+        'alert_data.id',
+        'devices.device_name',
+        'devices.device_eui',
+        `alert_data.date`,
+        'alert_data.geolocation',
+        'alert_data.battery',
+        'alert_data.address',
+        'companies.company_name',
+        'companies.tel',
+        'companies.contact_person',
+        'vehicles.car_plate',
+        'vehicles.vehicle_model',
+        'vehicle_type',
+        'alert_data.msg_type'
+      )
+      .from('alert_data')
+      .leftJoin('devices', 'devices.id', 'alert_data.device_id')
+      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
+      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
+      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
+      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
+      .where({
+        'companies.is_active': true,
+        'devices.is_active': true,
+        'alert_data.is_active': true,
+        'vehicles.is_active': true,
+        'company_vehicles.is_active': true,
+        'vehicle_device.is_active': true,
+        'alert_data.msg_type': 'B',
+      })
+      .orderBy('alert_data.date', 'desc')
+      .limit(limit)
+      .offset(offset);
   }
   async getAllMsgTypeData(offset: number, limit: number) {
     return await this.knex

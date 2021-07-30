@@ -3,10 +3,9 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 module.exports = {
-
   development: {
-    client: "postgresql",
-    debug: false,
+    client: 'postgresql',
+    debug: true,
     connection: {
       host: process.env.LOCAL_HOST,
       database: process.env.DB_NAME,
@@ -19,12 +18,12 @@ module.exports = {
       max: 10,
     },
     migrations: {
-      tableName: "knex_migrations"
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   test: {
-    client: "postgresql",
+    client: 'postgresql',
     connection: {
       host: process.env.LOCAL_HOST,
       database: process.env.TEST_DB_NAME,
@@ -41,7 +40,7 @@ module.exports = {
   },
 
   staging: {
-    client: "postgresql",
+    client: 'postgresql',
     connection: {
       host: process.env.LOCAL_HOST,
       database: process.env.DB_NAME,
@@ -50,15 +49,15 @@ module.exports = {
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: "knex_migrations"
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   production: {
-    client: "postgresql",
+    client: 'postgresql',
     debug: false,
     connection: {
       host: process.env.POSTGRESQL_HOST,
@@ -68,11 +67,10 @@ module.exports = {
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: "knex_migrations"
-    }
-  }
-
+      tableName: 'knex_migrations',
+    },
+  },
 };
