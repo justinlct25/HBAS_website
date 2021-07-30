@@ -11,7 +11,7 @@
       }
     },
     {
-      "files": "**/*.Routes.ts",
+      "files": "**/*.routes.ts",
       "options": {
         "printWidth": 150,
         "singleQuote": true

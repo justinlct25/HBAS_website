@@ -8,6 +8,13 @@ import * as knexConfig from './knexfile';
 import http from 'http';
 import { Server as SocketIO, Socket } from 'socket.io';
 
+// import services & controllers
+import { DataService } from './services/dataService';
+import { DevicesService } from './services/DevicesService';
+
+import { DataController } from './controllers/dataController';
+import { DevicesController } from './controllers/DevicesController';
+
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
 
@@ -40,17 +47,19 @@ io.on('connection', (socket: Socket) => {
   });
 });
 
-//service
-import { DataService } from './services/dataService';
+// create services
 const dataService = new DataService(knex);
+const devicesService = new DevicesService(knex);
 
-//controller
-import { DataController } from './controllers/dataController';
+// create controllers
 export const dataController = new DataController(dataService);
+export const devicesController = new DevicesController(devicesService);
 
 //route
 import { dataRoutes } from './routes/dataRoute';
+import { routes } from './routes';
 app.use(dataRoutes);
+app.use('/fix', routes);
 
 const PORT = process.env.PORT || 8085;
 
