@@ -308,132 +308,106 @@ export const insertedDevices = [
   {
     device_name: 'ramp_meter_000',
     device_eui: '473ac868002a0037',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_001',
     device_eui: '8cf957200003bd0d',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_002',
     device_eui: '8cf957200003bd39',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_003',
     device_eui: '8cf957200003bd36',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_498',
     device_eui: '473ac868002ab037',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_499',
     device_eui: '473ac868002a0038',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_500',
     device_eui: '473ac868002a0039',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_501',
     device_eui: '473ac868002a0040',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_502',
     device_eui: '473ac868002a0041',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_503',
     device_eui: '473ac868002a0007',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_504',
     device_eui: '473ac868002a0006',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_505',
     device_eui: '473ac868002a0008',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_506',
     device_eui: '473ac868002a0009',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_507',
     device_eui: '473ac868002a0010',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_508',
     device_eui: '473ac868002a0011',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_509',
     device_eui: '473ac868002a0012',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_510',
     device_eui: '473ac868002a0013',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_511',
     device_eui: '473ac868002a0014',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_512',
     device_eui: '473ac868002abe9c',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_513',
     device_eui: '473ac868002ad99c',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_514',
     device_eui: '473ac868002ada83',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_515',
     device_eui: '473ac868002ada84',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_516',
     device_eui: '473ac868002ada85',
-    is_register: true,
   },
   {
     device_name: 'ramp_meter_517',
     device_eui: '473ac868002ada86',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_518',
     device_eui: '473ac868002ada87',
-    is_register: false,
   },
   {
     device_name: 'ramp_meter_519',
     device_eui: '473ac868002ada88',
-    is_register: false,
   },
 ];
 
