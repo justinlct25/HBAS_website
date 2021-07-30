@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
+import { toHexAndSplit } from "../helpers/eui_decoder";
 import {
   setDeviceIdAction,
   setPopUpIsActiveAction,
@@ -13,7 +14,7 @@ import { manageDeviceTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
-const TABLE_WIDTH = "80%";
+const TABLE_WIDTH = "70%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
 export type ModalType = "company" | "carPlate" | "device";
@@ -145,7 +146,7 @@ function ManageDevice() {
         <div
           className="table"
           style={{
-            width: TABLE_WIDTH,
+            minWidth: TABLE_WIDTH,
             marginBottom: "unset",
             height: `${itemPerPage * 60}px`,
           }}
@@ -155,11 +156,19 @@ function ManageDevice() {
             style={{ width: TABLE_WIDTH, minHeight: "64px" }}
           >
             {tableHeaders.map((item, idx) => {
-              return (
-                <div key={item + idx} className="flex-center thItem">
-                  {item}
-                </div>
-              );
+              if (item === "Device ID") {
+                return (
+                  <div key={item + idx} className="flex-center thMainItem">
+                    {item}
+                  </div>
+                );
+              } else {
+                return (
+                  <div key={item + idx} className="flex-center thItem">
+                    {item}
+                  </div>
+                );
+              }
             })}
           </div>
           <div className="tableBody" style={{ width: TABLE_WIDTH }}>
@@ -183,8 +192,8 @@ function ManageDevice() {
                       );
                     }}
                   >
-                    <div key={idx} className="flex-center tdItem">
-                      {item.device_eui}
+                    <div key={idx} className="flex-center tdMainItem">
+                      {toHexAndSplit(item.device_eui)}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.car_plate}
@@ -205,7 +214,10 @@ function ManageDevice() {
         </div>
         <AssignDeviceModal />
 
-        <div className="flex-center" style={{ width: "100%" }}>
+        <div
+          className="flex-center"
+          style={{ width: "100%", maxHeight: "12vh" }}
+        >
           <div
             style={{
               margin: "16px",

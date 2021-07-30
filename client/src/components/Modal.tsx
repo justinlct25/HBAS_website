@@ -1,14 +1,12 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "../css/Modal.css";
 import { ModalType } from "../pages/ManageDevice";
-import { mockNewDevices } from "../pages/mockUpData";
 import {
   setDeviceIdAction,
   setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
-import "../css/Modal.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -80,15 +78,12 @@ export const Modal = (props: ModalProps) => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await fetch(
-            `${REACT_APP_API_SERVER}/allDevices`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-              },
-            }
-          );
+          const res = await fetch(`${REACT_APP_API_SERVER}/allDevices`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          });
           if (res.status === 201 || res.status === 200) {
             const data: fetchedData = await res.json();
             const allDevices = await data.data.slice();
@@ -106,15 +101,12 @@ export const Modal = (props: ModalProps) => {
     } else {
       const fetchAllCompanies = async () => {
         try {
-          const res = await fetch(
-            `${REACT_APP_API_SERVER}/companies`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-              },
-            }
-          );
+          const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          });
           if (res.status === 201 || res.status === 200) {
             const result = await res.json();
             setCompanyList(result.companies);
@@ -127,15 +119,12 @@ export const Modal = (props: ModalProps) => {
     }
     const fetchAllVehicles = async () => {
       try {
-        const res = await fetch(
-          `${REACT_APP_API_SERVER}/allCompanies`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          }
-        );
+        const res = await fetch(`${REACT_APP_API_SERVER}/allCompanies`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        });
         if (res.status === 201 || res.status === 200) {
           const result = await res.json();
           setAllVehicles(result.data);

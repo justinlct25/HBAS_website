@@ -9,10 +9,11 @@ import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 import { io } from "socket.io-client";
+import { toHexAndSplit } from "../helpers/eui_decoder";
 
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
-const TABLE_WIDTH = "85%";
+const TABLE_WIDTH = "90%";
 const { REACT_APP_API_SERVER } = process.env;
 
 function AlertDataPage() {
@@ -138,16 +139,21 @@ function AlertDataPage() {
           height: `${itemPerPage * 60}px`,
         }}
       >
-        <div
-          className="flex-center tableHeader"
-          style={{ width: TABLE_WIDTH, height: "64px" }}
-        >
+        <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
           {tableHeaders.map((item, idx) => {
-            return (
-              <div key={item + idx} className="flex-center thItem">
-                {item}
-              </div>
-            );
+            if (item === "Device ID") {
+              return (
+                <div key={item + idx} className="flex-center thMainItem">
+                  {item}
+                </div>
+              );
+            } else {
+              return (
+                <div key={item + idx} className="flex-center thItem">
+                  {item}
+                </div>
+              );
+            }
           })}
         </div>
         <div className="tableBody" style={{ width: TABLE_WIDTH }}>
@@ -178,7 +184,9 @@ function AlertDataPage() {
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >
-                  <div className="flex-center tdItem">{item.device_eui}</div>
+                  <div className="flex-center tdMainItem">
+                    {toHexAndSplit(item.device_eui)}
+                  </div>
                   <div className="flex-center tdItem">{item.car_plate}</div>
                   <div className="flex-center tdItem">{item.company_name}</div>
                   <div className="flex-center tdItem">{item.tel}</div>

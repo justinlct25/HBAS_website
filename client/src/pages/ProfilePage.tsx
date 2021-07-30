@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
 import { BackButton } from "../components/IconsOnly";
+import { toHexAndSplit } from "../helpers/eui_decoder";
 import { useRouter } from "../helpers/useRouter";
 import {
   setPopUpIsActiveAction,
@@ -132,16 +133,16 @@ function ProfilePage() {
                     className="deviceVehicleCard"
                     key={idx}
                     onClick={() => {
-                      // dispatch(setPopUpIsActiveAction(true));
-                      // dispatch(
-                      //   setSelectedItemAction({
-                      //     companyName: item.company_name,
-                      //     carPlate: item.car_plate,
-                      //     vehicleId: item.vehicle_id,
-                      //     deviceEui: item.device_eui,
-                      //     deviceId: item.device_id,
-                      //   })
-                      // );
+                      dispatch(setPopUpIsActiveAction(true));
+                      dispatch(
+                        setSelectedItemAction({
+                          companyName: item.company_name,
+                          carPlate: item.car_plate,
+                          vehicleId: item.vehicle_id,
+                          deviceEui: item.device_eui,
+                          deviceId: item.device_id,
+                        })
+                      );
                     }}
                   >
                     <div className="flex-center">
@@ -154,7 +155,7 @@ function ProfilePage() {
                       >
                         {item.device_eui === null
                           ? "No device yet"
-                          : item.device_eui}
+                          : toHexAndSplit(item.device_eui)}
                       </div>
                     </div>
                     <div className="flex-center">

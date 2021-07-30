@@ -18,7 +18,7 @@ import { manageUserTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;
-const TABLE_WIDTH = "75%";
+const TABLE_WIDTH = "80%";
 const serverUrl = process.env.REACT_APP_API_SERVER;
 
 function ManageUser() {
@@ -205,7 +205,7 @@ function ManageUser() {
         >
           <div
             className="flex-center tableHeader"
-            style={{ width: TABLE_WIDTH, height: "64px" }}
+            style={{ width: TABLE_WIDTH }}
           >
             {tableHeaders.map((item, idx) => {
               return (

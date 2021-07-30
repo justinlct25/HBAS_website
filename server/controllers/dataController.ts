@@ -157,9 +157,10 @@ export class DataController {
         checkLongitude >= 113.75 &&
         checkLongitude <= 114.45
       ) {
-        await gpsFetch.default(
-          `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-        )
+        await gpsFetch
+          .default(
+            `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
+          )
           .then((response: any) => response.json())
           .then((data: any) => {
             data.address.county
@@ -331,8 +332,10 @@ export class DataController {
   postCompaniesData = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-      if(mBody[0].companyName === "" || mBody[0].tel === ""){
-        res.status(httpStatusCodes.BAD_REQUEST).json({message:'Blank columns is found, please press valid input.'});
+      if (mBody[0].companyName === '' || mBody[0].tel === '') {
+        res
+          .status(httpStatusCodes.BAD_REQUEST)
+          .json({ message: 'Blank columns is found, please press valid input.' });
         return;
       }
       let duplicateCompany: string[] = [];
@@ -439,12 +442,12 @@ export class DataController {
       let vehiclesArray: number[] = [];
       let vehiclesResult: number;
       let duplicateResult: string[] = [];
-      let blankResult:number = 0;
+      let blankResult: number = 0;
       if (mBody.length > 0) {
         for (let i = 0; i < mBody.length; i++) {
-          if(mBody[i].carPlate === ""){
+          if (mBody[i].carPlate === '') {
             ++blankResult;
-          }else{
+          } else {
             let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
             if (parseInt(String(checkDuplicate[0].count)) > 0) {
               duplicateResult.push(mBody[i].carPlate);
@@ -465,16 +468,14 @@ export class DataController {
         }
       }
       if (duplicateResult.length > 0 || blankResult > 0) {
-        res
-          .status(httpStatusCodes.OK)
-          .json({
-            data: duplicateResult,
-            blank: blankResult,
-            message: `Success insert: ${vehiclesArray.length}, 
+        res.status(httpStatusCodes.OK).json({
+          data: duplicateResult,
+          blank: blankResult,
+          message: `Success insert: ${vehiclesArray.length}, 
             Duplicate car plate: ${duplicateResult.length}, 
             Empty car plate: ${blankResult}
             `,
-          });
+        });
       } else {
         res
           .status(httpStatusCodes.CREATED)
@@ -556,44 +557,42 @@ export class DataController {
   getAllCompaniesOnly = async (req: Request, res: Response) => {
     try {
       const result = await this.dataService.getCompaniesByDevicePage();
-      res
-        .status(httpStatusCodes.OK)
-        .json({
-          data: result,
-          count: result.length,
-          message: 'get all companies & belong their vehicles',
-        });
+      res.status(httpStatusCodes.OK).json({
+        data: result,
+        count: result.length,
+        message: 'get all companies & belong their vehicles',
+      });
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
 
-  getBatteryData = async (req:Request, res:Response)=>{
+  getBatteryData = async (req: Request, res: Response) => {
     try {
       const page: number = parseInt(String(req.query.page));
       const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
       const result = await this.dataService.getBatteryData(OFFSET, LIMIT);
-      res.status(httpStatusCodes.OK).json({data:result,message:'get battery data'});
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'get battery data' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 
-  getAllTypeData = async (req:Request, res:Response)=>{
+  getAllTypeData = async (req: Request, res: Response) => {
     try {
       const page: number = parseInt(String(req.query.page));
       const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
-      const result = await this.dataService.getAllMsgTypeData(OFFSET,LIMIT);
-      res.status(httpStatusCodes.OK).json({data:result,message:'get all type data'});
+      const result = await this.dataService.getAllMsgTypeData(OFFSET, LIMIT);
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'get all type data' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 }
