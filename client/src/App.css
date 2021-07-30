@@ -64,7 +64,7 @@ body {
   height: calc(100vh - var(--topNavHeight) - 16px);
 }
 .incidentReportText {
-  font-size: 20px;
+  font-size: 0.9em;
   margin: 8px;
   color: #333;
 }

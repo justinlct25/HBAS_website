@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
+import { toHexAndSplit } from "../helpers/eui_decoder";
 import { ModalType } from "../pages/ManageDevice";
 import {
   setDeviceIdAction,
@@ -194,7 +195,9 @@ export const Modal = (props: ModalProps) => {
         {modalType === "device"
           ? focusNewDevice
             ? allDevices?.notAssigned
-                .filter((item) => item.device_eui.includes(searchField))
+                .filter((item) =>
+                  toHexAndSplit(item.device_eui).includes(searchField)
+                )
                 .map((item) => {
                   return (
                     <div
@@ -206,7 +209,7 @@ export const Modal = (props: ModalProps) => {
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {item.device_eui}
+                      {toHexAndSplit(item.device_eui)}
                     </div>
                   );
                 })
@@ -219,11 +222,16 @@ export const Modal = (props: ModalProps) => {
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(setDeviceIdAction(item.id, item.device_eui));
+                        dispatch(
+                          setDeviceIdAction(
+                            item.id,
+                            toHexAndSplit(item.device_eui)
+                          )
+                        );
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {item.device_eui}
+                      {toHexAndSplit(item.device_eui)}
                     </div>
                   );
                 })

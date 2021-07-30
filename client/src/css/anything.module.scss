@@ -2,10 +2,19 @@ $pageContainerHeight: calc(100vh - var(--topNavHeight) - 16px);
 $tableRowHeight: 40px;
 
 .pageContainer {
+  overflow-y: scroll;
   flex-direction: column;
   justify-content: flex-start;
   width: 100vw;
   height: $pageContainerHeight;
+  .topRowContainer {
+    position: relative;
+    justify-content: center;
+    width: 100%;
+    padding: 0 64px;
+    margin: 16px;
+    max-height: 6vh;
+  }
 }
 .tableRow {
   width: 100%;
@@ -16,17 +25,14 @@ $tableRowHeight: 40px;
   border-bottom: solid 0.5px #0001;
   cursor: pointer;
   transition: all 0.4s;
-}
-.tableRow:hover {
-  background: #ccc;
-  transition: all 0.4s;
+  &:hover {
+    background: #ccc;
+    transition: all 0.4s;
+  }
 }
 
 .flex-center {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.pageContainer .topRowContainer {
 }

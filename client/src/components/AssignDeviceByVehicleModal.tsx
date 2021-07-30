@@ -6,6 +6,7 @@ import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
 import "../css/Modal.css";
+import { toHexAndSplit } from "../helpers/eui_decoder";
 
 function AssignDeviceByVehicleModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{
@@ -110,7 +111,7 @@ function AssignDeviceByVehicleModal() {
                   >
                     {selectedItem.deviceEui === ""
                       ? "Select device"
-                      : selectedItem.deviceEui}
+                      : toHexAndSplit(selectedItem.deviceEui)}
                   </div>
                   <div
                     style={{

@@ -50,7 +50,7 @@ function AlertDataPage() {
   return (
     <div className={`flex-center ${styles.pageContainer}`}>
       <div
-        className="flex-center topRowContainer"
+        className={`flex-center ${styles.pageContainer}`}
         style={{ justifyContent: "center" }}
       >
         <div className="flex-center">

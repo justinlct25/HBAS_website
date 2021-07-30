@@ -84,10 +84,12 @@
 .thItem {
   flex: 1;
   color: #eee;
+  font-size: 0.9em;
 }
 .thMainItem {
   flex: 1.3;
   color: #eee;
+  font-size: 0.9em;
 }
 .tableBody {
   background-color: #fff;
@@ -112,6 +114,7 @@
 }
 .tdItem {
   flex: 1;
+  font-size: 0.9em;
   max-width: 100%;
   color: #555;
   margin: 0 4px;
@@ -121,6 +124,7 @@
 }
 .tdMainItem {
   flex: 1.3;
+  font-size: 0.9em;
   max-width: 100%;
   color: #555;
   margin: 0 4px;
