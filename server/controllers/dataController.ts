@@ -5,6 +5,7 @@ import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
 import { base64ToHex } from '../utils/eui_decoder';
+import console from 'console';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -599,9 +600,13 @@ export class DataController {
   putCompanies = async (req: Request, res: Response) => {
     try {
       const { id, company_name, tel, contact_person } = req.body;
+      const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
+      if(parseInt(String(duplicate[0].count)) > 0){
+        res.status(httpStatusCodes.BAD_REQUEST).json({message: 'company name is duplicate'});
+        return;
+      }
       const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
-      console.log(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}T${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
-      console.log(`${Date.now()}`);
+
       res.status(httpStatusCodes.OK).json({data: result, message: 'updated'});
       return;
     } catch (err) {
@@ -612,12 +617,19 @@ export class DataController {
   deleteCompanies = async (req: Request, res: Response) => {
     try {
       const idArray = req.body;
+      const tableName = 'companies';
       let putArray:number[] = [];
+
       for(let i = 0; i < idArray.length; i++) {
         putArray.push(idArray[i].id);
       }
-      const result = await this.dataService.deleteCompanies(putArray);
-      res.status(httpStatusCodes.OK).json({ message:`${result} records deleted`});
+
+      const result: number[] = await this.dataService.deleteCompanies(putArray);
+      const result2: number[] = await this.dataService.deleteCompanyVehicles(result, tableName);
+      const result3: number[] = await this.dataService.deleteVehicles(result2);
+      await this.dataService.deleteVehicleDevice(result3, tableName);
+
+      res.status(httpStatusCodes.OK).json({ message:`Records deleted`});
       return;
     } catch (err) {
       logger.error(err.message);
@@ -634,7 +646,19 @@ export class DataController {
   }
   deleteVehicles = async (req: Request, res: Response) => {
     try {
+      const idArray = req.body;
+      const tableName:string = 'vehicles'; 
+      let putArray:number[] = [];
+      for(let i = 0; i < idArray.length; i++) {
+        putArray.push(idArray[i].id);
+      }
       
+      const result: number[] = await this.dataService.deleteVehicles(putArray);
+      await this.dataService.deleteCompanyVehicles(result, tableName);
+      await this.dataService.deleteVehicleDevice(result, tableName);
+
+      res.status(httpStatusCodes.OK).json({ message:`Vehicle Records deleted`});
+      return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
