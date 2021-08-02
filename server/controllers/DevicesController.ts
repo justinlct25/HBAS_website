@@ -5,9 +5,17 @@ import { DevicesService } from '../services/DevicesService';
 export class DevicesController {
   constructor(private devicesService: DevicesService) {}
 
+  getDevicesForLinking = async (req: Request, res: Response) => {
+    const { deviceId } = req.query;
+    const data = await this.devicesService.getDevicesForLinking(
+      !!deviceId ? parseInt(String(deviceId)) : null
+    );
+    return res.status(httpStatusCodes.OK).json({ data });
+  };
+
   linkDeviceAndVehicle = async (req: Request, res: Response) => {
     const { deviceId, vehicleId }: { deviceId: number; vehicleId: number } = req.body;
-    
+
     // check if required info is provided
     if (!deviceId || !vehicleId)
       return res.status(httpStatusCodes.BAD_REQUEST).json({

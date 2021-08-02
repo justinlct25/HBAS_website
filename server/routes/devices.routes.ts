@@ -4,4 +4,5 @@ import { createAsyncMiddleware } from '../utils/middleware';
 
 export const devicesRoutes = express.Router();
 
+devicesRoutes.get('/', createAsyncMiddleware(devicesController.getDevicesForLinking));
 devicesRoutes.post('/link-device-vehicle', createAsyncMiddleware(devicesController.linkDeviceAndVehicle));

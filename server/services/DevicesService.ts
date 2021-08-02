@@ -4,6 +4,35 @@ import { Knex } from 'knex';
 export class DevicesService {
   constructor(private knex: Knex) {}
 
+  getDevicesForLinking = async (deviceId: number | null) => {
+    const query = () => {
+      return this.knex(tables.DEVICES)
+        .distinct<
+          {
+            id: number;
+            device_name: string;
+            device_eui: string;
+          }[]
+        >(['id', 'device_name', 'device_eui'])
+        .where('is_active', true)
+        .andWhereNot('id', deviceId)
+        .orderBy('device_eui');
+    };
+
+    const filterQuery = (builder: Knex.QueryBuilder) => {
+      builder
+        .select('device_id')
+        .from(tables.VEHICLE_DEVICE)
+        .whereRaw(`${tables.DEVICES}.id = ${tables.VEHICLE_DEVICE}.device_id`)
+        .andWhere('is_active', true);
+    };
+
+    return {
+      linkedDevices: await query().whereExists(filterQuery),
+      newDevices: await query().whereNotExists(filterQuery),
+    };
+  };
+
   unlinkExistingPairs = async (deviceId: number, vehicleId: number) => {
     return await this.knex(tables.VEHICLE_DEVICE)
       .update({

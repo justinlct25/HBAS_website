@@ -18,7 +18,6 @@ dataRoutes.post(`/vehicles/:id`, dataController.postVehicles);
 dataRoutes.get(`/devices`, dataController.getDevicesData);
 
 dataRoutes.post(`/vehicle_device`, dataController.postVehicleDevice); // profile add new link
-dataRoutes.put(`/vehicle_device`); // profile update exist vehicle_device
 
 dataRoutes.get(`/devices/version`, dataController.getDevicesVersion);
 
