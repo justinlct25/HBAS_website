@@ -11,9 +11,11 @@ import { Server as SocketIO, Socket } from 'socket.io';
 // import services & controllers
 import { DataService } from './services/dataService';
 import { DevicesService } from './services/DevicesService';
+import { CompaniesService } from './services/CompaniesService';
 
 import { DataController } from './controllers/dataController';
 import { DevicesController } from './controllers/DevicesController';
+import { CompaniesController } from './controllers/CompaniesController';
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
@@ -50,10 +52,12 @@ io.on('connection', (socket: Socket) => {
 // create services
 const dataService = new DataService(knex);
 const devicesService = new DevicesService(knex);
+const companiesService = new CompaniesService(knex);
 
 // create controllers
 export const dataController = new DataController(dataService);
 export const devicesController = new DevicesController(devicesService);
+export const companiesController = new CompaniesController(companiesService);
 
 //route
 import { dataRoutes } from './routes/dataRoute';
