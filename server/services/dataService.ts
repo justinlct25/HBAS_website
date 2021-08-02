@@ -716,4 +716,21 @@ export class DataService {
       .limit(limit)
       .offset(offset);
   }
+  // 20210802 edit / delete companies & vehicles
+  async putCompanies(id: number, company_name: string, tel: string, contact_person: string){
+    return await this.knex('companies')
+      .where('id', id)
+      .update({company_name, tel, contact_person})
+  }
+  async deleteCompanies(id: number[]){
+    return await this.knex('companies')
+    .whereIn('id', id)
+    .update('is_active', false);
+  }
+  async putVehicles(id: number[]){
+    return id;
+  }
+  async deleteVehicles(id: number[]){
+    return id;
+  }
 }

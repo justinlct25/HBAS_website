@@ -307,140 +307,140 @@ export const insertedVehicles = [
 export const insertedDevices = [
     {
         device_name: "ramp_meter_000", 
-        device_eui: "473ac868002a0037",
+        device_eui: "473AC868-002A0037",
         is_register: true
     },
     {
         device_name: "ramp_meter_001", 
-        device_eui: "8cf957200003bd0d",
+        device_eui: "8CF95720-0003BD0D",
         is_register: true
     },
     {
         device_name: "ramp_meter_002", 
-        device_eui: "8cf957200003bd39",
+        device_eui: "8CF95720-0003BD39",
         is_register: true
     },
     {
         device_name: "ramp_meter_003", 
-        device_eui: "8cf957200003bd36",
+        device_eui: "8CF95720-0003BD36",
         is_register: true
     },
     {
         device_name: "ramp_meter_498", 
-        device_eui: "473ac868002ab037",
+        device_eui: "473AC868-002AB037",
         is_register: true
     },
     {
         device_name: "ramp_meter_499", 
-        device_eui: "473ac868002a0038",
+        device_eui: "473AC868-002A0038",
         is_register: true
     },
     {
         device_name: "ramp_meter_500", 
-        device_eui: "473ac868002a0039",
+        device_eui: "473AC868-002A0039",
         is_register: true
     },
     {
         device_name: "ramp_meter_501", 
-        device_eui: "473ac868002a0040",
+        device_eui: "473AC868-002A0040",
         is_register: false
     },
     {
         device_name: "ramp_meter_502", 
-        device_eui: "473ac868002a0041",
+        device_eui: "473AC868-002A0041",
         is_register: false
     },
     {
         device_name: "ramp_meter_503", 
-        device_eui: "473ac868002a0007",
+        device_eui: "473AC868-002A0007",
         is_register: false
     },
     {
         device_name: "ramp_meter_504", 
-        device_eui: "473ac868002a0006",
+        device_eui: "473AC868-002A0006",
         is_register: false
     },
     {
         device_name: "ramp_meter_505", 
-        device_eui: "473ac868002a0008",
+        device_eui: "473AC868-002A0008",
         is_register: false
     },
     {
         device_name: "ramp_meter_506", 
-        device_eui: "473ac868002a0009",
+        device_eui: "473AC868-002A0009",
         is_register: false
     },
     {
         device_name: "ramp_meter_507", 
-        device_eui: "473ac868002a0010",
+        device_eui: "473AC868-002A0010",
         is_register: true
     },
     {
         device_name: "ramp_meter_508", 
-        device_eui: "473ac868002a0011",
+        device_eui: "473AC868-002A0011",
         is_register: false
     },
     {
         device_name: "ramp_meter_509", 
-        device_eui: "473ac868002a0012",
+        device_eui: "473AC868-002A0012",
         is_register: true
     },
     {
         device_name: "ramp_meter_510", 
-        device_eui: "473ac868002a0013",
+        device_eui: "473AC868-002A0013",
         is_register: false
     },
     {
         device_name: "ramp_meter_511", 
-        device_eui: "473ac868002a0014",
+        device_eui: "473AC868-002A0014",
         is_register: false
     },
     {
         device_name: "ramp_meter_512", 
-        device_eui: "473ac868002abe9c",
+        device_eui: "473AC868-002ABE9C",
         is_register: false
     },
     {
         device_name: "ramp_meter_513", 
-        device_eui: "473ac868002ad99c",
+        device_eui: "473AC868-002AD99C",
         is_register: true
     },
     {
         device_name: "ramp_meter_514", 
-        device_eui: "473ac868002ada83",
+        device_eui: "473AC868-002ADA83",
         is_register: true
     },
     {
         device_name: "ramp_meter_515", 
-        device_eui: "473ac868002ada84",
+        device_eui: "473AC868-002ADA84",
         is_register: false
     },
     {
         device_name: "ramp_meter_516", 
-        device_eui: "473ac868002ada85",
+        device_eui: "473AC868-002ADA85",
         is_register: true
     },
     {
         device_name: "ramp_meter_517", 
-        device_eui: "473ac868002ada86",
+        device_eui: "473AC868-002ADA86",
         is_register: false
     },
     {
         device_name: "ramp_meter_518", 
-        device_eui: "473ac868002ada87",
+        device_eui: "473AC868-002ADA87",
         is_register: false
     },
     {
         device_name: "ramp_meter_519", 
-        device_eui: "473ac868002ada88",
+        device_eui: "473AC868-002ADA88",
         is_register: false
     }
 ]
 
 export const insertedAlertData = [
     { 
-        device_eui: "473ac868002a0037", 
-        date: ("2021-06-03T05:19:53"),
+        device_eui: "473AC868-002A0037", 
+        date: "2021-06-03T05:19:53",
         geolocation: "22.277112,114.27389",
         address: "Sai Kung District", 
         battery: "1.95", 
@@ -448,8 +448,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "473ac868002a0037", 
-        date: ("2021-06-04T10:25:23"),  
+        device_eui: "473AC868-002A0037", 
+        date: "2021-06-04T10:25:23",  
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.94", 
@@ -457,8 +457,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "473ac868002a0037", 
-        date: ("2021-06-14T16:12:30"),  
+        device_eui: "473AC868-002A0037", 
+        date: "2021-06-14T16:12:30",  
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.93", 
@@ -466,8 +466,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-15T18:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-15T18:12:30",  
         geolocation: "22.277091,114.27387", 
         address: "Sai Kung District",
         battery: "1.93", 
@@ -475,8 +475,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-18T19:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-18T19:12:30",  
         geolocation: "22.277024,114.27382", 
         address: "Sai Kung District",
         battery: "1.71", 
@@ -484,8 +484,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-23T20:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-23T20:12:30",  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.83", 
@@ -493,8 +493,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-23T18:12:35"), 
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-23T18:12:35", 
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.82", 
@@ -502,8 +502,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-23T20:12:40"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-23T20:12:40",  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.84", 
@@ -511,8 +511,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-06-27T21:12:30"), 
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-06-27T21:12:30", 
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.91", 
@@ -520,8 +520,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd39", 
-        date: ("2021-06-24T18:12:30"), 
+        device_eui: "8CF95720-0003BD39", 
+        date: "2021-06-24T18:12:30", 
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.89", 
@@ -529,8 +529,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd36", 
-        date: ("2021-06-28T13:52:30"),  
+        device_eui: "8CF95720-0003BD36", 
+        date: "2021-06-28T13:52:30",  
         geolocation: "22.276976,114.27376", 
         address: "Sai Kung District",
         battery: "1.62", 
@@ -538,8 +538,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "473ac868002ab037", 
-        date: ("2021-06-29T14:22:30"), 
+        device_eui: "473AC868-002AB037", 
+        date: "2021-06-29T14:22:30", 
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.52", 
@@ -547,8 +547,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "473ac868002ab037", 
-        date: ("2021-06-20T15:13:30"),  
+        device_eui: "473AC868-002AB037", 
+        date: "2021-06-20T15:13:30",  
         geolocation: "22.277112,114.27389", 
         address: "Sai Kung District",
         battery: "1.73", 
@@ -556,8 +556,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     { 
-        device_eui: "8cf957200003bd36", 
-        date: ("2021-07-04T20:15:30"),  
+        device_eui: "8CF95720-0003BD36", 
+        date: "2021-07-04T20:15:30",  
         geolocation: "22.277088,114.27386", 
         address: "Sai Kung District",
         battery: "1.65", 
@@ -565,8 +565,8 @@ export const insertedAlertData = [
         msg_type: "A",
     },
     {
-        device_eui: "8cf957200003bd36", 
-        date: ("2021-07-15T15:13:23"),  
+        device_eui: "8CF95720-0003BD36", 
+        date: "2021-07-15T15:13:23",  
         geolocation: "22.315136,114.21664", 
         address: "Kwun Tong District",
         battery: "1.75", 
@@ -574,8 +574,8 @@ export const insertedAlertData = [
         msg_type: "A", 
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T09:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T09:12:30",  
         geolocation: "22.272412,114.27367", 
         address: "Sai Kung District",
         battery: "1.83", 
@@ -583,8 +583,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T09:27:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T09:27:30",  
         geolocation: "22.272412,114.27367", 
         address: "Sai Kung District",
         battery: "2.07", 
@@ -592,8 +592,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T09:42:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T09:42:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "3.01", 
@@ -601,8 +601,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T09:57:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T09:57:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "3.52", 
@@ -610,8 +610,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T10:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T10:12:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "4.11", 
@@ -619,8 +619,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T10:27:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T10:27:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "3.94", 
@@ -628,8 +628,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T10:42:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T10:42:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "4.01", 
@@ -637,8 +637,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T10:57:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T10:57:30",  
         geolocation: "22.270660,114.27409", 
         address: "Sai Kung District",
         battery: "3.81", 
@@ -646,8 +646,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T11:12:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T11:12:30",  
         geolocation: "22.268450,114.27380", 
         address: "Sai Kung District",
         battery: "3.85", 
@@ -655,8 +655,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T11:27:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T11:27:30",  
         geolocation: "22.268450,114.27380", 
         address: "Sai Kung District",
         battery: "3.83", 
@@ -664,8 +664,8 @@ export const insertedAlertData = [
         msg_type: "B",
     },
     { 
-        device_eui: "8cf957200003bd0d", 
-        date: ("2021-07-30T11:42:30"),  
+        device_eui: "8CF95720-0003BD0D", 
+        date: "2021-07-30T11:42:30",  
         geolocation: "22.268450,114.27380", 
         address: "Sai Kung District",
         battery: "2.99", 
@@ -820,51 +820,51 @@ export const insertCompanyVehicles = [
 
 export const insertedVehiclesDevice = [
     {
-        device_eui: "473ac868002a0037", 
+        device_eui: "473AC868-002A0037", 
         car_plate:"AX789"
     },
     {
-        device_eui: "8cf957200003bd0d", 
+        device_eui: "8CF95720-0003BD0D", 
         car_plate:"JG1330"
     },
     {
-        device_eui: "8cf957200003bd39", 
+        device_eui: "8CF95720-0003BD39", 
         car_plate:"BM7414"
     },
     {
-        device_eui: "8cf957200003bd36", 
+        device_eui: "8CF95720-0003BD36", 
         car_plate:"GV1032"
     },
     {
-        device_eui: "473ac868002ab037", 
+        device_eui: "473AC868-002AB037", 
         car_plate:"TM7532"
     },
     {
-        device_eui: "473ac868002a0038", 
+        device_eui: "473AC868-002A0038", 
         car_plate:"LP3209"
     },
     {
-        device_eui: "473ac868002a0010", 
+        device_eui: "473AC868-002A0010", 
         car_plate:"MJ409"
     },
     {
-        device_eui: "473ac868002a0012", 
+        device_eui: "473AC868-002A0012", 
         car_plate:"KW2999"
     },
     {
-        device_eui: "473ac868002ad99c", 
+        device_eui: "473AC868-002AD99C", 
         car_plate:"MK1101"
     },
     {
-        device_eui: "473ac868002a0039", 
+        device_eui: "473AC868-002A0039", 
         car_plate:"WL112"
     },
     {
-        device_eui: "473ac868002ada83", 
+        device_eui: "473AC868-002ADA83", 
         car_plate:"RD6613"
     },
     {
-        device_eui: "473ac868002ada85", 
+        device_eui: "473AC868-002ADA85", 
         car_plate:"LY2703"
     }
 ]

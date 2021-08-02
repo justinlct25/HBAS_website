@@ -595,4 +595,50 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
+  // 20210802 edit / delete companies & vehicles
+  putCompanies = async (req: Request, res: Response) => {
+    try {
+      const { id, company_name, tel, contact_person } = req.body;
+      const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
+      console.log(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}T${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
+      console.log(`${Date.now()}`);
+      console.time();
+      res.status(httpStatusCodes.OK).json({data: result, message: 'updated'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
+  deleteCompanies = async (req: Request, res: Response) => {
+    try {
+      const idArray = req.body;
+      let putArray:number[] = [];
+      for(let i = 0; i < idArray.length; i++) {
+        putArray.push(idArray[i].id);
+      }
+      const result = await this.dataService.deleteCompanies(putArray);
+      res.status(httpStatusCodes.OK).json({ message:`${result} records deleted`});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
+  putVehicles = async (req: Request, res: Response) => {
+    try {
+      
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
+  deleteVehicles = async (req: Request, res: Response) => {
+    try {
+      
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
 }

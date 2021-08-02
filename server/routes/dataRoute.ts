@@ -15,8 +15,8 @@ dataRoutes.delete(`/history`);
 
 dataRoutes.get(`/companies`, dataController.getCompaniesData);
 dataRoutes.post(`/companies`, dataController.postCompaniesData);
-dataRoutes.put(`/companies`);
-dataRoutes.delete(`/companies`);
+dataRoutes.put(`/companies`, dataController.putCompanies);
+dataRoutes.delete(`/companies`, dataController.deleteCompanies);
 
 dataRoutes.get(`/vehicles`);
 dataRoutes.post(`/vehicles/:id`, dataController.postVehicles);
