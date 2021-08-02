@@ -602,7 +602,6 @@ export class DataController {
       const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
       console.log(`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}T${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`);
       console.log(`${Date.now()}`);
-      console.time();
       res.status(httpStatusCodes.OK).json({data: result, message: 'updated'});
       return;
     } catch (err) {

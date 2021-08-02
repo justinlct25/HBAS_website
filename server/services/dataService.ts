@@ -1,4 +1,4 @@
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 
 export class DataService {
   constructor(private knex: Knex) {}

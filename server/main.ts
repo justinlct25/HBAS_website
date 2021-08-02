@@ -7,6 +7,10 @@ import Knex from 'knex';
 import * as knexConfig from './knexfile';
 import  http from 'http';
 import { Server as SocketIO, Socket } from 'socket.io';
+// import services & controllers
+import {DataService} from './services/dataService';
+
+import {DataController} from './controllers/dataController';
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
@@ -40,12 +44,8 @@ io.on('connection', (socket: Socket) => {
     });
 });
 
-//service
-import {DataService} from './services/dataService';
 const dataService = new DataService(knex);
 
-//controller
-import {DataController} from './controllers/dataController';
 export const dataController = new DataController(dataService);
 
 //route

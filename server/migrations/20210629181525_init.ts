@@ -1,4 +1,4 @@
-import * as Knex from 'knex';
+import { Knex } from 'knex';
 import { tables } from '../utils/table_model';
 
 export async function up(knex: Knex): Promise<void> {
