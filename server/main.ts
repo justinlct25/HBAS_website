@@ -7,6 +7,7 @@ import Knex from 'knex';
 import * as knexConfig from './knexfile';
 import http from 'http';
 import { Server as SocketIO, Socket } from 'socket.io';
+import { attachPaginate } from 'knex-paginate';
 
 // import services & controllers
 import { DataService } from './services/dataService';
@@ -19,6 +20,7 @@ import { CompaniesController } from './controllers/CompaniesController';
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
+attachPaginate();
 
 //app
 const app = express();
