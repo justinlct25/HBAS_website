@@ -6,12 +6,12 @@ import {
   CaretIcon,
   CloseIcon,
   MinusIcon,
-  SearchIcon,
+  SearchIcon
 } from "../components/IconsOnly";
 import "../css/TablePage.css";
 import {
   getCompaniesDataListThunk,
-  postCompaniesDataThunk,
+  postCompaniesDataThunk
 } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
@@ -19,7 +19,6 @@ import { manageUserTableHeaders } from "../table/tableHeader";
 const tableHeaders = manageUserTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "80%";
-const serverUrl = process.env.REACT_APP_API_SERVER;
 
 function ManageUser() {
   const [isOpen, setIsOpen] = useState(false);
@@ -53,9 +52,7 @@ function ManageUser() {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(
-      getCompaniesDataListThunk(activePage, true, placeHolderText, searchInput)
-    );
+    dispatch(getCompaniesDataListThunk(activePage, true));
   }, [dispatch, popUpIsActive]);
 
   const handleDeleteVehicle = (idx: number) => {
@@ -133,14 +130,7 @@ function ManageUser() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    dispatch(
-                      getCompaniesDataListThunk(
-                        1,
-                        true,
-                        placeHolderText,
-                        searchInput
-                      )
-                    );
+                    dispatch(getCompaniesDataListThunk(1, true));
                   }
                 }}
               />
@@ -149,14 +139,7 @@ function ManageUser() {
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        dispatch(
-                          getCompaniesDataListThunk(
-                            1,
-                            true,
-                            placeHolderText,
-                            searchInput
-                          )
-                        );
+                        dispatch(getCompaniesDataListThunk(1, true));
                       }
                     : () => {}
                 }
@@ -229,16 +212,16 @@ function ManageUser() {
                     }}
                   >
                     <div key={idx} className="flex-center tdItem">
-                      {item.company_name}
+                      {item.companyName}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.contact_person}
+                      {item.contactPerson}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.tel}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.count}
+                      {item.vehiclesCount}
                     </div>
                   </div>
                 );
@@ -432,14 +415,7 @@ function ManageUser() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(
-                      getCompaniesDataListThunk(
-                        activePage - 1,
-                        false,
-                        placeHolderText,
-                        searchInput
-                      )
-                    );
+                    dispatch(getCompaniesDataListThunk(activePage - 1, false));
                   }
             }
           >
@@ -468,14 +444,7 @@ function ManageUser() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(
-                      getCompaniesDataListThunk(
-                        activePage + 1,
-                        false,
-                        placeHolderText,
-                        searchInput
-                      )
-                    );
+                    dispatch(getCompaniesDataListThunk(activePage + 1, false));
                   }
                 : () => {}
             }
