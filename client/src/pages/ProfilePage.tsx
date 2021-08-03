@@ -82,7 +82,8 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].company_name : ""}
+                  {/* {profileList.length > 0 ? profileList[0].company_name : ""} */}
+                  {"FIX COMPANY NAME!!!!!!!"}
                 </div>
               </div>
               <div className="flex-center">
@@ -96,7 +97,8 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].contact_person : ""}
+                  {/* {profileList.length > 0 ? profileList[0].contact_person : ""} */}
+                  {"FIX CONTACT PERSON!!!!!!!!"}
                 </div>
               </div>
               <div className="flex-center">
@@ -110,7 +112,8 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {profileList.length > 0 ? profileList[0].tel : ""}
+                  {/* {profileList.length > 0 ? profileList[0].tel : ""} */}
+                  {"FIX TEL!!!!!!!!"}
                 </div>
               </div>
             </div>
@@ -136,11 +139,11 @@ function ProfilePage() {
                       dispatch(setPopUpIsActiveAction(true));
                       dispatch(
                         setSelectedItemAction({
-                          companyName: item.company_name,
-                          carPlate: item.car_plate,
-                          vehicleId: item.vehicle_id,
-                          deviceEui: item.device_eui,
-                          deviceId: item.device_id,
+                          companyName: "FIX item.company_name!!!!!!!!!",
+                          carPlate: item.carPlate,
+                          vehicleId: item.vehicleId,
+                          deviceEui: item.deviceEui,
+                          deviceId: item.deviceId,
                         })
                       );
                     }}
@@ -150,12 +153,12 @@ function ProfilePage() {
                       <div
                         className="incidentReportText"
                         style={{
-                          color: item.device_eui === null ? "#AAA" : "#333",
+                          color: !item.deviceEui ? "#AAA" : "#333",
                         }}
                       >
-                        {item.device_eui === null
+                        {item.deviceEui === null
                           ? "No device yet"
-                          : toHexAndSplit(item.device_eui)}
+                          : toHexAndSplit(item.deviceEui)}
                       </div>
                     </div>
                     <div className="flex-center">
@@ -163,12 +166,12 @@ function ProfilePage() {
                       <div
                         className="incidentReportText deviceName"
                         style={{
-                          color: item.device_name === null ? "#AAA" : "#333",
+                          color: !item.deviceName ? "#AAA" : "#333",
                         }}
                       >
-                        {item.device_name === null
+                        {item.deviceName === null
                           ? "No device yet"
-                          : item.device_name}
+                          : item.deviceName}
                       </div>
                     </div>
 
@@ -180,7 +183,7 @@ function ProfilePage() {
                           color: "#333",
                         }}
                       >
-                        {item.car_plate}
+                        {item.carPlate}
                       </div>
                     </div>
                   </div>

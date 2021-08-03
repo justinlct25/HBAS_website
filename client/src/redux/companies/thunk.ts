@@ -15,6 +15,7 @@ export function getCompaniesDataListThunk(activePage: number, isInit: boolean) {
         dispatch(resetCompaniesDataList());
       }
 
+      // construct api url with (or within) search params 
       const url = new URL(
         `${REACT_APP_API_VERSION}/companies`,
         `${REACT_APP_API_SERVER}`

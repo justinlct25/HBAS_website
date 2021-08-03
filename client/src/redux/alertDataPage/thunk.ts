@@ -40,12 +40,14 @@ export function getAlertDataListThunk(
         if (isInit) {
           dispatch(resetAlertDataList());
         }
-        // fetch the data
+
+        // construct api url with (or within) search params
         const url = new URL("alertData", `${REACT_APP_API_SERVER}`);
         url.searchParams.set("page", String(activePage));
         if (!!searchType) url.searchParams.set("searchType", searchType);
         if (!!searchString) url.searchParams.set("searchString", searchString);
-        
+
+        // fetch the data
         const res = await fetch(url.toString());
 
         if (res.status === 200) {

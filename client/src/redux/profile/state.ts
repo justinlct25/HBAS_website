@@ -1,15 +1,12 @@
 export interface IProfile {
-  id: number;
-  company_name: string;
-  contact_person: string;
-  tel: string;
-  vehicle_id: number;
-  car_plate: string;
-  vehicle_model: string;
-  vehicle_type: string;
-  device_id: number;
-  device_name: string;
-  device_eui: string;
+  vehicleId: number;
+  carPlate: string;
+  vehicleModel: string;
+  vehicleType: string;
+  updatedAt: string;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
 }
 
 export interface IProfileState {
