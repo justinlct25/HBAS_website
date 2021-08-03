@@ -46,7 +46,6 @@ export function getCompaniesDataListThunk(
 export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
   return async (dispatch: Dispatch<ICompaniesDataActions>, dispatch2: Dispatch<ICompaniesDataActions>) => {
     try {
-      console.log("test input data from thunk");
       const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
         method: "post",
         headers: {
