@@ -5,6 +5,20 @@ import { DevicesService } from '../services/DevicesService';
 export class DevicesController {
   constructor(private devicesService: DevicesService) {}
 
+  getAllDevices = async (req: Request, res: Response) => {
+    const perPage = req.query.rows;
+    const currentPage = req.query.page;
+    const searchString = req.query.search;
+
+    // get data
+    const data = await this.devicesService.getAllDevices(
+      !!perPage ? parseInt(String(perPage)) : 10,
+      !!currentPage ? parseInt(String(currentPage)) : 1,
+      !!searchString ? `%${String(searchString)}%` : null
+    );
+    return res.status(httpStatusCodes.OK).json(data);
+  };
+
   getDevicesForLinking = async (req: Request, res: Response) => {
     const { deviceId } = req.query;
     const data = await this.devicesService.getDevicesForLinking(

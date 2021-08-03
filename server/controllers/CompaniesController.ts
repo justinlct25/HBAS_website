@@ -12,7 +12,7 @@ export class CompaniesController {
 
     // get data
     const data = await this.companiesService.getCompaniesInfo(
-      !!perPage ? parseInt(String(perPage)) : 20,
+      !!perPage ? parseInt(String(perPage)) : 10,
       !!currentPage ? parseInt(String(currentPage)) : 1,
       !!searchString ? `%${String(searchString)}%` : null
     );

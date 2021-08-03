@@ -69,7 +69,7 @@ export const alertDataController = new AlertDataController(alertDataService);
 import { dataRoutes } from './routes/dataRoute';
 import { routes } from './routes';
 app.use(dataRoutes);
-app.use('/fix', routes);
+app.use('/api/v2', routes);
 
 const PORT = process.env.PORT || 8085;
 
