@@ -26,7 +26,7 @@ dataRoutes.delete(`/vehicles`, dataController.deleteVehicles);
 dataRoutes.get(`/devices`, dataController.getDevicesData);
 dataRoutes.post(`/devices`);
 dataRoutes.put(`/devices`);
-dataRoutes.delete(`/devices`);
+dataRoutes.delete(`/devices`, dataController.deleteDevices);
 
 dataRoutes.get(`/vehicle_device`);
 dataRoutes.post(`/vehicle_device`, dataController.postVehicleDevice);// profile add new link

@@ -701,4 +701,25 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   }
+  // 20210803
+  deleteDevices = async (req: Request, res: Response) => {
+    try {
+      const idArray:{id: number}[] = req.body;
+      const tableName:string = 'devices';
+      let putArray:number[] = [];
+      for(let i = 0; i < idArray.length; i++) {
+        putArray.push(idArray[i].id);
+      }
+
+      const result: number[]= await this.dataService.deleteDevices(putArray);
+      console.log(result);
+      await this.dataService.deleteVehicleDevice(result, tableName);
+
+      res.status(httpStatusCodes.OK).json({ message: 'Device records deleted'});
+      return;
+    } catch (err) {
+      logger.error(err.message);
+      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+    }
+  }
 }

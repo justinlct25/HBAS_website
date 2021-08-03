@@ -775,7 +775,7 @@ export class DataService {
                 .update({
                   'is_active': false, 
                   'updated_at': new Date(Date.now())
-                })
+                });
       break;
       case 'companies':
         query = this.knex('vehicle_device')
@@ -784,9 +784,25 @@ export class DataService {
                 .update({
                   'is_active': false, 
                   'updated_at': new Date(Date.now())
-                })
+                });
+      break;
+      case 'devices':
+        query = this.knex('vehicle_device')
+                .whereIn('device_id', id)
+                .andWhere('is_active', true)
+                .update({
+                  'is_active': false, 
+                  'updated_at': new Date(Date.now())
+                });
       break;
     }
     return await query;
-  }// delete#vehicles 3 || delete#companies 4
+  }// delete#vehicles 3 || delete#companies 4 || delete#devices 2
+//// 20210803 delete devices
+  async deleteDevices(id: number[]){
+    return await this.knex('devices')
+      .whereIn('id', id)
+      .update({'is_active': false, 'updated_at': new Date(Date.now())})
+      .returning('id')
+  }// delete#devices 1
 }
