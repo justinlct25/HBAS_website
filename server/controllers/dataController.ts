@@ -341,7 +341,7 @@ export class DataController {
       }
       let duplicateCompany: string[] = [];
       let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
-      if (parseInt(String(checkDuplicate[0].count)) > 0) {
+      if (checkDuplicate.length > 0) {
         duplicateCompany.push(mBody[0].companyName);
         res
           .status(httpStatusCodes.BAD_REQUEST)
@@ -450,7 +450,7 @@ export class DataController {
             ++blankResult;
           } else {
             let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-            if (parseInt(String(checkDuplicate[0].count)) > 0) {
+            if (checkDuplicate.length > 0) {
               duplicateResult.push(mBody[i].carPlate);
             } else {
               vehiclesResult = await this.dataService.postVehicles(
@@ -600,14 +600,27 @@ export class DataController {
   putCompanies = async (req: Request, res: Response) => {
     try {
       const { id, company_name, tel, contact_person } = req.body;
-      const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
-      if(parseInt(String(duplicate[0].count)) > 0){
-        res.status(httpStatusCodes.BAD_REQUEST).json({message: 'company name is duplicate'});
+      if(company_name === null || 
+        company_name === undefined || 
+        tel === null || 
+        tel === undefined){
+          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'Emtpy company name or tel'});
+          return;
+      }
+      if(tel.length !== 8){
+        res.status(httpStatusCodes.BAD_REQUEST).json({message: 'tel is invalid length'});
         return;
+      }
+      const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
+      if(duplicate.length > 0){
+        if(duplicate[0].id === id){}else{
+          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'company name is duplicate'});
+          return;
+        }
       }
       const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
 
-      res.status(httpStatusCodes.OK).json({data: result, message: 'updated'});
+      res.status(httpStatusCodes.OK).json({data: result, message: 'company detail updated'});
       return;
     } catch (err) {
       logger.error(err.message);
@@ -616,7 +629,7 @@ export class DataController {
   }
   deleteCompanies = async (req: Request, res: Response) => {
     try {
-      const idArray = req.body;
+      const idArray:{id:number}[] = req.body;
       const tableName = 'companies';
       let putArray:number[] = [];
 
@@ -638,7 +651,32 @@ export class DataController {
   }
   putVehicles = async (req: Request, res: Response) => {
     try {
-      
+      const { id, car_plate, vehicle_model, vehicle_type }:
+      {
+        id:number, 
+        car_plate:string, 
+        vehicle_model:string, 
+        vehicle_type:string
+      } = req.body;
+      if(car_plate === undefined || car_plate === null){
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Empty car plate detected'});
+        return;
+      }
+      if(car_plate.length > 8){
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate length invalid'});
+        return;
+      }
+      const duplicate = await this.dataService.checkCarPlateDuplicate(car_plate);
+      if(duplicate.length > 0){
+        if(duplicate[0].id === id){}else{
+          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'car plate is duplicate'});
+          return;
+        }
+      }
+      const result = await this.dataService.putVehicles(id, (car_plate.toUpperCase()), vehicle_model, vehicle_type);
+
+      res.status(httpStatusCodes.OK).json({data: result, message: 'vehicle detail updated'});
+      return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
@@ -646,13 +684,13 @@ export class DataController {
   }
   deleteVehicles = async (req: Request, res: Response) => {
     try {
-      const idArray = req.body;
+      const idArray:{id: number}[] = req.body;
       const tableName:string = 'vehicles'; 
       let putArray:number[] = [];
       for(let i = 0; i < idArray.length; i++) {
         putArray.push(idArray[i].id);
       }
-      
+
       const result: number[] = await this.dataService.deleteVehicles(putArray);
       await this.dataService.deleteCompanyVehicles(result, tableName);
       await this.dataService.deleteVehicleDevice(result, tableName);

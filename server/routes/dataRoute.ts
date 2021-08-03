@@ -20,7 +20,7 @@ dataRoutes.delete(`/companies`, dataController.deleteCompanies);
 
 dataRoutes.get(`/vehicles`);
 dataRoutes.post(`/vehicles/:id`, dataController.postVehicles);
-dataRoutes.put(`/vehicles`);
+dataRoutes.put(`/vehicles`, dataController.putVehicles);
 dataRoutes.delete(`/vehicles`, dataController.deleteVehicles);
 
 dataRoutes.get(`/devices`, dataController.getDevicesData);
