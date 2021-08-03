@@ -6,30 +6,30 @@ import {
   errorCompaniesInput,
 } from "./action";
 
-const { REACT_APP_API_SERVER } = process.env;
+const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-export function getCompaniesDataListThunk(
-  activePage: number,
-  isInit: boolean,
-  searchType: string,
-  searchString: string
-) {
+export function getCompaniesDataListThunk(activePage: number, isInit: boolean) {
   return async (dispatch: Dispatch<ICompaniesDataActions>) => {
     try {
       if (isInit) {
         dispatch(resetCompaniesDataList());
       }
-      const res = await fetch(
-        `${REACT_APP_API_SERVER}/companies?page=${activePage}&searchType=${searchType}&searchString=${searchString}`
+
+      const url = new URL(
+        `${REACT_APP_API_VERSION}/companies`,
+        `${REACT_APP_API_SERVER}`
       );
+      url.searchParams.set("page", String(activePage));
+
+      const res = await fetch(url.toString());
 
       if (res.status === 200) {
         const data = await res.json();
         dispatch(
           setCompaniesDataList(
-            data.companies,
+            data.data,
             activePage,
-            data.totalPage,
+            data.pagination.lastPage,
             data.limit
           )
         );
@@ -44,9 +44,11 @@ export function getCompaniesDataListThunk(
 }
 
 export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
-  return async (dispatch: Dispatch<ICompaniesDataActions>, dispatch2: Dispatch<ICompaniesDataActions>) => {
+  return async (
+    dispatch: Dispatch<ICompaniesDataActions>,
+    dispatch2: Dispatch<ICompaniesDataActions>
+  ) => {
     try {
-      console.log("test input data from thunk");
       const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
         method: "post",
         headers: {
@@ -69,7 +71,7 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
           );
           if (res.status === 201 || res.status === 200) {
             const data = await res.json();
-            if(data.data.length > 0 || data.blank > 0){
+            if (data.data.length > 0 || data.blank > 0) {
               alert(`${data.message}`);
             }
             dispatch(errorCompaniesInput(false));

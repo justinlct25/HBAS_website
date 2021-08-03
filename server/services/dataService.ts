@@ -317,7 +317,6 @@ export class DataService {
   }
   // post /companies
   async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
-    //console.log(companyName + ' ' + contactPerson + ' ' + tel);
     return await this.knex('companies')
       .insert({ company_name: companyName, contact_person: contactPerson, tel: tel })
       .returning<number>('id');
@@ -425,7 +424,6 @@ export class DataService {
   //get vehicles
   //post vehicles
   async postVehicles(carPlate: string, vehicleType: string, vehicleModel: string) {
-    //console.log(carPlate + ' ' + vehicleType + ' ' + vehicleModel);
     return await this.knex('vehicles')
       .insert({ car_plate: carPlate, vehicle_type: vehicleType, vehicle_model: vehicleModel })
       .returning<number>('id');

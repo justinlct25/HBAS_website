@@ -492,11 +492,8 @@ export class DataController {
   getDevicesVersion = async (req: Request, res: Response) => {
     try {
       const ver = req.query;
-      // console.log(ver);
       const newVer = String(ver);
-      // console.log(newVer);
       const verData = await this.dataService.getDevicesVersion(newVer);
-      // console.log(verData);
       res
         .status(httpStatusCodes.ACCEPTED)
         .json({ version: verData[0], message: 'get version data' });
@@ -511,7 +508,6 @@ export class DataController {
     try {
       const companyID = req.params;
       const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)));
-      console.log(result);
       res.status(httpStatusCodes.OK).json({ data: result, message: 'test' });
       return;
     } catch (err) {
@@ -599,127 +595,121 @@ export class DataController {
   putCompanies = async (req: Request, res: Response) => {
     try {
       const { id, company_name, tel, contact_person } = req.body;
-      if(company_name === null || 
-        company_name === undefined || 
-        tel === null || 
-        tel === undefined){
-          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'Emtpy company name or tel'});
-          return;
+      if (!company_name || !tel) {
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
+        return;
       }
-      if(tel.length !== 8){
-        res.status(httpStatusCodes.BAD_REQUEST).json({message: 'tel is invalid length'});
+      if (tel.length !== 8) {
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'tel is invalid length' });
         return;
       }
       const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
-      if(duplicate.length > 0){
-        if(duplicate[0].id === id){}else{
-          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'company name is duplicate'});
+      if (duplicate.length > 0) {
+        if (duplicate[0].id === id) {
+        } else {
+          res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'company name is duplicate' });
           return;
         }
       }
       const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
 
-      res.status(httpStatusCodes.OK).json({data: result, message: 'company detail updated'});
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'company detail updated' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   deleteCompanies = async (req: Request, res: Response) => {
     try {
-      const idArray:{id:number}[] = req.body;
+      const { idArray }: { idArray: number[] } = req.body;
       const tableName = 'companies';
-      let putArray:number[] = [];
 
-      for(let i = 0; i < idArray.length; i++) {
-        putArray.push(idArray[i].id);
-      }
-
-      const result: number[] = await this.dataService.deleteCompanies(putArray);
+      const result: number[] = await this.dataService.deleteCompanies(idArray);
       const result2: number[] = await this.dataService.deleteCompanyVehicles(result, tableName);
       const result3: number[] = await this.dataService.deleteVehicles(result2);
       await this.dataService.deleteVehicleDevice(result3, tableName);
 
-      res.status(httpStatusCodes.OK).json({ message:`Records deleted`});
+      res.status(httpStatusCodes.OK).json({ message: `Records deleted` });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   putVehicles = async (req: Request, res: Response) => {
     try {
-      const { id, car_plate, vehicle_model, vehicle_type }:
-      {
-        id:number, 
-        car_plate:string, 
-        vehicle_model:string, 
-        vehicle_type:string
+      const {
+        id,
+        car_plate,
+        vehicle_model,
+        vehicle_type,
+      }: {
+        id: number;
+        car_plate: string;
+        vehicle_model: string;
+        vehicle_type: string;
       } = req.body;
-      if(car_plate === undefined || car_plate === null){
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Empty car plate detected'});
+      if (!car_plate) {
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Empty car plate detected' });
         return;
       }
-      if(car_plate.length > 8){
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate length invalid'});
+      if (car_plate.length > 8) {
+        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate length invalid' });
         return;
       }
       const duplicate = await this.dataService.checkCarPlateDuplicate(car_plate);
-      if(duplicate.length > 0){
-        if(duplicate[0].id === id){}else{
-          res.status(httpStatusCodes.BAD_REQUEST).json({message: 'car plate is duplicate'});
+      if (duplicate.length > 0) {
+        if (duplicate[0].id === id) {
+        } else {
+          res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate is duplicate' });
           return;
         }
       }
-      const result = await this.dataService.putVehicles(id, (car_plate.toUpperCase()), vehicle_model, vehicle_type);
+      const result = await this.dataService.putVehicles(
+        id,
+        car_plate.toUpperCase(),
+        vehicle_model,
+        vehicle_type
+      );
 
-      res.status(httpStatusCodes.OK).json({data: result, message: 'vehicle detail updated'});
+      res.status(httpStatusCodes.OK).json({ data: result, message: 'vehicle detail updated' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   deleteVehicles = async (req: Request, res: Response) => {
     try {
-      const idArray:{id: number}[] = req.body;
-      const tableName:string = 'vehicles'; 
-      let putArray:number[] = [];
-      for(let i = 0; i < idArray.length; i++) {
-        putArray.push(idArray[i].id);
-      }
+      const { idArray }: { idArray: number[] } = req.body;
+      const tableName: string = 'vehicles';
 
-      const result: number[] = await this.dataService.deleteVehicles(putArray);
+      const result: number[] = await this.dataService.deleteVehicles(idArray);
       await this.dataService.deleteCompanyVehicles(result, tableName);
       await this.dataService.deleteVehicleDevice(result, tableName);
 
-      res.status(httpStatusCodes.OK).json({ message:`Vehicle Records deleted`});
+      res.status(httpStatusCodes.OK).json({ message: `Vehicle Records deleted` });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
   // 20210803
   deleteDevices = async (req: Request, res: Response) => {
     try {
-      const idArray:{id: number}[] = req.body;
-      const tableName:string = 'devices';
-      let putArray:number[] = [];
-      for(let i = 0; i < idArray.length; i++) {
-        putArray.push(idArray[i].id);
-      }
+      const { idArray }: { idArray: number[] } = req.body;
+      const tableName: string = 'devices';
 
-      const result: number[]= await this.dataService.deleteDevices(putArray);
-      console.log(result);
+      const result: number[] = await this.dataService.deleteDevices(idArray);
       await this.dataService.deleteVehicleDevice(result, tableName);
 
-      res.status(httpStatusCodes.OK).json({ message: 'Device records deleted'});
+      res.status(httpStatusCodes.OK).json({ message: 'Device records deleted' });
       return;
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
-  }
+  };
 }
