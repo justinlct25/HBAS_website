@@ -50,7 +50,7 @@ const TestMap = () => {
         console.log(result.data);
         setIncidentPoints(result.data);
       } catch (e) {
-        console.log(e.message);
+        console.error(e.message);
       }
     };
     fetchLatestLocations();
