@@ -78,7 +78,6 @@ function IncidentPage() {
           }}
         >
           {/* Map here */}
-
           <GoogleMapReact
             bootstrapURLKeys={{
               key: process.env.REACT_APP_API_GOOGLE_MAP as string,
@@ -94,7 +93,6 @@ function IncidentPage() {
               lng={incidentLocation.longitude}
             />
           </GoogleMapReact>
-
           <div
             className={
               isReportOpen

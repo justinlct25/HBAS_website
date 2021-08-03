@@ -1,8 +1,14 @@
 import { Knex } from 'knex';
-import { tables } from '../utils/table_model';
+
+const companiesTable = 'companies';
+const vehiclesTable = 'vehicles';
+const devicesTable = 'devices';
+const alertDataTable = 'alert_data';
+const companyVehiclesTable = 'company_vehicles';
+const vehicleDeviceTable = 'vehicle_device';
 
 export async function up(knex: Knex): Promise<void> {
-  await knex.schema.createTable(tables.COMPANY, (table) => {
+  await knex.schema.createTable(companiesTable, (table) => {
     table.increments();
     table.string('company_name').notNullable();
     table.string('tel').notNullable();
@@ -11,7 +17,7 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamps(false, true);
   });
 
-  await knex.schema.createTable(tables.VEHICLE, (table) => {
+  await knex.schema.createTable(vehiclesTable, (table) => {
     table.increments();
     table.string('car_plate', 8).notNullable();
     table.string('vehicle_model');
@@ -20,7 +26,7 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamps(false, true);
   });
 
-  await knex.schema.createTable(tables.DEVICE, (table) => {
+  await knex.schema.createTable(devicesTable, (table) => {
     table.increments();
     table.string('device_name').notNullable();
     table.string('device_eui').notNullable();
@@ -30,12 +36,12 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamps(false, true);
   });
 
-  await knex.schema.createTable(tables.AlertData, (table) => {
+  await knex.schema.createTable(alertDataTable, (table) => {
     table.increments();
     table.integer('device_id').notNullable().unsigned();
-    table.foreign('device_id').references('devices.id');
+    table.foreign('device_id').references(`${devicesTable}.id`);
     table.dateTime('date');
-    table.specificType('geolocation','POINT').notNullable().comment('latitude and longitude');
+    table.specificType('geolocation', 'POINT').notNullable().comment('latitude and longitude');
     table.string('address').notNullable().comment('fetch geolocation and return address');
     table.string('msg_type').notNullable().comment('A for alert, B for battery');
     table.string('battery', 20).notNullable(); // data detail
@@ -44,31 +50,32 @@ export async function up(knex: Knex): Promise<void> {
     table.timestamps(false, true);
   });
 
-  await knex.schema.createTable(tables.CompanyVehicle, (table) => {
+  await knex.schema.createTable(companyVehiclesTable, (table) => {
     table.increments();
     table.integer('company_id').notNullable().unsigned();
-    table.foreign('company_id').references('companies.id');
+    table.foreign('company_id').references(`${companiesTable}.id`);
     table.integer('vehicle_id').notNullable().unsigned();
-    table.foreign('vehicle_id').references('vehicles.id');
+    table.foreign('vehicle_id').references(`${vehiclesTable}.id`);
     table.boolean('is_active').defaultTo(true).notNullable();
     table.timestamps(false, true);
   });
-  await knex.schema.createTable(tables.VehicleDevice, (table) => {
+
+  await knex.schema.createTable(vehicleDeviceTable, (table) => {
     table.increments();
     table.integer('vehicle_id').notNullable().unsigned();
-    table.foreign('vehicle_id').references('vehicles.id');
+    table.foreign('vehicle_id').references(`${vehiclesTable}.id`);
     table.integer('device_id').notNullable().unsigned();
-    table.foreign('device_id').references('devices.id');
+    table.foreign('device_id').references(`${devicesTable}.id`);
     table.boolean('is_active').defaultTo(true).notNullable();
     table.timestamps(false, true);
   });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  await knex.schema.dropTable(tables.VehicleDevice);
-  await knex.schema.dropTable(tables.CompanyVehicle);
-  await knex.schema.dropTable(tables.AlertData);
-  await knex.schema.dropTable(tables.DEVICE);
-  await knex.schema.dropTable(tables.VEHICLE);
-  await knex.schema.dropTable(tables.COMPANY);
+  await knex.schema.dropTable(vehicleDeviceTable);
+  await knex.schema.dropTable(companyVehiclesTable);
+  await knex.schema.dropTable(alertDataTable);
+  await knex.schema.dropTable(devicesTable);
+  await knex.schema.dropTable(vehiclesTable);
+  await knex.schema.dropTable(companiesTable);
 }

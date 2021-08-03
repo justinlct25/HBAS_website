@@ -1,10 +1,10 @@
 import { Knex } from 'knex';
 import {
-  insertedCompanies,
-  insertedVehicles,
-  insertedDevices,
-  insertedAlertData,
   insertCompanyVehicles,
+  insertedAlertData,
+  insertedCompanies,
+  insertedDevices,
+  insertedVehicles,
   insertedVehiclesDevice,
 } from '../utils/dataset';
 import { tables } from '../utils/table_model';
@@ -12,51 +12,49 @@ import { tables } from '../utils/table_model';
 type InsertCompanies = { id: number; company_name: string };
 type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
-type InsertAlertData = {
-  device_id: number | undefined;
-  date: string;
-  geolocation: string;
-  address: string;
-  battery: string;
-  data: string;
-  msg_type: string;
-};
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
-  await knex(tables.VehicleDevice).del();
-  await knex(tables.CompanyVehicle).del();
-  await knex(tables.AlertData).del();
-  await knex(tables.DEVICE).del();
-  await knex(tables.VEHICLE).del();
-  await knex(tables.COMPANY).del();
+  await knex(tables.VEHICLE_DEVICE).del();
+  await knex(tables.COMPANY_VEHICLES).del();
+  await knex(tables.ALERT_DATA).del();
+  await knex(tables.DEVICES).del();
+  await knex(tables.VEHICLES).del();
+  await knex(tables.COMPANIES).del();
 
   // Inserts seed entries
-  const companies: Array<InsertCompanies> = await knex(tables.COMPANY)
+  // companies
+  const companies = await knex<InsertCompanies>(tables.COMPANIES)
     .insert(insertedCompanies)
     .returning(['company_name', 'id']);
+
   const companiesMap = companies.reduce((mapping, company) => {
     mapping.set(company.company_name, company.id);
     return mapping;
   }, new Map<string, number>());
 
-  const vehicles: Array<InsertVehicles> = await knex(tables.VEHICLE)
+  // vehicles
+  const vehicles = await knex<InsertVehicles>(tables.VEHICLES)
     .insert(insertedVehicles)
     .returning(['car_plate', 'id']);
+
   const vehiclesMap = vehicles.reduce((mapping, vehicle) => {
     mapping.set(vehicle.car_plate, vehicle.id);
     return mapping;
   }, new Map<string, number>());
 
-  const devices: Array<InsertDevices> = await knex(tables.DEVICE)
+  // devices
+  const devices = await knex<InsertDevices>(tables.DEVICES)
     .insert(insertedDevices)
     .returning(['device_eui', 'id']);
+
   const devicesMap = devices.reduce((mapping, device) => {
     mapping.set(device.device_eui, device.id);
     return mapping;
   }, new Map<string, number>());
 
-  const alertData: Array<InsertAlertData> = insertedAlertData.map((session) => ({
+  // alert data
+  const alertData = insertedAlertData.map((session) => ({
     device_id: devicesMap.get(session.device_eui),
     date: session.date,
     geolocation: session.geolocation,
@@ -65,17 +63,22 @@ export async function seed(knex: Knex): Promise<void> {
     data: session.data,
     msg_type: session.msg_type,
   }));
-  await knex(tables.AlertData).insert(alertData);
 
+  await knex(tables.ALERT_DATA).insert(alertData);
+
+  // company-vehicles
   const companyVehicles = insertCompanyVehicles.map((session) => ({
     company_id: companiesMap.get(session.company_name),
     vehicle_id: vehiclesMap.get(session.car_plate),
   }));
-  await knex(tables.CompanyVehicle).insert(companyVehicles);
 
+  await knex(tables.COMPANY_VEHICLES).insert(companyVehicles);
+
+  // const vehicle-device
   const vehicleDevice = insertedVehiclesDevice.map((session) => ({
     device_id: devicesMap.get(session.device_eui),
     vehicle_id: vehiclesMap.get(session.car_plate),
   }));
-  await knex(tables.VehicleDevice).insert(vehicleDevice);
+
+  await knex(tables.VEHICLE_DEVICE).insert(vehicleDevice);
 }
