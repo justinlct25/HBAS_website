@@ -5,7 +5,6 @@ import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
 import { base64ToHex } from '../utils/eui_decoder';
-import console from 'console';
 
 export class DataController {
   constructor(private dataService: DataService) {}
