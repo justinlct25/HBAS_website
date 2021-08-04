@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { IDataHistory, ILocationDetail } from '../models/models';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
@@ -10,7 +11,7 @@ export class AlertDataService {
 
     return await this.knex(tables.ALERT_DATA)
       .distinctOn(`${tables.ALERT_DATA}.device_id`)
-      .select({
+      .select<ILocationDetail[]>({
         deviceId: `${tables.ALERT_DATA}.device_id`,
         deviceName: `${tables.DEVICES}.device_name`,
         deviceEui: `${tables.DEVICES}.device_eui`,
@@ -65,7 +66,7 @@ export class AlertDataService {
 
   getHistoryByDeviceAndDate = async (deviceId: number, date: string | null) => {
     return await this.knex(tables.ALERT_DATA)
-      .select({
+      .select<IDataHistory>({
         id: 'id',
         deviceId: 'device_id',
         geolocation: 'geolocation',
