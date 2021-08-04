@@ -1,3 +1,11 @@
+export const insertCompany = [
+  {
+    company_name: 'Sheung Moon',
+    tel: '64780038',
+    contact_person: 'Tong sir'
+  }
+]
+
 export const insertDevices = [
   {
     device_eui: '8CF95720-0003BD23',
@@ -1218,4 +1226,39 @@ export const insertVehicleDevice = [
   },
   
 ]
+
+export const insertCompanyVehicles = [
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VL8428',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'RN8518',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'SW5672',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VL5806',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'XJ9535',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'XG5896',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VG3940',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VG4360',
+  },
   
+]

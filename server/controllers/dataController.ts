@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
-import * as gpsFetch from 'node-fetch';
 import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
-import { base64ToHex } from '../utils/eui_decoder';
+import { base64ToHex, jsonHandler, gpsFetch } from '../utils/postDataFunc';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -103,14 +102,8 @@ export class DataController {
       }
 
       //replace json broken data
-      let JsonStr = JSON.stringify(dataResult);
-      JsonStr = JsonStr.replace(/\"\[\{/gi, `\[\{`);
-      JsonStr = JsonStr.replace(/\'\[\{/gi, `\[\{`);
-      JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\}\]\'/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\\\"/gi, `\"`);
-      const newJSON = JSON.parse(JsonStr);
+      const JsonStr = JSON.stringify(dataResult);
+      const newJSON = JSON.parse(jsonHandler(JsonStr));
 
       //check data code is alive
       if (!newJSON.data) {
@@ -120,8 +113,6 @@ export class DataController {
         return;
       }
       //check json is undefined or good
-      // newJSON.objectJSON[0].latitude == '0' ||
-      // newJSON.objectJSON[0].longitude == '0' ||
       let jsonDate = new Date(newJSON.objectJSON[0].date).getFullYear();
       let checkDate = new Date().getFullYear();
       if (
@@ -152,42 +143,8 @@ export class DataController {
         checkLongitude >= 113.75 &&
         checkLongitude <= 114.45
       ) {
-        await gpsFetch
-          .default(
-            `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-          )
-          .then((response: any) => response.json())
-          .then((data: any) => {
-            data.address.county
-              ? addressJSON.push(
-                  JSON.stringify(data.address.county)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.city_district
-              ? addressJSON.push(
-                  JSON.stringify(data.address.city_district)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.quarter
-              ? addressJSON.push(
-                  JSON.stringify(data.address.quarter)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.suburb
-              ? addressJSON.push(
-                  JSON.stringify(data.address.suburb)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : addressJSON.push('GPS not found');
-          });
+        let result = await gpsFetch(checkLalatitude, checkLongitude);
+        addressJSON.push(result);
       } else {
         addressJSON.push('GPS not found');
       }
@@ -242,7 +199,6 @@ export class DataController {
         mBody[0].tel
       );
 
-      // io.emit('get-new-companies');
       res
         .status(httpStatusCodes.CREATED)
         .json({ data: companiesResult[0], message: 'company created' });
@@ -339,7 +295,12 @@ export class DataController {
   // 20210802 edit / delete companies & vehicles
   putCompanies = async (req: Request, res: Response) => {
     try {
-      const { id, company_name, tel, contact_person } = req.body;
+      const { id, company_name, tel, contact_person } : { 
+        id: number, 
+        company_name: string, 
+        tel: string, 
+        contact_person: string
+      } = req.body;
       if (!company_name || !tel) {
         res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
         return;
