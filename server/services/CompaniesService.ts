@@ -114,13 +114,12 @@ export class CompaniesService {
       ]);
   };
 
+  // -----------companies management-----------
   checkDuplicatedCompany = async (companyName: string) => {
     return await this.knex(tables.COMPANIES)
       .distinct<{ id: number }>('id')
-      .where({
-        is_active: true,
-        company_name: companyName,
-      })
+      .where('is_active', true)
+      .andWhere('company_name', 'ILIKE', companyName)
       .first();
   };
 
@@ -134,6 +133,29 @@ export class CompaniesService {
       .returning<number[]>('id');
   };
 
+  editCompany = async (
+    companyId: number,
+    companyName: string,
+    tel: string,
+    contactPerson: string | null
+  ) => {
+    return await this.knex(tables.COMPANIES)
+      .update(
+        {
+          company_name: companyName,
+          tel,
+          contact_person: contactPerson,
+          updated_at: new Date(),
+        },
+        'id'
+      )
+      .where({
+        is_active: true,
+        id: companyId,
+      });
+  };
+
+  // -----------vehicles management-----------
   checkExistingVehicles = async (carPlates: string[]) => {
     return await this.knex(tables.VEHICLES)
       .distinct<{ car_plate: string }[]>('car_plate')
