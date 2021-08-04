@@ -213,37 +213,11 @@ export class DataService {
       .offset(offset);
   }
 
-  // post /companies
-  async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
-    return await this.knex('companies')
-      .insert({ company_name: companyName, contact_person: contactPerson, tel: tel })
-      .returning<number>('id');
-  }
-
   // post devices , for device join
   async postDevices(name: string, deviceID: string) {
     return await this.knex('devices').insert({ device_name: name, device_eui: deviceID });
   }
-  // delete devices
-  ////---- vehicles ----////
-  //get vehicles
-  //post vehicles
-  async postVehicles(carPlate: string, vehicleType: string, vehicleModel: string) {
-    return await this.knex('vehicles')
-      .insert({ car_plate: carPlate, vehicle_type: vehicleType, vehicle_model: vehicleModel })
-      .returning<number>('id');
-  }
-  //put vehicles
-  //delete vehicles
 
-  ////---- company_vehicles ----////
-  // post company_vehicles
-  async postCompanyVehicles(companyID: number, vehiclesID: any) {
-    return await this.knex('company_vehicles').insert({
-      company_id: companyID,
-      vehicle_id: vehiclesID,
-    });
-  }
   ////---- counting ----////
   // get count data , /alert_data
   async getCountingAlertData() {
@@ -326,21 +300,6 @@ export class DataService {
       .from('devices')
       .where({ device_eui: reqEUI })
       .first();
-  }
-
-  // check duplicate #company_name
-  async checkCompanyDuplicate(company_name: string) {
-    return await this.knex('companies')
-      .where('company_name', 'ILIKE', `${company_name}`)
-      .andWhere('is_active', true)
-      .select<{ id: number }[]>('id');
-  }
-  // check duplicate #car_plate
-  async checkCarPlateDuplicate(car_plate: string) {
-    return await this.knex('vehicles')
-      .where('car_plate', 'ILIKE', `${car_plate}`)
-      .andWhere('is_active', true)
-      .select<{ id: number }[]>('id');
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
