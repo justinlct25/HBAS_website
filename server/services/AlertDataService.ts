@@ -48,4 +48,39 @@ export class AlertDataService {
       })
       .andWhereBetween(`${tables.ALERT_DATA}.date`, [d, new Date()]);
   };
+
+  getDatesWithMessages = async (deviceId: number) => {
+    return await this.knex(tables.ALERT_DATA)
+      .select({
+        day: this.knex.raw(`date_trunc('day', date)`),
+      })
+      .count('device_id AS messageCount')
+      .where({
+        is_active: true,
+        device_id: deviceId,
+      })
+      .groupBy('day')
+      .orderBy('day', 'desc');
+  };
+
+  getHistoryByDeviceAndDate = async (deviceId: number, date: string | null) => {
+    return await this.knex(tables.ALERT_DATA)
+      .select({
+        id: 'id',
+        deviceId: 'device_id',
+        geolocation: 'geolocation',
+        date: 'date',
+        address: 'address',
+        msgType: 'msg_type',
+        battery: 'battery',
+      })
+      .where({
+        is_active: true,
+        device_id: deviceId,
+      })
+      .andWhereRaw(`date_trunc('day', date) = ?`, [
+        !!date ? date : new Date().toLocaleDateString('en-CA'),
+      ])
+      .orderBy('date', 'desc');
+  };
 }
