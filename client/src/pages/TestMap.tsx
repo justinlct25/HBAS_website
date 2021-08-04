@@ -16,29 +16,45 @@ type lastSeenLocations = Array<{
 interface IncidentPointProps {
   lat: number;
   lng: number;
+  backgroundColor: string;
+  children: React.ReactNode;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 const IncidentPoint = (props: IncidentPointProps) => {
-  const { lat, lng } = props;
+  const {
+    lat,
+    lng,
+    children,
+    backgroundColor,
+    onMouseEnter,
+    onMouseLeave,
+  } = props;
   return (
     <div
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       style={{
-        width: "25px",
-        height: "25px",
-        background: "#0FF",
+        width: "20px",
+        height: "20px",
+        background: backgroundColor,
         borderRadius: "50%",
       }}
-    />
+    >
+      {children}
+    </div>
   );
 };
 
 const TestMap = () => {
   const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
+  const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
   useEffect(() => {
     const fetchLatestLocations = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}/fix/alert-data/latest-locations`,
+          `${process.env.REACT_APP_API_SERVER}/api/v2/alert-data/latest-locations`,
           {
             method: "GET",
             headers: {
@@ -47,7 +63,6 @@ const TestMap = () => {
           }
         );
         const result = await res.json();
-        console.log(result.data);
         setIncidentPoints(result.data);
       } catch (e) {
         console.error(e.message);
@@ -58,7 +73,7 @@ const TestMap = () => {
 
   return (
     // Important! Always set the container height explicitly
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: "80vh", width: "100%" }}>
       <GoogleMapReact
         bootstrapURLKeys={{
           key: process.env.REACT_APP_API_GOOGLE_MAP as string,
@@ -70,18 +85,52 @@ const TestMap = () => {
         defaultZoom={11.67}
       >
         {incidentPoints.map((item, idx) => {
+          const checking = hoverAnimate.onHover && hoverAnimate.idx === idx;
           return (
             <IncidentPoint
+              onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
+              onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
               key={idx}
               lat={item.geolocation.x}
               lng={item.geolocation.y}
-            />
+              backgroundColor={item.msgType === "A" ? "#F00C" : "#0FF"}
+            >
+              <div
+                className="flex-center tooltip"
+                style={{
+                  top: checking ? "-120px" : 0,
+                  opacity: checking ? 1 : 0,
+                }}
+              >
+                <div className="flex-center">
+                  <div className="tooltipField">{"Device ID:"}</div>
+                  <div style={{ color: "#EEE" }}>{item.deviceEui}</div>
+                </div>
+                <div className="flex-center">
+                  <div className="tooltipField">{"Date:"}</div>
+                  <div style={{ color: "#EEE" }}>
+                    {new Date(item.date).toLocaleDateString("en-CA")}
+                  </div>
+                </div>
+                <div className="flex-center">
+                  <div className="tooltipField">{"Time:"}</div>
+                  <div style={{ color: "#EEE" }}>
+                    {new Date(item.date).toLocaleTimeString()}
+                  </div>
+                </div>
+                <div className="flex-center">
+                  <div className="tooltipField">{"Company:"}</div>
+                  <div style={{ color: "#EEE" }}>{item.companyName}</div>
+                </div>
+
+                <div className="flex-center">
+                  <div className="tooltipField">{"Car Plate:"}</div>
+                  <div style={{ color: "#EEE" }}>{item.carPlate}</div>
+                </div>
+              </div>
+            </IncidentPoint>
           );
         })}
-        {/* <IncidentPoint
-            lat={incidentLocation.latitude}
-            lng={incidentLocation.longitude}
-          /> */}
       </GoogleMapReact>
     </div>
   );
