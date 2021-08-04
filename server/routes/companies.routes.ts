@@ -9,5 +9,9 @@ companiesRoutes.get('/', createAsyncMiddleware(companiesController.getCompaniesI
 companiesRoutes.get('/:companyId', createAsyncMiddleware(companiesController.getCompanyDetails));
 companiesRoutes.get('/vehicles/:companyId', createAsyncMiddleware(companiesController.getCompanyVehicles));
 
-// other apis
+// other companies apis
 companiesRoutes.post('/', createAsyncMiddleware(companiesController.addCompany));
+companiesRoutes.put('/:companyId', createAsyncMiddleware(companiesController.editCompany));
+
+// other vehicles apis
+companiesRoutes.post('/vehicles/:companyId', createAsyncMiddleware(companiesController.addVehicles));

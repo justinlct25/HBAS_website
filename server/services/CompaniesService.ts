@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
-import { ICompanyInfo, IVehicleDetail } from '../models/models';
+import { ICompanyInfo, INewVehicle, IVehicleDetail } from '../models/models';
+import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
 export class CompaniesService {
@@ -113,13 +114,12 @@ export class CompaniesService {
       ]);
   };
 
+  // -----------companies management-----------
   checkDuplicatedCompany = async (companyName: string) => {
     return await this.knex(tables.COMPANIES)
       .distinct<{ id: number }>('id')
-      .where({
-        is_active: true,
-        company_name: companyName,
-      })
+      .where('is_active', true)
+      .andWhere('company_name', 'ILIKE', companyName)
       .first();
   };
 
@@ -130,6 +130,65 @@ export class CompaniesService {
         tel,
         contact_person: contactPerson,
       })
-      .returning<{ id: number }>('id');
+      .returning<number[]>('id');
+  };
+
+  editCompany = async (
+    companyId: number,
+    companyName: string,
+    tel: string,
+    contactPerson: string | null
+  ) => {
+    return await this.knex(tables.COMPANIES)
+      .update(
+        {
+          company_name: companyName,
+          tel,
+          contact_person: contactPerson,
+          updated_at: new Date(),
+        },
+        'id'
+      )
+      .where({
+        is_active: true,
+        id: companyId,
+      });
+  };
+
+  // -----------vehicles management-----------
+  checkExistingVehicles = async (carPlates: string[]) => {
+    return await this.knex(tables.VEHICLES)
+      .distinct<{ car_plate: string }[]>('car_plate')
+      .where('is_active', true)
+      .whereIn('car_plate', carPlates);
+  };
+
+  addVehicles = async (vehicles: INewVehicle[], companyId: number) => {
+    const trx = await this.knex.transaction();
+    try {
+      const ids = await trx(tables.VEHICLES)
+        .insert(
+          vehicles.map((v) => ({
+            car_plate: v.carPlate,
+            vehicle_model: v.vehicleModel,
+            vehicle_type: v.vehicleType,
+          }))
+        )
+        .returning<number[]>('id');
+
+      await trx(tables.COMPANY_VEHICLES).insert(
+        ids.map((id) => ({
+          company_id: companyId,
+          vehicle_id: id,
+        }))
+      );
+
+      await trx.commit();
+      return ids;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
   };
 }
