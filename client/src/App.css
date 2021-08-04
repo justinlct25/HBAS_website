@@ -162,36 +162,32 @@ body {
   font-size: 36px;
   margin: 16px;
 }
-.tooltip {
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  background-color: #222;
-  width: max-content;
-  height: max-content;
-  white-space: nowrap;
-  overflow: visible;
-  border-radius: 10px;
-  flex-direction: column;
-  padding: 8px;
-  transition: all 0.4s cubic-bezier(0.09, 1, 0.22, 1);
-  z-index: 1;
+.popup {
+  opacity: 0;
+  top: 120px;
+  transition: top 0.4s cubic-bezier(0.09, 1, 0.22, 1), opacity 0.4s cubic-bezier(0.09, 1, 0.22, 1);
 }
-.tooltipField {
-  color: #eee;
-  padding-right: 8px;
+.popup-enter {
+  opacity: 0 !important;
+  top: 120px !important;
 }
-.tooltip::before {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  right: -8px;
-  width: 30px;
-  height: 30px;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 30px solid #222;
-  transform: rotate(70deg);
-  z-index: 0;
-  transition: all 0.5s cubic-bezier(0.09, 1, 0.22, 1);
+.popup-enter-active {
+  opacity: 1 !important;
+  top: 0 !important;
+}
+.popup-enter-done {
+  opacity: 1 !important;
+  top: 0 !important;
+}
+.popup-exit {
+  opacity: 1 !important;
+  top: 0 !important;
+}
+.popup-exit-active {
+  opacity: 0 !important;
+  top: 120px !important;
+}
+.popup-exit-done {
+  opacity: 0 !important;
+  top: 120px !important;
 }
