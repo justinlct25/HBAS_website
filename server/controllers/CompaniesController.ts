@@ -81,7 +81,7 @@ export class CompaniesController {
 
     // check duplicate
     const existingCompany = await this.companiesService.checkDuplicatedCompany(companyName);
-    if (!!existingCompany)
+    if (!!existingCompany && existingCompany.id !== parseInt(companyId))
       return res.status(httpStatusCodes.CONFLICT).json({
         message: 'Company name already exists.',
       });
