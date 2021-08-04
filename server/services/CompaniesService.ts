@@ -112,4 +112,24 @@ export class CompaniesService {
         { column: `${tempVehicles}.carPlate`, order: 'asc' },
       ]);
   };
+
+  checkDuplicatedCompany = async (companyName: string) => {
+    return await this.knex(tables.COMPANIES)
+      .distinct<{ id: number }>('id')
+      .where({
+        is_active: true,
+        company_name: companyName,
+      })
+      .first();
+  };
+
+  addCompany = async (companyName: string, tel: string, contactPerson: string | null) => {
+    return await this.knex(tables.COMPANIES)
+      .insert({
+        company_name: companyName,
+        tel,
+        contact_person: contactPerson,
+      })
+      .returning<{ id: number }>('id');
+  };
 }
