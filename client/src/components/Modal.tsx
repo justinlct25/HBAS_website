@@ -49,16 +49,16 @@ type vehicleList = Array<{
   vehicle_id: number;
 }>;
 
-const { REACT_APP_API_SERVER } = process.env;
+const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export const Modal = (props: ModalProps) => {
   const { isOpen, modalType, setSelectModalOpen } = props;
   const [focusNewDevice, setFocusNewDevice] = useState(true);
   const [searchField, setSearchField] = useState("");
   const [allDevices, setAllDevices] = useState<{
-    allDevices: Array<deviceDetails>;
-    notAssigned: Array<deviceDetails>;
-  }>();
+    linkedDevices: Array<any>;
+    notAssigned: Array<any>;
+  }>({ linkedDevices: [], notAssigned: [] });
   const [companyList, setCompanyList] = useState<Array<companyDetails>>();
   const [allVehicles, setAllVehicles] = useState<vehicleList>([]);
 
@@ -79,19 +79,23 @@ export const Modal = (props: ModalProps) => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await fetch(`${REACT_APP_API_SERVER}/allDevices`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          });
+          const res = await fetch(
+            `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/devices/link-device-vehicle`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+            }
+          );
           if (res.status === 201 || res.status === 200) {
-            const data: fetchedData = await res.json();
-            const allDevices = await data.data.slice();
-            const notAssigned = await data.data.filter((dt) => !dt.is_register);
+            const result = await res.json();
+            const linkedDevices = await result.data.linkedDevices;
+            const notAssigned = await result.data.newDevices;
+
             await setAllDevices({
-              allDevices: allDevices,
-              notAssigned: notAssigned,
+              linkedDevices,
+              notAssigned,
             });
           }
         } catch (e) {
@@ -213,7 +217,7 @@ export const Modal = (props: ModalProps) => {
                     </div>
                   );
                 })
-            : allDevices?.allDevices
+            : allDevices?.linkedDevices
                 .filter((item) => item.device_eui.includes(searchField))
                 .map((item) => {
                   return (

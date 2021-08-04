@@ -111,7 +111,7 @@ function AssignDeviceByVehicleModal() {
                   >
                     {selectedItem.deviceEui === ""
                       ? "Select device"
-                      : toHexAndSplit(selectedItem.deviceEui)}
+                      : selectedItem.deviceEui}
                   </div>
                   <div
                     style={{
