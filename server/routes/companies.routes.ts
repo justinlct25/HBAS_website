@@ -5,4 +5,5 @@ import { createAsyncMiddleware } from '../utils/middleware';
 export const companiesRoutes = express.Router();
 
 companiesRoutes.get('/', createAsyncMiddleware(companiesController.getCompaniesInfo));
+companiesRoutes.get('/:companyId', createAsyncMiddleware(companiesController.getCompanyDetails));
 companiesRoutes.get('/vehicles/:companyId', createAsyncMiddleware(companiesController.getCompanyVehicles));

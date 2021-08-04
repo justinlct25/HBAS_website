@@ -13,6 +13,7 @@ export class AlertDataController {
   getDatesWithMessages = async (req: Request, res: Response) => {
     const { deviceId } = req.params;
     const data = await this.alertDataService.getDatesWithMessages(parseInt(deviceId));
+    data.forEach((d) => (d.messageCount = parseInt(String(d.messageCount))));
     return res.status(httpStatusCodes.OK).json({ data });
   };
 
