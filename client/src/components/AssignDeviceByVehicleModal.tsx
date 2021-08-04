@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "../css/Modal.css";
 import { ModalType } from "../pages/ManageDevice";
-import { resetPopUpAction } from "../redux/assignDeviceModal/action";
+import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
-import "../css/Modal.css";
-import { toHexAndSplit } from "../helpers/eui_decoder";
 
 function AssignDeviceByVehicleModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{
@@ -21,15 +20,15 @@ function AssignDeviceByVehicleModal() {
   const popUpIsActive = assignDeviceModal.popUpIsActive;
   const selectedItem = assignDeviceModal.selectedItem;
 
-  const handleReset = () => {
+  const closeAction = () => {
     setSelectModalOpen({ isOpen: false, target: "company" });
-    dispatch(resetPopUpAction());
+    dispatch(setPopUpIsActiveAction(false));
   };
   const handleSubmit = () => {
     const assignDevice = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}/vehicle_device`,
+          `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
           {
             method: "POST",
             headers: {
@@ -41,16 +40,13 @@ function AssignDeviceByVehicleModal() {
             }),
           }
         );
-        if (res.status === 201 || res.status === 200) {
-          const data = await res.json();
-        }
       } catch (e) {
         console.error(e.message);
       }
     };
     assignDevice();
 
-    dispatch(resetPopUpAction());
+    dispatch(setPopUpIsActiveAction(false));
   };
 
   return (
@@ -62,7 +58,7 @@ function AssignDeviceByVehicleModal() {
       }
     >
       <div className="popUpContent flex-center">
-        <div className="closeIconContainer" onClick={handleReset}>
+        <div className="closeIconContainer" onClick={closeAction}>
           <CloseIcon color={"#555"} />
         </div>
         <div className="flex-center modalContainer">
@@ -111,7 +107,7 @@ function AssignDeviceByVehicleModal() {
                   >
                     {selectedItem.deviceEui === ""
                       ? "Select device"
-                      : toHexAndSplit(selectedItem.deviceEui)}
+                      : selectedItem.deviceEui}
                   </div>
                   <div
                     style={{
@@ -144,7 +140,7 @@ function AssignDeviceByVehicleModal() {
             />
           </div>
           <div className="flex-center formButtonContainer">
-            <div className="button" onClick={handleReset}>
+            <div className="button" onClick={closeAction}>
               Cancel
             </div>
             <div className="button" onClick={handleSubmit}>

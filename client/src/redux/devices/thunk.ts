@@ -5,30 +5,29 @@ import {
   setDevicesDataList,
 } from "./action";
 
-const { REACT_APP_API_SERVER } = process.env;
+const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-export function getDeviceDataListThunk(
-  activePage: number,
-  isInit: boolean,
-  searchType: string,
-  searchString: string
-) {
+export function getDeviceDataListThunk(activePage: number) {
   return async (dispatch: Dispatch<IDevicesDataActions>) => {
     try {
       dispatch(resetDevicesDataList());
 
-      const res = await fetch(
-        `${REACT_APP_API_SERVER}/devices?page=${activePage}&searchType=${searchType}&searchString=${searchString}`
+      const url = new URL(
+        `${REACT_APP_API_VERSION}/devices`,
+        `${REACT_APP_API_SERVER}`
       );
+      url.searchParams.set("page", String(activePage));
+
+      const res = await fetch(url.toString());
 
       if (res.status === 200) {
-        const data = await res.json();
+        const result = await res.json();
         dispatch(
           setDevicesDataList(
-            data.devices,
+            result.data,
             activePage,
-            data.totalPage,
-            data.limit
+            result.pagination.lastPage,
+            result.pagination.limit
           )
         );
       }

@@ -6,12 +6,13 @@ import {
   CaretIcon,
   CloseIcon,
   MinusIcon,
-  SearchIcon
+  SearchIcon,
 } from "../components/IconsOnly";
 import "../css/TablePage.css";
+import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import {
   getCompaniesDataListThunk,
-  postCompaniesDataThunk
+  postCompaniesDataThunk,
 } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
@@ -52,7 +53,7 @@ function ManageUser() {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getCompaniesDataListThunk(activePage, true));
+    dispatch(getCompaniesDataListThunk(activePage));
   }, [dispatch, popUpIsActive]);
 
   const handleDeleteVehicle = (idx: number) => {
@@ -130,7 +131,7 @@ function ManageUser() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    dispatch(getCompaniesDataListThunk(1, true));
+                    dispatch(getCompaniesDataListThunk(1));
                   }
                 }}
               />
@@ -139,7 +140,7 @@ function ManageUser() {
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        dispatch(getCompaniesDataListThunk(1, true));
+                        dispatch(getCompaniesDataListThunk(1));
                       }
                     : () => {}
                 }
@@ -208,6 +209,14 @@ function ManageUser() {
                     className="flex-center tableRow"
                     onClick={() => {
                       //dispatch something ...
+                      dispatch(
+                        setSelectedItemAction({
+                          companyName: item.companyName,
+                          companyId: item.id,
+                          tel: item.tel,
+                          contactPerson: item.contactPerson,
+                        })
+                      );
                       dispatch(push(`/profile/${item.id}`, { id: item.id }));
                     }}
                   >
@@ -415,7 +424,7 @@ function ManageUser() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(getCompaniesDataListThunk(activePage - 1, false));
+                    dispatch(getCompaniesDataListThunk(activePage - 1));
                   }
             }
           >
@@ -444,7 +453,7 @@ function ManageUser() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(getCompaniesDataListThunk(activePage + 1, false));
+                    dispatch(getCompaniesDataListThunk(activePage + 1));
                   }
                 : () => {}
             }

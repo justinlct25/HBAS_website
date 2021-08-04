@@ -1,6 +1,7 @@
 import { push } from "connected-react-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
@@ -8,8 +9,6 @@ import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
-import { io } from "socket.io-client";
-import { toHexAndSplit } from "../helpers/eui_decoder";
 
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
@@ -50,7 +49,7 @@ function AlertDataPage() {
   return (
     <div className={`flex-center ${styles.pageContainer}`}>
       <div
-        className={`flex-center ${styles.topRowContainer}`}
+        className={`flex-center topRowContainer`}
         style={{ justifyContent: "center" }}
       >
         <div className="flex-center">
@@ -185,7 +184,7 @@ function AlertDataPage() {
                   }}
                 >
                   <div className="flex-center tdMainItem">
-                    {toHexAndSplit(item.device_eui)}
+                    {item.device_eui}
                   </div>
                   <div className="flex-center tdItem">{item.car_plate}</div>
                   <div className="flex-center tdItem">{item.company_name}</div>

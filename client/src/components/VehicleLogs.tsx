@@ -1,5 +1,8 @@
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useRouter } from "../helpers/useRouter";
 
 type lastSeenLocations = Array<{
   battery: string;
@@ -46,7 +49,16 @@ const IncidentPoint = (props: IncidentPointProps) => {
   );
 };
 
-const TestMap = () => {
+const VehicleLogs = () => {
+  const router = useRouter();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const splitRoute = router.pathname.split("/");
+    const routeId = splitRoute[splitRoute.length - 1];
+    //   dispatch(getProfileListThunk(parseInt(routeId)));
+  }, [dispatch]);
+
   const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
@@ -72,7 +84,6 @@ const TestMap = () => {
   }, []);
 
   return (
-    // Important! Always set the container height explicitly
     <div
       className="flex-center"
       style={{ height: "80vh", width: "100%", transform: "translateY(24px)" }}
@@ -139,4 +150,4 @@ const TestMap = () => {
   );
 };
 
-export default TestMap;
+export default VehicleLogs;

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
-import { toHexAndSplit } from "../helpers/eui_decoder";
 import { ModalType } from "../pages/ManageDevice";
 import {
   setDeviceIdAction,
@@ -19,46 +18,43 @@ interface ModalProps {
     }>
   >;
 }
-type deviceDetails = {
-  id: number;
-  device_name: string;
-  device_eui: string;
-  is_register: boolean;
-};
-
-type fetchedData = {
-  data: Array<deviceDetails>;
-};
 
 type companyDetails = {
-  company_name: string;
-  contact_person: string;
-  count: string;
   id: number;
+  companyName: string;
   tel: string;
-  updated_at: string;
+  contactPerson: string | null;
+  updatedAt: string;
+  vehiclesCount: number;
 };
 
 type vehicleList = Array<{
-  car_plate: string;
-  company_id: number;
-  company_name: string;
-  device_eui: string;
-  device_id: number;
-  is_register: true;
-  vehicle_id: number;
+  vehicleId: number;
+  carPlate: string;
+  vehicleModel: string;
+  vehicleType: string;
+  updatedAt: string;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
 }>;
 
-const { REACT_APP_API_SERVER } = process.env;
+interface deviceInfo {
+  id: number;
+  deviceName: string;
+  deviceEui: string;
+}
+
+const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export const Modal = (props: ModalProps) => {
   const { isOpen, modalType, setSelectModalOpen } = props;
   const [focusNewDevice, setFocusNewDevice] = useState(true);
   const [searchField, setSearchField] = useState("");
   const [allDevices, setAllDevices] = useState<{
-    allDevices: Array<deviceDetails>;
-    notAssigned: Array<deviceDetails>;
-  }>();
+    linkedDevices: Array<deviceInfo>;
+    notAssigned: Array<deviceInfo>;
+  }>({ linkedDevices: [], notAssigned: [] });
   const [companyList, setCompanyList] = useState<Array<companyDetails>>();
   const [allVehicles, setAllVehicles] = useState<vehicleList>([]);
 
@@ -79,19 +75,23 @@ export const Modal = (props: ModalProps) => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await fetch(`${REACT_APP_API_SERVER}/allDevices`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-          });
-          if (res.status === 201 || res.status === 200) {
-            const data: fetchedData = await res.json();
-            const allDevices = await data.data.slice();
-            const notAssigned = await data.data.filter((dt) => !dt.is_register);
+          const res = await fetch(
+            `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/devices/link-device-vehicle`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json; charset=utf-8",
+              },
+            }
+          );
+          if (res.status === 200) {
+            const result = await res.json();
+            const linkedDevices = await result.data.linkedDevices;
+            const notAssigned = await result.data.newDevices;
+
             await setAllDevices({
-              allDevices: allDevices,
-              notAssigned: notAssigned,
+              linkedDevices,
+              notAssigned,
             });
           }
         } catch (e) {
@@ -102,15 +102,22 @@ export const Modal = (props: ModalProps) => {
     } else {
       const fetchAllCompanies = async () => {
         try {
-          const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
+          // construct api url with (or without) search params
+          const url = new URL(
+            `${REACT_APP_API_VERSION}/companies`,
+            `${REACT_APP_API_SERVER}`
+          );
+          url.searchParams.set("rows", "1000000"); // hardcoded rows to get all entries
+
+          const res = await fetch(url.toString(), {
             method: "GET",
             headers: {
               "Content-Type": "application/json; charset=utf-8",
             },
           });
-          if (res.status === 201 || res.status === 200) {
+          if (res.status === 200) {
             const result = await res.json();
-            setCompanyList(result.companies);
+            setCompanyList(result.data);
           }
         } catch (e) {
           console.error(e.message);
@@ -118,14 +125,21 @@ export const Modal = (props: ModalProps) => {
       };
       fetchAllCompanies();
     }
-    const fetchAllVehicles = async () => {
+  }, [popUpIsActive, isOpen, modalType]);
+
+  useEffect(() => {
+    if (selectedItem.companyId === -1) return;
+    const fetchVehiclesByCompanyId = async () => {
       try {
-        const res = await fetch(`${REACT_APP_API_SERVER}/allCompanies`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
-        });
+        const res = await fetch(
+          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/vehicles/${selectedItem.companyId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+            },
+          }
+        );
         if (res.status === 201 || res.status === 200) {
           const result = await res.json();
           setAllVehicles(result.data);
@@ -134,8 +148,8 @@ export const Modal = (props: ModalProps) => {
         console.error(e.message);
       }
     };
-    fetchAllVehicles();
-  }, [popUpIsActive, isOpen, modalType]);
+    fetchVehiclesByCompanyId();
+  }, [selectedItem.companyId]);
 
   return (
     <div
@@ -195,9 +209,7 @@ export const Modal = (props: ModalProps) => {
         {modalType === "device"
           ? focusNewDevice
             ? allDevices?.notAssigned
-                .filter((item) =>
-                  toHexAndSplit(item.device_eui).includes(searchField)
-                )
+                .filter((item) => item.deviceEui)
                 .map((item) => {
                   return (
                     <div
@@ -205,16 +217,16 @@ export const Modal = (props: ModalProps) => {
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(setDeviceIdAction(item.id, item.device_eui));
+                        dispatch(setDeviceIdAction(item.id, item.deviceEui));
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {toHexAndSplit(item.device_eui)}
+                      {item.deviceEui}
                     </div>
                   );
                 })
-            : allDevices?.allDevices
-                .filter((item) => item.device_eui.includes(searchField))
+            : allDevices?.linkedDevices
+                .filter((item) => item.deviceEui.includes(searchField))
                 .map((item) => {
                   return (
                     <div
@@ -222,47 +234,40 @@ export const Modal = (props: ModalProps) => {
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(
-                          setDeviceIdAction(
-                            item.id,
-                            toHexAndSplit(item.device_eui)
-                          )
-                        );
+                        dispatch(setDeviceIdAction(item.id, item.deviceEui));
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {toHexAndSplit(item.device_eui)}
+                      {item.deviceEui}
                     </div>
                   );
                 })
           : modalType === "carPlate"
-          ? allVehicles
-              .filter((i) => i.company_id === selectedItem.companyId)
-              .map((item) => {
-                return (
-                  <div
-                    className="eachDevice"
-                    onClick={
-                      selectedItem.companyName === ""
-                        ? () => {}
-                        : () => {
-                            dispatch(
-                              setSelectedItemAction({
-                                vehicleId: item.vehicle_id,
-                                carPlate: item.car_plate,
-                              })
-                            );
-                            setSelectModalOpen({
-                              isOpen: false,
-                              target: "carPlate",
-                            });
-                          }
-                    }
-                  >
-                    {item.car_plate}
-                  </div>
-                );
-              })
+          ? allVehicles.map((item) => {
+              return (
+                <div
+                  className="eachDevice"
+                  onClick={
+                    selectedItem.companyName === ""
+                      ? () => {}
+                      : () => {
+                          dispatch(
+                            setSelectedItemAction({
+                              vehicleId: item.vehicleId,
+                              carPlate: item.carPlate,
+                            })
+                          );
+                          setSelectModalOpen({
+                            isOpen: false,
+                            target: "carPlate",
+                          });
+                        }
+                  }
+                >
+                  {item.carPlate}
+                </div>
+              );
+            })
           : modalType === "company" &&
             companyList &&
             companyList.map((item) => {
@@ -274,14 +279,14 @@ export const Modal = (props: ModalProps) => {
                     dispatch(
                       setSelectedItemAction({
                         companyId: item.id,
-                        companyName: item.company_name,
+                        companyName: item.companyName,
                         carPlate: "",
                       })
                     );
                     setSelectModalOpen({ isOpen: false, target: "company" });
                   }}
                 >
-                  {item.company_name}
+                  {item.companyName}
                 </div>
               );
             })}

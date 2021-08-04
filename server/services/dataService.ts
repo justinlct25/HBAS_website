@@ -63,14 +63,6 @@ export class DataService {
       })
       .returning('id');
   }
-  // RESTful Put /alertData
-  async putAlertData() {
-    return;
-  }
-  // RESTful Del /alertData
-  async deleteAlertData() {
-    return;
-  }
 
   // get /alertData, when searching
   async getAlertDataBySearch(
@@ -116,75 +108,7 @@ export class DataService {
       .limit(limit)
       .offset(offset);
   }
-  // search date
-  async getAlertDataBySearchDate(offset: number, limit: number, date: string, nextDate: string) {
-    return await this.knex
-      .select(
-        'alert_data.id',
-        'devices.device_name',
-        'devices.device_eui',
-        `alert_data.date`,
-        'alert_data.geolocation',
-        'alert_data.battery',
-        'alert_data.address',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person',
-        'vehicles.car_plate',
-        'vehicles.vehicle_model',
-        'vehicle_type',
-        'alert_data.msg_type'
-      )
-      .from('alert_data')
-      .leftJoin('devices', 'devices.id', 'alert_data.device_id')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'companies.is_active': true,
-        'devices.is_active': true,
-        'alert_data.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-        'vehicle_device.is_active': true,
-        'alert_data.msg_type': 'A',
-      })
-      .andWhereRaw(`alert_data.date >= ${date} 00:00:00 AND alert_data.date < ${nextDate} 00:00:00`)
-      .orderBy('alert_data.date', 'desc')
-      .limit(limit)
-      .offset(offset);
-  }
 
-  // RESTful get /history, get grouping data with one user
-  async getUserGroupingData(deviceEUI: string) {
-    return await this.knex
-      .select(
-        'devices.device_name',
-        'alert_data.date',
-        'users.name',
-        'users.phone',
-        'users.car_plate'
-      )
-      .count('alert_data.date')
-      .from('alert_data')
-      .leftJoin('devices', 'devices.id', 'alert_data.devices_id')
-      .leftJoin('users', 'users.id', 'devices.users_id')
-      .where({
-        'devices.dev_eui': `${deviceEUI}`,
-        'users.is_active': true,
-        'devices.is_active': true,
-        'alert_data.is_active': true,
-      })
-      .groupBy(
-        'alert_data.date',
-        'devices.device_name',
-        'users.name',
-        'users.phone',
-        'users.car_plate'
-      )
-      .orderBy('date', 'desc');
-  }
   ////---- RESTful /companies ----////
   // get /companies
   async getCompaniesData(offset: number, limit: number) {
@@ -288,136 +212,17 @@ export class DataService {
       .limit(limit)
       .offset(offset);
   }
-  //get companies data for add devices
-  async getCompaniesByDevicePage() {
-    return await this.knex('companies')
-      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
-      .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .whereNotIn('company_vehicles.id', function () {
-        this.from('companies')
-          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-          .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
-          .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-          .where('vehicle_device.is_active', false)
-          .select('company_vehicles.id');
-      })
-      .where({
-        'companies.is_active': true,
-        'company_vehicles.is_active': true,
-        'vehicles.is_active': true,
-      })
-      .select(
-        'companies.id as company_id',
-        'companies.company_name',
-        'vehicles.id as vehicle_id',
-        'vehicles.car_plate',
-        'vehicle_device.is_active as vehicle_device_active'
-      );
-  }
+
   // post /companies
   async postCompaniesData(companyName: string, contactPerson: string, tel: string) {
     return await this.knex('companies')
       .insert({ company_name: companyName, contact_person: contactPerson, tel: tel })
       .returning<number>('id');
   }
-  // put /companies
-  // delete /companies
 
-  ////---- RESTful /devices ----////
-  // RESTful get /devices
-  async getDevicesData(offset: number, limit: number) {
-    return await this.knex('devices')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'devices.is_active': true,
-      })
-      .select(
-        'devices.id',
-        'devices.device_name',
-        'devices.device_eui',
-        'devices.is_register',
-        'vehicles.id as vehicle_id',
-        'vehicles.car_plate',
-        'vehicles.vehicle_model',
-        'vehicles.vehicle_type',
-        'companies.id as company_id',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person'
-      )
-      .orderBy('devices.updated_at', 'desc')
-      .offset(offset)
-      .limit(limit);
-  }
-
-  // RESTful get by searching /devices
-  async getDevicesDataBySearch(
-    offset: number,
-    limit: number,
-    searchType: string,
-    searchString: string
-  ): Promise<any> {
-    return await this.knex('devices')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'devices.is_active': true,
-      })
-      .andWhere(`${searchType}`, 'ILIKE', `%${searchString}%`)
-      .select(
-        'devices.id',
-        'devices.device_name',
-        'devices.device_eui',
-        'devices.is_register',
-        'vehicles.car_plate',
-        'vehicles.vehicle_model',
-        'vehicles.vehicle_type',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person'
-      )
-      .orderBy('devices.updated_at', 'desc')
-      .offset(offset)
-      .limit(limit);
-  }
-  // get only devices for register
-  async getAllDevices() {
-    return await this.knex('devices')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'devices.is_active': true,
-        // 'vehicle_device.is_active': true,
-        // 'company_vehicles.is_active': true
-      })
-      // .andWhereNot('vehicle_device.is_active', false)
-      .orderBy('devices.updated_at', 'desc')
-      .select(
-        'devices.id',
-        'devices.device_name',
-        'devices.device_eui',
-        'devices.is_register',
-        'vehicles.car_plate',
-        'companies.company_name'
-      );
-  }
   // post devices , for device join
   async postDevices(name: string, deviceID: string) {
     return await this.knex('devices').insert({ device_name: name, device_eui: deviceID });
-  }
-  // put devices
-  async putDevices(id: number) {
-    return await this.knex('devices')
-      .where('id', id)
-      .update({ is_register: false }, ['id', 'is_register']);
   }
   // delete devices
   ////---- vehicles ----////
@@ -438,28 +243,6 @@ export class DataService {
       company_id: companyID,
       vehicle_id: vehiclesID,
     });
-  }
-  ////---- vehicle_device ----////
-  // get vehicle_device
-  async getVehicleDevice(vehicleID: number, deviceID: number) {
-    return await this.knex('vehicle_device')
-      .where('is_active', true)
-      .groupBy('id')
-      .having('device_id', '=', deviceID)
-      .orHaving('vehicle_id', '=', vehicleID)
-      .select('id as vehicle_device_id', 'device_id', 'vehicle_id')
-      .orderBy('updated_at', 'desc')
-      .first();
-  }
-  // post vehicle_device
-  async postVehicleDevice(vehicleID: number, deviceID: number) {
-    return await this.knex('vehicle_device').insert({ vehicle_id: vehicleID, device_id: deviceID });
-  }
-  // put vehicle_device
-  async putVehicleDevice(vehicle_device_id: number) {
-    return await this.knex('vehicle_device')
-      .where('id', vehicle_device_id)
-      .update('is_active', false);
   }
   ////---- counting ----////
   // get count data , /alert_data
@@ -534,27 +317,7 @@ export class DataService {
       .distinct('companies.id')
       .havingRaw(`${searchType} ${sqlLike} ?`, [searchString]);
   }
-  // get count data, /devices
-  async getCountingDevices() {
-    return await this.knex('devices').count('id');
-  }
-  // get searching, /devices
-  async getCountingDevicesBySearch(searchType: string, searchString: string) {
-    return await this.knex('devices')
-      .leftJoin('vehicle_device', 'vehicle_device.device_id', 'devices.id')
-      .leftJoin('vehicles', 'vehicles.id', 'vehicle_device.vehicle_id')
-      .leftJoin('company_vehicles', 'company_vehicles.vehicle_id', 'vehicles.id')
-      .leftJoin('companies', 'companies.id', 'company_vehicles.company_id')
-      .where({
-        'devices.is_active': true,
-        'vehicle_device.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-        'companies.is_active': true,
-      })
-      .andWhere(`${searchType}`, 'ILIKE', `%${searchString}%`)
-      .count('devices.id');
-  }
+
   ////---- others ----////
   // get device id to confirm
   async getDevicesID(reqEUI: string) {
@@ -565,83 +328,19 @@ export class DataService {
       .first();
   }
 
-  // get device version & is_active , for update version
-  async getDevicesVersion(version: string) {
-    return await this.knex('devices')
-      .where({ device_eui: 'jPlXIAADvQ0=', is_active: true })
-      .select('id', 'device_name', 'device_eui', 'version', 'is_active');
-  }
-
-  // get profile for company
-  async getProfileByID(id: number) {
-    return await this.knex('companies')
-      .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-      .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
-      .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-      .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
-      .where({
-        'companies.id': id,
-        'companies.is_active': true,
-        'vehicles.is_active': true,
-        'company_vehicles.is_active': true,
-      })
-      // .andWhereNot('vehicle_device.is_active', false)
-      .select(
-        'companies.id',
-        'companies.company_name',
-        'companies.tel',
-        'companies.contact_person',
-        'vehicles.id as vehicle_id',
-        'vehicles.car_plate',
-        'vehicles.vehicle_model',
-        'vehicles.vehicle_type',
-        'devices.id as device_id',
-        'devices.device_eui',
-        'devices.device_name',
-        'devices.is_active'
-      )
-      .union(function () {
-        this.from('companies')
-          .leftJoin('company_vehicles', 'company_vehicles.company_id', 'companies.id')
-          .leftJoin('vehicles', 'vehicles.id', 'company_vehicles.vehicle_id')
-          .leftJoin('vehicle_device', 'vehicle_device.vehicle_id', 'vehicles.id')
-          .leftJoin('devices', 'devices.id', 'vehicle_device.device_id')
-          .where({
-            'companies.id': id,
-            'companies.is_active': true,
-          })
-          .whereNull('company_vehicles.is_active')
-          .whereNull('vehicles.is_active')
-          .select(
-            'companies.id',
-            'companies.company_name',
-            'companies.tel',
-            'companies.contact_person',
-            'vehicles.id as vehicle_id',
-            'vehicles.car_plate',
-            'vehicles.vehicle_model',
-            'vehicles.vehicle_type',
-            'devices.id as device_id',
-            'devices.device_eui',
-            'devices.device_name',
-            'devices.is_active'
-          );
-      });
-    //.orderBy('vehicles.updated_at', 'desc')
-  }
   // check duplicate #company_name
   async checkCompanyDuplicate(company_name: string) {
     return await this.knex('companies')
       .where('company_name', 'ILIKE', `${company_name}`)
       .andWhere('is_active', true)
-      .select<{ id: number}[]>('id')
+      .select<{ id: number }[]>('id');
   }
   // check duplicate #car_plate
   async checkCarPlateDuplicate(car_plate: string) {
     return await this.knex('vehicles')
       .where('car_plate', 'ILIKE', `${car_plate}`)
       .andWhere('is_active', true)
-      .select<{ id: number}[]>('id')
+      .select<{ id: number }[]>('id');
   }
 
   async getBatteryData(offset: number, limit: number): Promise<any> {
@@ -717,93 +416,93 @@ export class DataService {
       .limit(limit)
       .offset(offset);
   }
-//// 20210802 edit / delete companies & vehicles
-  async putCompanies(id: number, company_name: string, tel: string, contact_person: string){
+  //// 20210802 edit / delete companies & vehicles
+  async putCompanies(id: number, company_name: string, tel: string, contact_person: string) {
     return await this.knex('companies')
-      .where({'id': id, 'is_active': true})
-      .update({company_name, tel, contact_person, 'updated_at': new Date(Date.now())})
+      .where({ id: id, is_active: true })
+      .update({ company_name, tel, contact_person, updated_at: new Date(Date.now()) });
   }
-  async putVehicles(id: number, car_plate: string, vehicle_model: string, vehicle_type: string){
+  async putVehicles(id: number, car_plate: string, vehicle_model: string, vehicle_type: string) {
     return await this.knex('vehicles')
-      .where({'id': id, 'is_active': true})
-      .update({car_plate, vehicle_model, vehicle_type, 'updated_at': new Date(Date.now())})
+      .where({ id: id, is_active: true })
+      .update({ car_plate, vehicle_model, vehicle_type, updated_at: new Date(Date.now()) });
   }
-  async deleteCompanies(id: number[]){
+  async deleteCompanies(id: number[]) {
     return await this.knex('companies')
-    .whereIn('id', id)
-    .update({'is_active': false, 'updated_at': new Date(Date.now())})
-    .returning('id')
-  }// delete#companies 1
-  async deleteVehicles(id: number[]){
+      .whereIn('id', id)
+      .update({ is_active: false, updated_at: new Date(Date.now()) })
+      .returning('id');
+  } // delete#companies 1
+  async deleteVehicles(id: number[]) {
     return await this.knex('vehicles')
-    .whereIn('id', id)
-    .update({'is_active': false, 'updated_at': new Date(Date.now())})
-    .returning('id')
-  }// delete#vehicles 1 || delete#companies 3
-  async deleteCompanyVehicles(id: number[], table: string):Promise<any>{
+      .whereIn('id', id)
+      .update({ is_active: false, updated_at: new Date(Date.now()) })
+      .returning('id');
+  } // delete#vehicles 1 || delete#companies 3
+  async deleteCompanyVehicles(id: number[], table: string): Promise<any> {
     let query;
-    switch(table) {
+    switch (table) {
       case 'vehicles':
         query = this.knex('company_vehicles')
-                .whereIn('vehicle_id', id)
-                .andWhere('is_active', true)
-                .update({
-                  'is_active': false, 
-                  'updated_at': new Date(Date.now())
-                })
-                .returning('company_id');
-      break;
+          .whereIn('vehicle_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          })
+          .returning('company_id');
+        break;
       case 'companies':
         query = this.knex('company_vehicles')
-                .whereIn('company_id', id)
-                .andWhere('is_active', true)
-                .update({
-                  'is_active': false, 
-                  'updated_at': new Date(Date.now())
-                })
-                .returning('vehicle_id');
-      break;          
+          .whereIn('company_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          })
+          .returning('vehicle_id');
+        break;
     }
     return await query;
-  }// delete#vehicles 2 || delete#companies 2
-  async deleteVehicleDevice(id: number[], table: string){
+  } // delete#vehicles 2 || delete#companies 2
+  async deleteVehicleDevice(id: number[], table: string) {
     let query;
     switch (table) {
       case 'vehicles':
         query = this.knex('vehicle_device')
-                .whereIn('vehicle_id', id)
-                .andWhere('is_active', true)
-                .update({
-                  'is_active': false, 
-                  'updated_at': new Date(Date.now())
-                });
-      break;
+          .whereIn('vehicle_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          });
+        break;
       case 'companies':
         query = this.knex('vehicle_device')
-                .whereIn('vehicle_id', id)
-                .andWhere('is_active', true)
-                .update({
-                  'is_active': false, 
-                  'updated_at': new Date(Date.now())
-                });
-      break;
+          .whereIn('vehicle_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          });
+        break;
       case 'devices':
         query = this.knex('vehicle_device')
-                .whereIn('device_id', id)
-                .andWhere('is_active', true)
-                .update({
-                  'is_active': false, 
-                  'updated_at': new Date(Date.now())
-                });
-      break;
+          .whereIn('device_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          });
+        break;
     }
     return await query;
-  }// delete#vehicles 3 || delete#companies 4 || delete#devices 2
-//// 20210803 delete devices
-  async deleteDevices(id: number[]){
+  } // delete#vehicles 3 || delete#companies 4 || delete#devices 2
+  //// 20210803 delete devices
+  async deleteDevices(id: number[]) {
     return await this.knex('devices')
       .whereIn('id', id)
-      .update({'is_active': false, 'updated_at': new Date(Date.now())})
-      .returning('id')
-  }// delete#devices 1
+      .update({ is_active: false, updated_at: new Date(Date.now()) })
+      .returning('id');
+  } // delete#devices 1
 }

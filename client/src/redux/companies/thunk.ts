@@ -8,14 +8,12 @@ import {
 
 const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-export function getCompaniesDataListThunk(activePage: number, isInit: boolean) {
+export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: Dispatch<ICompaniesDataActions>) => {
     try {
-      if (isInit) {
         dispatch(resetCompaniesDataList());
-      }
 
-      // construct api url with (or within) search params 
+      // construct api url with (or within) search params
       const url = new URL(
         `${REACT_APP_API_VERSION}/companies`,
         `${REACT_APP_API_SERVER}`
@@ -50,7 +48,7 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
     dispatch2: Dispatch<ICompaniesDataActions>
   ) => {
     try {
-      const res = await fetch(`${REACT_APP_API_SERVER}/companies`, {
+      const res = await fetch(`${REACT_APP_API_SERVER}/api/v1/companies`, {
         method: "post",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
@@ -61,7 +59,7 @@ export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
         const data = await res.json();
         if (totalVehicle.length > 0) {
           const res = await fetch(
-            `${REACT_APP_API_SERVER}/vehicles/${data.data}`,
+            `${REACT_APP_API_SERVER}/api/v1/vehicles/${data.data}`,
             {
               method: "post",
               headers: {

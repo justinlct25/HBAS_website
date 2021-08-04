@@ -4,6 +4,8 @@ export interface AssignDeviceData {
   selectedItem: {
     companyId: number;
     companyName: string;
+    tel: string;
+    contactPerson: string;
     deviceEui: string;
     carPlate: string;
     vehicleId: number;

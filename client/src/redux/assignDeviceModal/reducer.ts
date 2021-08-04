@@ -9,6 +9,8 @@ export const initialState: AssignDeviceState = {
     selectedItem: {
       companyId: -1,
       companyName: "",
+      tel: "",
+      contactPerson: "",
       deviceEui: "",
       carPlate: "",
       vehicleId: -1,
@@ -47,6 +49,12 @@ export const assignDeviceReducer = (
             companyName:
               action.selectedItem.companyName ??
               state.assignDeviceModal.selectedItem.companyName,
+            tel:
+              action.selectedItem.tel ??
+              state.assignDeviceModal.selectedItem.tel,
+            contactPerson:
+              action.selectedItem.contactPerson ??
+              state.assignDeviceModal.selectedItem.contactPerson,
             deviceEui:
               action.selectedItem.deviceEui ??
               state.assignDeviceModal.selectedItem.deviceEui,

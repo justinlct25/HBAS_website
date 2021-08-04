@@ -35,17 +35,12 @@ export class DataController {
         case 'Location':
           newSearchType = 'address';
           break;
-        case 'Date':
-          newSearchType = 'date';
-          break;
         default:
           break;
       }
       const counting =
         newSearchType === ''
           ? await this.dataService.getCountingAlertData()
-          : newSearchType === 'date'
-          ? await this.dataService.getAlertDataBySearchDate(1, 1, '', '') //// push
           : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
       let totalPage = parseInt(String(counting[0].count)) / LIMIT;
       if (totalPage > Math.floor(totalPage)) {
@@ -221,118 +216,12 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  // RESTful put /alertData
-  putAlertData = async (req: Request, res: Response) => {
-    try {
-      await this.dataService.putAlertData();
 
-      res.status(httpStatusCodes.ACCEPTED).json({ message: 'update data' });
-    } catch (err) {
-      logger.error(err);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // RESTful delete /alertData
-  deleteAlertData = async (req: Request, res: Response) => {
-    try {
-      await this.dataService.deleteAlertData();
-
-      res.status(httpStatusCodes.ACCEPTED).json({ message: 'record is delete' });
-    } catch (err) {
-      logger.error(err);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // get /history
-  getHistoryData = async (req: Request, res: Response) => {
-    try {
-      await this.dataService.getUserGroupingData('');
-      res.status(httpStatusCodes.OK).json({ message: 'test' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // get /companies
-  getCompaniesData = async (req: Request, res: Response) => {
-    try {
-      const page: number = parseInt(String(req.query.page));
-      const searchType = String(req.query.searchType);
-      const searchString = String(req.query.searchString);
-      const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1) || 0;
-      let newSearchType = '';
-      let sqlLike = 'ILIKE';
-      let newSearchString: string | number = searchString;
-      switch (searchType) {
-        case 'Company Name':
-          newSearchType = 'company_name';
-          newSearchString = `%${newSearchString}%`;
-          break;
-        case 'Contact Person':
-          newSearchType = 'contact_person';
-          newSearchString = `%${newSearchString}%`;
-          break;
-        case 'Phone Number':
-          newSearchType = 'tel';
-          newSearchString = `%${newSearchString}%`;
-          break;
-        case 'Number of Vehicles':
-          newSearchType = 'count(company_vehicles.company_id)';
-          sqlLike = '=';
-          newSearchString = parseInt(newSearchString);
-          break;
-        default:
-          break;
-      }
-
-      const counting =
-        newSearchType === ''
-          ? await this.dataService.getCountingCompanies()
-          : await this.dataService.getCountingCompaniesBySearch(
-              newSearchType,
-              newSearchString,
-              sqlLike
-            );
-
-      let totalPage = parseInt(String(counting.length)) / LIMIT;
-      totalPage > Math.floor(totalPage)
-        ? (totalPage = Math.ceil(totalPage))
-        : (totalPage = Math.floor(totalPage));
-
-      let companyResult;
-      newSearchType === ''
-        ? (companyResult = await this.dataService.getCompaniesData(OFFSET, LIMIT))
-        : searchType !== 'Number of Vehicles'
-        ? (companyResult = await this.dataService.getCompaniesDataBySearch(
-            OFFSET,
-            LIMIT,
-            newSearchType,
-            newSearchString
-          ))
-        : (companyResult = await this.dataService.getCompaniesDataNumberBySearch(
-            OFFSET,
-            LIMIT,
-            newSearchString
-          ));
-      res.status(httpStatusCodes.OK).json({
-        companies: companyResult.rows,
-        totalPage: totalPage,
-        limit: LIMIT,
-        message: 'get company data',
-      });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
   // post /companies
   postCompaniesData = async (req: Request, res: Response) => {
     try {
       const mBody = req.body;
-      if (mBody[0].companyName === '' || mBody[0].tel === '') {
+      if (!mBody[0].companyName || !mBody[0].tel) {
         res
           .status(httpStatusCodes.BAD_REQUEST)
           .json({ message: 'Blank columns is found, please press valid input.' });
@@ -363,74 +252,6 @@ export class DataController {
       res
         .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
         .json({ formInput: false, message: 'Internal server error!' });
-    }
-  };
-  // get /devices
-  getDevicesData = async (req: Request, res: Response) => {
-    try {
-      const page: number = parseInt(String(req.query.page));
-      const searchType = String(req.query.searchType);
-      const searchString = String(req.query.searchString);
-      const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1);
-      let newSearchType = '';
-      switch (searchType) {
-        case 'Device ID':
-          newSearchType = `devices.device_eui`;
-          break;
-        case 'Device Name':
-          newSearchType = `devices.device_name`;
-          break;
-        case 'User':
-          newSearchType = `companies.company_name`;
-          break;
-        case 'Phone number':
-          newSearchType = `companies.tel`;
-          break;
-        default:
-          break;
-      }
-      const counting =
-        newSearchType === ''
-          ? await this.dataService.getCountingDevices()
-          : await this.dataService.getCountingDevicesBySearch(newSearchType, searchString);
-      let totalPage = parseInt(String(counting[0].count)) / LIMIT;
-      totalPage > Math.floor(totalPage)
-        ? (totalPage = Math.ceil(totalPage))
-        : (totalPage = Math.floor(totalPage));
-
-      let devicesResult;
-      if (newSearchType === '') {
-        devicesResult = await this.dataService.getDevicesData(OFFSET, LIMIT);
-      } else {
-        devicesResult = await this.dataService.getDevicesDataBySearch(
-          OFFSET,
-          LIMIT,
-          newSearchType,
-          searchString
-        );
-      }
-      res.status(httpStatusCodes.OK).json({
-        devices: devicesResult,
-        totalPage: totalPage,
-        limit: LIMIT,
-        message: 'get devices data',
-      });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // put devices
-  putDevices = async (req: Request, res: Response) => {
-    try {
-      // const mBody = req.body;
-      // await this.dataService.putDevices();
-      res.status(httpStatusCodes.ACCEPTED).json({ message: '' });
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
 
@@ -482,82 +303,6 @@ export class DataController {
           .json({ data: [], blank: 0, message: 'Vehicles created successful' });
       }
       return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-
-  // check meter's version to update
-  getDevicesVersion = async (req: Request, res: Response) => {
-    try {
-      const ver = req.query;
-      const newVer = String(ver);
-      const verData = await this.dataService.getDevicesVersion(newVer);
-      res
-        .status(httpStatusCodes.ACCEPTED)
-        .json({ version: verData[0], message: 'get version data' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // get profile data
-  getProfileData = async (req: Request, res: Response) => {
-    try {
-      const companyID = req.params;
-      const result = await this.dataService.getProfileByID(parseInt(String(companyID.id)));
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'test' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // post vehicle_device
-  postVehicleDevice = async (req: Request, res: Response) => {
-    try {
-      const mBody = req.body;
-      let checkResult = await this.dataService.getVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      if (checkResult === undefined || checkResult === null) {
-        // insert new link
-        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      } else {
-        // set first data 'is_active' to be false
-        await this.dataService.putVehicleDevice(checkResult.vehicle_device_id);
-        // set devices 'is_register' to be false
-        await this.dataService.putDevices(checkResult.device_id);
-        // insert new link
-        await this.dataService.postVehicleDevice(mBody.vehicleID, mBody.deviceID);
-      }
-      res.status(httpStatusCodes.CREATED).json({ message: 'vehicle & device link created' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-  // get all devices only, company name & car plate
-  getAllDeviceOnly = async (req: Request, res: Response) => {
-    try {
-      const result = await this.dataService.getAllDevices();
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'get all devices data' });
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-
-  // get all companies only, car plate & device eui
-  getAllCompaniesOnly = async (req: Request, res: Response) => {
-    try {
-      const result = await this.dataService.getCompaniesByDevicePage();
-      res.status(httpStatusCodes.OK).json({
-        data: result,
-        count: result.length,
-        message: 'get all companies & belong their vehicles',
-      });
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
