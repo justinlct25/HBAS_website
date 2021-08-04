@@ -9,4 +9,10 @@ export class AlertDataController {
     const data = await this.alertDataService.getLatestLocations();
     return res.status(httpStatusCodes.OK).json({ data });
   };
+
+  getDatesWithMessages = async (req: Request, res: Response) => {
+    const { vehicleId } = req.params;
+    const data = await this.alertDataService.getDatesWithMessages(parseInt(vehicleId));
+    return res.status(httpStatusCodes.OK).json({ data });
+  };
 }
