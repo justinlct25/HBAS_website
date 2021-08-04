@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
 import { ModalType } from "../pages/ManageDevice";
-import { resetPopUpAction } from "../redux/assignDeviceModal/action";
+import {
+  resetPopUpAction,
+  setPopUpIsActiveAction,
+} from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
@@ -20,9 +23,9 @@ function AssignDeviceModal() {
   const popUpIsActive = assignDeviceModal.popUpIsActive;
   const selectedItem = assignDeviceModal.selectedItem;
 
-  const handleReset = () => {
+  const closeAction = () => {
     setSelectModalOpen({ isOpen: false, target: "company" });
-    dispatch(resetPopUpAction());
+    dispatch(setPopUpIsActiveAction(false));
   };
 
   const handleSubmit = () => {
@@ -41,16 +44,13 @@ function AssignDeviceModal() {
             }),
           }
         );
-        if (res.status === 201 || res.status === 200) {
-          const data = await res.json();
-        }
       } catch (e) {
         console.error(e.message);
       }
     };
     assignDevice();
 
-    dispatch(resetPopUpAction());
+    dispatch(setPopUpIsActiveAction(false));
   };
 
   return (
@@ -62,7 +62,7 @@ function AssignDeviceModal() {
       }
     >
       <div className="popUpContent flex-center">
-        <div className="closeIconContainer" onClick={handleReset}>
+        <div className="closeIconContainer" onClick={closeAction}>
           <CloseIcon color={"#555"} />
         </div>
         <div className="flex-center modalContainer">
@@ -171,7 +171,7 @@ function AssignDeviceModal() {
             />
           </div>
           <div className="flex-center formButtonContainer">
-            <div className="button" onClick={handleReset}>
+            <div className="button" onClick={closeAction}>
               Cancel
             </div>
             <div className="button" onClick={handleSubmit}>

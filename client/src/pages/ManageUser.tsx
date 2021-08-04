@@ -6,12 +6,13 @@ import {
   CaretIcon,
   CloseIcon,
   MinusIcon,
-  SearchIcon
+  SearchIcon,
 } from "../components/IconsOnly";
 import "../css/TablePage.css";
+import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import {
   getCompaniesDataListThunk,
-  postCompaniesDataThunk
+  postCompaniesDataThunk,
 } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 import { manageUserTableHeaders } from "../table/tableHeader";
@@ -208,6 +209,14 @@ function ManageUser() {
                     className="flex-center tableRow"
                     onClick={() => {
                       //dispatch something ...
+                      dispatch(
+                        setSelectedItemAction({
+                          companyName: item.companyName,
+                          companyId: item.id,
+                          tel: item.tel,
+                          contactPerson: item.contactPerson,
+                        })
+                      );
                       dispatch(push(`/profile/${item.id}`, { id: item.id }));
                     }}
                   >

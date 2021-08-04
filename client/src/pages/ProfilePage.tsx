@@ -3,12 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
 import { BackButton } from "../components/IconsOnly";
-import { toHexAndSplit } from "../helpers/eui_decoder";
+import { VehicleCards } from "../components/VehicleCards";
 import { useRouter } from "../helpers/useRouter";
-import {
-  setPopUpIsActiveAction,
-  setSelectedItemAction,
-} from "../redux/assignDeviceModal/action";
+import { resetPopUpAction } from "../redux/assignDeviceModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
@@ -19,12 +16,20 @@ function ProfilePage() {
     (state: IRootState) => state.profileList.profileList
   );
   const dispatch = useDispatch();
+  const selectedItem = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
+  );
 
   useEffect(() => {
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
     dispatch(getProfileListThunk(parseInt(routeId)));
   }, [dispatch]);
+
+  const handleReset = () => {
+    dispatch(resetPopUpAction());
+    history.goBack();
+  };
 
   return (
     <div className="flex-center pageContainer">
@@ -35,7 +40,7 @@ function ProfilePage() {
         <div
           className="flex-center"
           style={{ cursor: "pointer" }}
-          onClick={() => history.goBack()}
+          onClick={handleReset}
         >
           <div className="flex-center">
             <BackButton />
@@ -56,13 +61,7 @@ function ProfilePage() {
           <div className="flex-center" style={{ width: "100%" }}>
             <div className="titleText">Company Details</div>
           </div>
-          <div
-            className="flex-center"
-            style={{
-              width: "100%",
-              flexDirection: "column",
-            }}
-          >
+          <div className="flex-center">
             <div
               style={{
                 alignItems: "flex-start",
@@ -81,8 +80,7 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {/* {profileList.length > 0 ? profileList[0].company_name : ""} */}
-                  {"FIX COMPANY NAME!!!!!!!"}
+                  {selectedItem.companyName}
                 </div>
               </div>
               <div className="flex-center">
@@ -96,8 +94,7 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {/* {profileList.length > 0 ? profileList[0].contact_person : ""} */}
-                  {"FIX CONTACT PERSON!!!!!!!!"}
+                  {selectedItem.contactPerson}
                 </div>
               </div>
               <div className="flex-center">
@@ -111,11 +108,24 @@ function ProfilePage() {
                   className="formRightColumn incidentReportText"
                   style={{ width: "unset" }}
                 >
-                  {/* {profileList.length > 0 ? profileList[0].tel : ""} */}
-                  {"FIX TEL!!!!!!!!"}
+                  {selectedItem.tel}
                 </div>
               </div>
             </div>
+          </div>
+          <div
+            className="flex-center"
+            style={{ width: "100%", marginTop: "2vh" }}
+          >
+            <div className="titleText">Vehicle Logs</div>
+          </div>
+          <div className="flex-center vehicleCardContainer">
+            {profileList.length > 0 &&
+              profileList
+                .filter((i) => i.deviceId)
+                .map((item, idx) => {
+                  return <VehicleCards key={idx} item={item} />;
+                })}
           </div>
         </div>
         <div className="flex-center companyDetailsRightColumn">
@@ -124,69 +134,14 @@ function ProfilePage() {
           </div>
           <div
             style={{
+              paddingBottom: "16px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
             }}
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                return (
-                  <div
-                    className="deviceVehicleCard"
-                    key={idx}
-                    onClick={() => {
-                      dispatch(setPopUpIsActiveAction(true));
-                      dispatch(
-                        setSelectedItemAction({
-                          companyName: "FIX item.company_name!!!!!!!!!",
-                          carPlate: item.carPlate,
-                          vehicleId: item.vehicleId,
-                          deviceEui: item.deviceEui,
-                          deviceId: item.deviceId,
-                        })
-                      );
-                    }}
-                  >
-                    <div className="flex-center">
-                      <div className="incidentReportText">Device ID:</div>
-                      <div
-                        className="incidentReportText"
-                        style={{
-                          color: !item.deviceEui ? "#AAA" : "#333",
-                        }}
-                      >
-                        {item.deviceEui === null
-                          ? "No device yet"
-                          : toHexAndSplit(item.deviceEui)}
-                      </div>
-                    </div>
-                    <div className="flex-center">
-                      <div className="incidentReportText">Device Name:</div>
-                      <div
-                        className="incidentReportText deviceName"
-                        style={{
-                          color: !item.deviceName ? "#AAA" : "#333",
-                        }}
-                      >
-                        {item.deviceName === null
-                          ? "No device yet"
-                          : item.deviceName}
-                      </div>
-                    </div>
-
-                    <div className="flex-center">
-                      <div className="incidentReportText">Car plate:</div>
-                      <div
-                        className="incidentReportText"
-                        style={{
-                          color: "#333",
-                        }}
-                      >
-                        {item.carPlate}
-                      </div>
-                    </div>
-                  </div>
-                );
+                return <VehicleCards key={idx} item={item} />;
               })}
           </div>
         </div>
