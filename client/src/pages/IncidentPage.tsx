@@ -17,7 +17,7 @@ const IncidentPoint = (props: IncidentPointProps) => {
       style={{
         width: "25px",
         height: "25px",
-        background: "#0FF",
+        background: "#00F9",
         borderRadius: "50%",
       }}
     />

@@ -73,7 +73,10 @@ const TestMap = () => {
 
   return (
     // Important! Always set the container height explicitly
-    <div style={{ height: "80vh", width: "100%" }}>
+    <div
+      className="flex-center"
+      style={{ height: "80vh", width: "100%", transform: "translateY(24px)" }}
+    >
       <GoogleMapReact
         bootstrapURLKeys={{
           key: process.env.REACT_APP_API_GOOGLE_MAP as string,
@@ -93,7 +96,7 @@ const TestMap = () => {
               key={idx}
               lat={item.geolocation.x}
               lng={item.geolocation.y}
-              backgroundColor={item.msgType === "A" ? "#F00C" : "#0FF"}
+              backgroundColor={item.msgType === "A" ? "#F00C" : "#00F9"}
             >
               <div
                 className="flex-center tooltip"
