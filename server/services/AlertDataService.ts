@@ -48,4 +48,18 @@ export class AlertDataService {
       })
       .andWhereBetween(`${tables.ALERT_DATA}.date`, [d, new Date()]);
   };
+
+  getDatesWithMessages = async (deviceId: number) => {
+    return await this.knex(tables.ALERT_DATA)
+      .select({
+        day: this.knex.raw(`date_trunc('day', date)`),
+      })
+      .count('device_id AS messageCount')
+      .where({
+        is_active: true,
+        device_id: deviceId,
+      })
+      .groupBy('day')
+      .orderBy('day', 'desc');
+  };
 }
