@@ -36,10 +36,7 @@ export class DevicesController {
         message: 'Missing required information.',
       });
 
-    // unlink device and vehicle if is paired up
-    await this.devicesService.unlinkExistingPairs(deviceId, vehicleId);
-
-    // link device and vehicle
+    // unlink device and vehicle if is paired up; link device and vehicle
     const id = await this.devicesService.linkDeviceAndVehicle(deviceId, vehicleId);
 
     // if insert failed

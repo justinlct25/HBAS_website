@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { ICompanyInfo, IVehiclesDetail } from '../models/models';
+import { ICompanyInfo, IVehicleDetail } from '../models/models';
 import { tables } from './../utils/table_model';
 
 export class CompaniesService {
@@ -7,7 +7,7 @@ export class CompaniesService {
 
   getCompanyDetails = async (companyId: number) => {
     return await this.knex(tables.COMPANIES)
-      .select({
+      .select<ICompanyInfo>({
         companyName: 'company_name',
         tel: 'tel',
         contactPerson: 'contact_person',
@@ -99,7 +99,7 @@ export class CompaniesService {
             [`${tables.VEHICLE_DEVICE}.is_active`]: true,
           });
       })
-      .select<IVehiclesDetail[]>([
+      .select<IVehicleDetail[]>([
         `${tempVehicles}.*`,
         `${tempDevices}.deviceId`,
         `${tempDevices}.deviceName`,
@@ -111,5 +111,25 @@ export class CompaniesService {
         { column: `${tempVehicles}.updatedAt`, order: 'desc' },
         { column: `${tempVehicles}.carPlate`, order: 'asc' },
       ]);
+  };
+
+  checkDuplicatedCompany = async (companyName: string) => {
+    return await this.knex(tables.COMPANIES)
+      .distinct<{ id: number }>('id')
+      .where({
+        is_active: true,
+        company_name: companyName,
+      })
+      .first();
+  };
+
+  addCompany = async (companyName: string, tel: string, contactPerson: string | null) => {
+    return await this.knex(tables.COMPANIES)
+      .insert({
+        company_name: companyName,
+        tel,
+        contact_person: contactPerson,
+      })
+      .returning<{ id: number }>('id');
   };
 }

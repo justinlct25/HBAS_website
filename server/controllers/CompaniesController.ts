@@ -37,4 +37,40 @@ export class CompaniesController {
     const data = await this.companiesService.getCompanyVehicles(parseInt(companyId));
     return res.status(httpStatusCodes.OK).json({ data });
   };
+
+  addCompany = async (req: Request, res: Response) => {
+    const {
+      companyName,
+      tel,
+      contactPerson,
+    }: {
+      companyName: string;
+      tel: string;
+      contactPerson: string | null;
+    } = req.body;
+
+    // check if required info is provided
+    if (!companyName || !tel)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        message: 'Missing required information.',
+      });
+
+    const existingCompany = await this.companiesService.checkDuplicatedCompany(companyName);
+    if (!!existingCompany)
+      return res.status(httpStatusCodes.CONFLICT).json({
+        message: 'Company name already exists.',
+      });
+
+    const id = await this.companiesService.addCompany(companyName, tel, contactPerson);
+
+    // if insert failed
+    if (!id)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot add company.' });
+
+    // insert successful
+    return res.status(httpStatusCodes.CREATED).json({
+      message: `Added 1 company successfully.`,
+      id: id[0],
+    });
+  };
 }

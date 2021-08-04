@@ -1,5 +1,7 @@
-import { tables } from './../utils/table_model';
 import { Knex } from 'knex';
+import { IDeviceDetail, IDeviceInfo } from '../models/models';
+import { logger } from '../utils/logger';
+import { tables } from './../utils/table_model';
 
 export class DevicesService {
   constructor(private knex: Knex) {}
@@ -23,9 +25,11 @@ export class DevicesService {
         qb.select('device_id', 'vehicle_id').from(tables.VEHICLE_DEVICE).where('is_active', true);
       })
       .with(tempCompaniesVehicles, (qb) => {
-        qb.select('company_id', 'vehicle_id').from(tables.COMPANY_VEHICLES).where('is_active', true);
+        qb.select('company_id', 'vehicle_id')
+          .from(tables.COMPANY_VEHICLES)
+          .where('is_active', true);
       })
-      .distinct({
+      .distinct<IDeviceDetail[]>({
         deviceId: `${tables.DEVICES}.id`,
         deviceName: `${tables.DEVICES}.device_name`,
         deviceEui: `${tables.DEVICES}.device_eui`,
@@ -61,19 +65,13 @@ export class DevicesService {
     };
 
     if (!!searchString) query.andWhere(searchQuery);
-    return await query.paginate({ perPage, currentPage, isLengthAware: true });
+    return await query.paginate<IDeviceDetail[]>({ perPage, currentPage, isLengthAware: true });
   };
 
   getDevicesForLinking = async (deviceId: number | null) => {
     const query = () => {
       return this.knex(tables.DEVICES)
-        .distinct<
-          {
-            id: number;
-            deviceName: string;
-            deviceEui: string;
-          }[]
-        >({ id: 'id', deviceName: 'device_name', deviceEui: 'device_eui' })
+        .distinct<IDeviceInfo[]>({ id: 'id', deviceName: 'device_name', deviceEui: 'device_eui' })
         .where('is_active', true)
         .andWhereNot('id', deviceId)
         .orderBy('device_eui');
@@ -93,24 +91,34 @@ export class DevicesService {
     };
   };
 
-  unlinkExistingPairs = async (deviceId: number, vehicleId: number) => {
-    return await this.knex(tables.VEHICLE_DEVICE)
-      .update({
-        is_active: false,
-        updated_at: new Date(Date.now()),
-      })
-      .where((builder) => {
-        builder.where('device_id', deviceId).orWhere('vehicle_id', vehicleId);
-      })
-      .andWhere('is_active', true);
-  };
-
   linkDeviceAndVehicle = async (deviceId: number, vehicleId: number) => {
-    return await this.knex(tables.VEHICLE_DEVICE)
-      .insert({
-        device_id: deviceId,
-        vehicle_id: vehicleId,
-      })
-      .returning<number[]>('id');
+    const trx = await this.knex.transaction();
+    try {
+      // unlink existing pairs (if exists)
+      await trx(tables.VEHICLE_DEVICE)
+        .update({
+          is_active: false,
+          updated_at: new Date(Date.now()),
+        })
+        .where((builder) => {
+          builder.where('device_id', deviceId).orWhere('vehicle_id', vehicleId);
+        })
+        .andWhere('is_active', true);
+
+      // link up device and vehicle
+      const ids = await trx(tables.VEHICLE_DEVICE)
+        .insert({
+          device_id: deviceId,
+          vehicle_id: vehicleId,
+        })
+        .returning<number[]>('id');
+
+      await trx.commit();
+      return ids;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
   };
 }
