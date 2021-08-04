@@ -6,11 +6,11 @@ type InsertCompanies = { id: number; company_name: string };
 type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
 
-const production = false;
+const realData = false; // false for debug, true for production
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
-  if(!production){
+  if(!realData) {
     await knex(tables.VEHICLE_DEVICE).del();
     await knex(tables.COMPANY_VEHICLES).del();
     await knex(tables.ALERT_DATA).del();
