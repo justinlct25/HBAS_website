@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { CaretIcon, SearchIcon } from "../components/IconsOnly";
-import { toHexAndSplit } from "../helpers/eui_decoder";
 import {
   setDeviceIdAction,
   setPopUpIsActiveAction,
-  setSelectedItemAction
+  setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
@@ -185,7 +184,7 @@ function ManageDevice() {
                     }}
                   >
                     <div key={idx} className="flex-center tdMainItem">
-                      {toHexAndSplit(item.deviceEui)}
+                      {item.deviceEui}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.carPlate}

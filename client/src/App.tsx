@@ -3,6 +3,7 @@ import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
+import VehicleLogs from "./components/VehicleLogs";
 import AlertDataPage from "./pages/AlertDataPage";
 import IncidentPage from "./pages/IncidentPage";
 import LoginPage from "./pages/LoginPage";
@@ -39,6 +40,11 @@ function App() {
           <Route path="/manage-user" exact={true} component={ManageUser} />
           <Route path="/manage-device" exact={true} component={ManageDevice} />
           <Route path="/statistics" exact={true} component={Statistics} />
+          <Route
+            path="/vehicle-logs/:id"
+            exact={true}
+            component={VehicleLogs}
+          />
           <Route path="/test-map" exact={true} component={TestMap} />
         </Switch>
       </ConnectedRouter>
