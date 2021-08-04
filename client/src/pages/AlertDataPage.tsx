@@ -191,7 +191,12 @@ function AlertDataPage() {
                   <div className="flex-center tdItem">{item.tel}</div>
                   <div className="flex-center tdItem">{item.address}</div>
                   <div className="flex-center tdItem">
-                    {item.date.substr(0, 10)}
+                    {`${new Date(item.date).toLocaleDateString(
+                      "en-CA"
+                    )} ${new Date(item.date).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}`}
                   </div>
                 </div>
               );
