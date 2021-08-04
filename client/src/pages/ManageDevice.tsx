@@ -6,7 +6,7 @@ import { toHexAndSplit } from "../helpers/eui_decoder";
 import {
   setDeviceIdAction,
   setPopUpIsActiveAction,
-  setSelectedItemAction,
+  setSelectedItemAction
 } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
@@ -15,7 +15,6 @@ import { manageDeviceTableHeaders } from "../table/tableHeader";
 const tableHeaders = manageDeviceTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "70%";
-const serverUrl = process.env.REACT_APP_API_SERVER;
 
 export type ModalType = "company" | "carPlate" | "device";
 
@@ -34,9 +33,7 @@ function ManageDevice() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(
-      getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
-    );
+    dispatch(getDeviceDataListThunk(activePage));
   }, [dispatch, popUpIsActive]);
 
   const devicesList = devicesDataList.devicesDataList;
@@ -101,14 +98,7 @@ function ManageDevice() {
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        dispatch(
-                          getDeviceDataListThunk(
-                            1,
-                            true,
-                            placeHolderText,
-                            searchInput
-                          )
-                        );
+                        dispatch(getDeviceDataListThunk(1));
                       }
                     : () => {}
                 }
@@ -177,35 +167,37 @@ function ManageDevice() {
               devicesList.map((item, idx) => {
                 return (
                   <div
-                    key={item.id}
+                    key={item.deviceId}
                     className="flex-center tableRow"
                     onClick={() => {
                       dispatch(setPopUpIsActiveAction(true));
-                      dispatch(setDeviceIdAction(item.id, item.device_eui));
+                      dispatch(
+                        setDeviceIdAction(item.deviceId, item.deviceEui)
+                      );
                       dispatch(
                         setSelectedItemAction({
-                          vehicleId: item.vehicle_id,
-                          carPlate: item.car_plate,
-                          companyId: item.company_id,
-                          companyName: item.company_name,
+                          vehicleId: item.vehicleId,
+                          carPlate: item.carPlate,
+                          companyId: item.companyId,
+                          companyName: item.companyName,
                         })
                       );
                     }}
                   >
                     <div key={idx} className="flex-center tdMainItem">
-                      {toHexAndSplit(item.device_eui)}
+                      {toHexAndSplit(item.deviceEui)}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.car_plate}
+                      {item.carPlate}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.company_name}
+                      {item.companyName}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.tel}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.contact_person}
+                      {item.contactPerson}
                     </div>
                   </div>
                 );
@@ -229,14 +221,7 @@ function ManageDevice() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(
-                      getDeviceDataListThunk(
-                        activePage - 1,
-                        false,
-                        placeHolderText,
-                        searchInput
-                      )
-                    );
+                    dispatch(getDeviceDataListThunk(activePage - 1));
                   }
             }
           >
@@ -265,14 +250,7 @@ function ManageDevice() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(
-                      getDeviceDataListThunk(
-                        activePage + 1,
-                        false,
-                        placeHolderText,
-                        searchInput
-                      )
-                    );
+                    dispatch(getDeviceDataListThunk(activePage + 1));
                   }
                 : () => {}
             }

@@ -1,16 +1,15 @@
 //// device show by default page
 export interface IDevicesData {
-  id: number;
-  device_name: string;
-  device_eui: string;
-  car_plate: string;
-  vehicle_id: number;
-  vehicle_model: string;
-  vehicle_type: string;
-  company_id: number;
-  company_name: string;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
+  vehicleId: number;
+  carPlate: string;
+  companyId: number;
+  companyName: string;
   tel: string;
-  contact_person: string;
+  contactPerson: string;
+  updatedAt: string;
 }
 
 export interface IDevicesDataState {

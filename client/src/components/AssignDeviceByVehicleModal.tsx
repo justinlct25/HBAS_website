@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "../css/Modal.css";
 import { ModalType } from "../pages/ManageDevice";
 import { resetPopUpAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
-import "../css/Modal.css";
-import { toHexAndSplit } from "../helpers/eui_decoder";
 
 function AssignDeviceByVehicleModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{
@@ -29,7 +28,7 @@ function AssignDeviceByVehicleModal() {
     const assignDevice = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}/vehicle_device`,
+          `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
           {
             method: "POST",
             headers: {

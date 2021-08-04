@@ -54,7 +54,7 @@ const TestMap = () => {
     const fetchLatestLocations = async () => {
       try {
         const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}/api/v2/alert-data/latest-locations`,
+          `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/latest-locations`,
           {
             method: "GET",
             headers: {
