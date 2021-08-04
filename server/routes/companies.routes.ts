@@ -11,3 +11,4 @@ companiesRoutes.get('/vehicles/:companyId', createAsyncMiddleware(companiesContr
 
 // other apis
 companiesRoutes.post('/', createAsyncMiddleware(companiesController.addCompany));
+companiesRoutes.post('/vehicles/:companyId', createAsyncMiddleware(companiesController.addVehicles));

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
+import { INewCompany, INewVehicle } from '../models/models';
 import { CompaniesService } from '../services/CompaniesService';
 
 export class CompaniesController {
@@ -39,15 +40,7 @@ export class CompaniesController {
   };
 
   addCompany = async (req: Request, res: Response) => {
-    const {
-      companyName,
-      tel,
-      contactPerson,
-    }: {
-      companyName: string;
-      tel: string;
-      contactPerson: string | null;
-    } = req.body;
+    const { companyName, tel, contactPerson }: INewCompany = req.body;
 
     // check if required info is provided
     if (!companyName || !tel)
@@ -71,6 +64,38 @@ export class CompaniesController {
     return res.status(httpStatusCodes.CREATED).json({
       message: `Added 1 company successfully.`,
       id: id[0],
+    });
+  };
+
+  addVehicles = async (req: Request, res: Response) => {
+    const { companyId } = req.params;
+    const { vehicles }: { vehicles: INewVehicle[] } = req.body;
+
+    // check if required info is provided
+    if (!vehicles || !vehicles.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        message: 'Missing required information.',
+      });
+
+    const existingVehicles = await this.companiesService.checkExistingVehicles(
+      vehicles.map((v) => v.carPlate)
+    );
+    if (!!existingVehicles && existingVehicles.length > 0)
+      return res.status(httpStatusCodes.CONFLICT).json({
+        message: 'Company name already exists.',
+        existingCarPlates: existingVehicles.map((v) => v.car_plate),
+      });
+
+    const ids = await this.companiesService.addVehicles(vehicles, parseInt(companyId));
+
+    // if insert failed
+    if (!ids || !ids.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot add vehicles.' });
+
+    // insert successful
+    return res.status(httpStatusCodes.CREATED).json({
+      message: `Added ${ids.length} ${ids.length > 1 ? 'vehicles' : 'vehicle'} successfully.`,
+      ids,
     });
   };
 }

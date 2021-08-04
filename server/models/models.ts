@@ -1,16 +1,5 @@
 export type direction = 'asc' | 'desc';
 
-export interface IVehicleDetail {
-  vehicleId: number;
-  carPlate: string;
-  vehicleModel: string;
-  vehicleType: string;
-  updatedAt: string;
-  deviceId: number;
-  deviceName: string;
-  deviceEui: string;
-}
-
 export interface ICompanyInfo {
   id?: number;
   companyName: string;
@@ -18,6 +7,29 @@ export interface ICompanyInfo {
   contactPerson: string;
   updatedAt: string;
   vehiclesCount?: string | number;
+}
+
+export interface INewCompany {
+  companyName: string;
+  tel: string;
+  contactPerson: string | null;
+}
+
+export interface INewVehicle {
+  carPlate: string;
+  vehicleModel: string | null;
+  vehicleType: string | null;
+}
+
+export interface IVehicleDetail {
+  vehicleId: number;
+  carPlate: string;
+  vehicleModel: string | null;
+  vehicleType: string | null;
+  updatedAt: string;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
 }
 
 export interface ILocationDetail {
