@@ -23,7 +23,7 @@ function ProfilePage() {
   useEffect(() => {
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
-    dispatch(getProfileListThunk(parseInt(routeId), true));
+    dispatch(getProfileListThunk(parseInt(routeId)));
   }, [dispatch]);
 
   return (

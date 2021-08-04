@@ -3,7 +3,7 @@ import { Dispatch } from "redux";
 
 const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-export function getProfileListThunk(id: number, isInit: boolean) {
+export function getProfileListThunk(id: number) {
   return async (dispatch: Dispatch<IProfileActions>) => {
     try {
       dispatch(resetProfileList());

@@ -8,12 +8,10 @@ import {
 
 const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-export function getCompaniesDataListThunk(activePage: number, isInit: boolean) {
+export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: Dispatch<ICompaniesDataActions>) => {
     try {
-      if (isInit) {
         dispatch(resetCompaniesDataList());
-      }
 
       // construct api url with (or within) search params
       const url = new URL(

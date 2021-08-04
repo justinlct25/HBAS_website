@@ -52,7 +52,7 @@ function ManageUser() {
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getCompaniesDataListThunk(activePage, true));
+    dispatch(getCompaniesDataListThunk(activePage));
   }, [dispatch, popUpIsActive]);
 
   const handleDeleteVehicle = (idx: number) => {
@@ -130,7 +130,7 @@ function ManageUser() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    dispatch(getCompaniesDataListThunk(1, true));
+                    dispatch(getCompaniesDataListThunk(1));
                   }
                 }}
               />
@@ -139,7 +139,7 @@ function ManageUser() {
                 onClick={
                   placeHolderText !== "Select"
                     ? () => {
-                        dispatch(getCompaniesDataListThunk(1, true));
+                        dispatch(getCompaniesDataListThunk(1));
                       }
                     : () => {}
                 }
@@ -415,7 +415,7 @@ function ManageUser() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(getCompaniesDataListThunk(activePage - 1, false));
+                    dispatch(getCompaniesDataListThunk(activePage - 1));
                   }
             }
           >
@@ -444,7 +444,7 @@ function ManageUser() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(getCompaniesDataListThunk(activePage + 1, false));
+                    dispatch(getCompaniesDataListThunk(activePage + 1));
                   }
                 : () => {}
             }
