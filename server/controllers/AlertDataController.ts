@@ -11,8 +11,18 @@ export class AlertDataController {
   };
 
   getDatesWithMessages = async (req: Request, res: Response) => {
-    const { vehicleId } = req.params;
-    const data = await this.alertDataService.getDatesWithMessages(parseInt(vehicleId));
+    const { deviceId } = req.params;
+    const data = await this.alertDataService.getDatesWithMessages(parseInt(deviceId));
+    return res.status(httpStatusCodes.OK).json({ data });
+  };
+
+  getHistoryByDeviceAndDate = async (req: Request, res: Response) => {
+    const { deviceId } = req.params;
+    const { date } = req.query;
+    const data = await this.alertDataService.getHistoryByDeviceAndDate(
+      parseInt(deviceId),
+      !!date ? String(date) : null
+    );
     return res.status(httpStatusCodes.OK).json({ data });
   };
 }
