@@ -174,97 +174,6 @@ export class DataController {
     }
   };
 
-  // post /companies
-  postCompaniesData = async (req: Request, res: Response) => {
-    try {
-      const mBody = req.body;
-      if (!mBody[0].companyName || !mBody[0].tel) {
-        res
-          .status(httpStatusCodes.BAD_REQUEST)
-          .json({ message: 'Blank columns is found, please press valid input.' });
-        return;
-      }
-      let duplicateCompany: string[] = [];
-      let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
-      if (checkDuplicate.length > 0) {
-        duplicateCompany.push(mBody[0].companyName);
-        res
-          .status(httpStatusCodes.BAD_REQUEST)
-          .json({ data: duplicateCompany, message: 'Duplicate company found' });
-        return;
-      }
-      const companiesResult: number = await this.dataService.postCompaniesData(
-        mBody[0].companyName,
-        mBody[0].contactPerson,
-        mBody[0].tel
-      );
-
-      res
-        .status(httpStatusCodes.CREATED)
-        .json({ data: companiesResult[0], message: 'company created' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res
-        .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ formInput: false, message: 'Internal server error!' });
-    }
-  };
-
-  //post vehicles
-  postVehicles = async (req: Request, res: Response) => {
-    try {
-      const mBody = req.body;
-      const companyID: number = parseInt(String(req.params.id));
-      let vehiclesArray: number[] = [];
-      let vehiclesResult: number;
-      let duplicateResult: string[] = [];
-      let blankResult: number = 0;
-      if (mBody.length > 0) {
-        for (let i = 0; i < mBody.length; i++) {
-          if (mBody[i].carPlate === '') {
-            ++blankResult;
-          } else {
-            let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-            if (checkDuplicate.length > 0) {
-              duplicateResult.push(mBody[i].carPlate);
-            } else {
-              vehiclesResult = await this.dataService.postVehicles(
-                mBody[i].carPlate,
-                mBody[i].vehicleType,
-                mBody[i].vehicleModel
-              );
-              vehiclesArray.push(vehiclesResult);
-            }
-          }
-        }
-        if (vehiclesArray.length > 0) {
-          for (let i = 0; i < vehiclesArray.length; i++) {
-            await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
-          }
-        }
-      }
-      if (duplicateResult.length > 0 || blankResult > 0) {
-        res.status(httpStatusCodes.OK).json({
-          data: duplicateResult,
-          blank: blankResult,
-          message: `Success insert: ${vehiclesArray.length}, 
-            Duplicate car plate: ${duplicateResult.length}, 
-            Empty car plate: ${blankResult}
-            `,
-        });
-      } else {
-        res
-          .status(httpStatusCodes.CREATED)
-          .json({ data: [], blank: 0, message: 'Vehicles created successful' });
-      }
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-
   getBatteryData = async (req: Request, res: Response) => {
     try {
       const page: number = parseInt(String(req.query.page));
@@ -293,31 +202,31 @@ export class DataController {
     }
   };
   // 20210802 edit / delete companies & vehicles
-  putCompanies = async (req: Request, res: Response) => {
-    try {
-      const { id, company_name, tel, contact_person } : { 
-        id: number, 
-        company_name: string, 
-        tel: string, 
-        contact_person: string
-      } = req.body;
-      if (!company_name || !tel) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
-        return;
-      }
-      if (tel.length !== 8) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'tel is invalid length' });
-        return;
-      }
-      const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
-      if (duplicate.length > 0) {
-        if (duplicate[0].id === id) {
-        } else {
-          res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'company name is duplicate' });
-          return;
-        }
-      }
-      const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
+  // putCompanies = async (req: Request, res: Response) => {
+  //   try {
+  //     const { id, company_name, tel, contact_person } : { 
+  //       id: number, 
+  //       company_name: string, 
+  //       tel: string, 
+  //       contact_person: string
+  //     } = req.body;
+  //     if (!company_name || !tel) {
+  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
+  //       return;
+  //     }
+  //     if (tel.length !== 8) {
+  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'tel is invalid length' });
+  //       return;
+  //     }
+  //     const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
+  //     if (duplicate.length > 0) {
+  //       if (duplicate[0].id === id) {
+  //       } else {
+  //         res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'company name is duplicate' });
+  //         return;
+  //       }
+  //     }
+  //     const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
 
   //     res.status(httpStatusCodes.OK).json({ data: result, message: 'company detail updated' });
   //     return;
@@ -326,6 +235,7 @@ export class DataController {
   //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
   //   }
   // };
+
   deleteCompanies = async (req: Request, res: Response) => {
     try {
       const { idArray }: { idArray: number[] } = req.body;
