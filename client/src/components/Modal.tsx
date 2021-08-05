@@ -190,7 +190,7 @@ export const Modal = (props: ModalProps) => {
                   }}
                   onClick={() => setFocusNewDevice(false)}
                 >
-                  All devices
+                  Linked devices
                 </div>
               </div>
               <input
@@ -209,7 +209,7 @@ export const Modal = (props: ModalProps) => {
         {modalType === "device"
           ? focusNewDevice
             ? allDevices?.notAssigned
-                .filter((item) => item.deviceEui)
+                .filter((item) => item.deviceEui.includes(searchField))
                 .map((item) => {
                   return (
                     <div

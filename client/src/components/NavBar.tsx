@@ -1,9 +1,13 @@
 import anime from "animejs";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "../css/NavBar.css";
 import { useRouter } from "../helpers/useRouter";
+import { expandNotificationMessageAction } from "../redux/notification/action";
+import { IRootState } from "../redux/store";
 import { CompanyName } from "./CompanyName";
+import { NotificationAlertIcon, NotificationIcon } from "./IconsOnly";
 import MenuButton from "./MenuButton";
 
 function NavBar() {
@@ -13,6 +17,7 @@ function NavBar() {
 
   const menuItem = [
     { display: "Incident Records", link: "/alert-data-page" },
+    { display: "Pulse Message", link: "/pulse-message" },
     { display: "Manage User", link: "/manage-user" },
     { display: "Manage Device", link: "/manage-device" },
     { display: "Statistics (Coming soon)", link: "/statistics" },
@@ -41,15 +46,61 @@ function NavBar() {
     }
   };
 
+  const dispatch = useDispatch();
+  const notification = useSelector(
+    (state: IRootState) => state.notification.notification
+  );
+  const showNotification = notification.showNotification;
+  const expandNotification = notification.expandNotification;
+
+  const reallyNoMessage =
+    notification.message.length === 1 &&
+    !notification.message[0].text &&
+    !notification.message[0].createdAt;
+
   return (
     <div className="topNavContainer">
       {splitRoute !== "/login" && (
         <>
-          <div className="topNavContent">
-            <CompanyName />
-
-            <div className="flex-center menuButtonContainer">
-              <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
+          <div className="topNavContentContainer">
+            <div className="topNavItemContainer">
+              <CompanyName />
+              <div className="flex-center">
+                <div
+                  className="flex-center menuButtonContainer"
+                  style={{ marginRight: "24px", position: "relative" }}
+                  onClick={() => {
+                    dispatch(
+                      expandNotificationMessageAction(!expandNotification)
+                    );
+                  }}
+                >
+                  {showNotification ? (
+                    <NotificationAlertIcon />
+                  ) : (
+                    <NotificationIcon />
+                  )}
+                  {expandNotification && (
+                    <div className="notificationModal">
+                      {reallyNoMessage ? (
+                        <div>{"No message yet"}</div>
+                      ) : (
+                        notification.message.map((message, idx) => {
+                          return (
+                            <div key={idx}>
+                              <div>{message.text}</div>
+                              <div>{message.createdAt}</div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="flex-center menuButtonContainer">
+                  <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
+                </div>
+              </div>
             </div>
 
             <div
@@ -68,6 +119,7 @@ function NavBar() {
                         width: "100%",
                         color: "none",
                         textDecoration: "none",
+                        height: "80px",
                       }}
                     >
                       <div className="flex-center menuItem">{item.display}</div>

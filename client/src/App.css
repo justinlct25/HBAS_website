@@ -64,8 +64,8 @@ body {
   height: calc(100vh - var(--topNavHeight) - 16px);
 }
 .incidentReportText {
-  font-size: 0.9em;
-  margin: 8px;
+  font-size: 0.87em;
+  margin: 4px 2px 4px 2px;
   color: #333;
 }
 
@@ -97,12 +97,10 @@ body {
 .caretContainer {
   position: absolute;
   height: 100%;
-  width: 56px;
   left: 0;
   top: 0;
   color: #000;
   z-index: 1;
-  padding: 8px 24px;
   cursor: pointer;
 }
 .hiddenReport {
@@ -220,4 +218,18 @@ body {
 .popup-exit-done {
   opacity: 0 !important;
   top: 120px !important;
+}
+.notificationModal {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  padding: 16px;
+  width: max-content;
+  height: max-content;
+  max-height: 80vh;
+  max-width: 30vw;
+  overflow: scroll;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0px 4px 4px #0003;
 }

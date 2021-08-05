@@ -36,6 +36,9 @@ import { IIncidentPageState } from "./incidentPage/state";
 import { ILoadingPageAction } from "./loading/action";
 import { ILoadingReducer } from "./loading/reducer";
 import { ILoadingState } from "./loading/state";
+import { SetNotificationAction } from "./notification/action";
+import { notificationReducer } from "./notification/reducer";
+import { NotificationState } from "./notification/state";
 //profile
 import { IProfileActions } from "./profile/action";
 import { IProfileReducer } from "./profile/reducer";
@@ -55,6 +58,7 @@ export interface IRootState {
   assignDevice: AssignDeviceState;
   addNewForm: AddNewFormState;
   deleteModal: DeleteModalState;
+  notification: NotificationState;
 }
 
 // initState
@@ -68,7 +72,8 @@ type IRootAction =
   | IProfileActions
   | AssignDeviceAction
   | AddNewFormAction
-  | DeleteModalAction;
+  | DeleteModalAction
+  | SetNotificationAction;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
@@ -85,6 +90,7 @@ const rootReducer = combineReducers<IRootState>({
   assignDevice: assignDeviceReducer,
   addNewForm: addNewFormReducer,
   deleteModal: deleteModalReducer,
+  notification: notificationReducer,
 });
 
 declare global {

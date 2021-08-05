@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import ManageDevice from "./pages/ManageDevice";
 import ManageUser from "./pages/ManageUser";
 import ProfilePage from "./pages/ProfilePage";
+import PulseMessagePage from "./pages/PulseMessagePage";
 import Statistics from "./pages/Statistics";
 // import Statistics from "./pages/Statistics.jsx";
 import TestMap from "./pages/TestMap";
@@ -34,6 +35,11 @@ function App() {
             path="/alert-data-page"
             exact={true}
             component={AlertDataPage}
+          />
+          <Route
+            path="/pulse-message"
+            exact={true}
+            component={PulseMessagePage}
           />
           <Route path="/incident/:id" exact={true} component={IncidentPage} />
           <Route path="/profile/:id" exact={true} component={ProfilePage} />

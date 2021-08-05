@@ -5,16 +5,22 @@
   height: var(--topNavHeight);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   padding: 8px 24px;
 }
-.topNavContent {
+.topNavContentContainer {
+  display: flex;
+  width: 100%;
+  /* justify-content: space-between; */
+  /* align-items: center; */
+  margin: 8px;
+}
+.topNavItemContainer {
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  margin: 8px;
 }
 .menuButtonContainer {
   height: 100%;
@@ -25,12 +31,14 @@
   padding-top: 16px;
   flex-direction: column;
   width: 100%;
+  max-height: 90%;
+  overflow: scroll;
 }
 .menuItem {
   width: 100%;
   text-align: center;
   color: #eee;
-  height: 96px;
+  height: 80px;
   cursor: pointer;
   transition: all 0.4s;
 }

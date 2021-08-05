@@ -20,3 +20,12 @@ export const manageDeviceTableHeaders = [
   "Phone number",
   "Contact Person",
 ];
+export const pulseMessageTableHeaders = [
+  "Device ID",
+  "Car Plate",
+  "User",
+  "Phone number",
+  "Location",
+  "Battery",
+  "Received",
+];

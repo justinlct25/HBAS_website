@@ -1,7 +1,4 @@
-import { push } from "connected-react-router";
 import React from "react";
-import { useDispatch } from "react-redux";
-import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { IProfile } from "../redux/profile/state";
 
 interface VehicleProps {

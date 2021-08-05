@@ -1,17 +1,23 @@
-import { Knex } from "knex";
-import { insertDevices, insertData, insertCars, insertVehicleDevice, insertCompany, insertCompanyVehicles } from "../utils/20210804-rawDataset";
+import { Knex } from 'knex';
+import {
+  insertDevices,
+  insertData,
+  insertCars,
+  insertVehicleDevice,
+  insertCompany,
+  insertCompanyVehicles,
+} from '../utils/20210804-rawDataset';
 import { tables } from '../utils/table_model';
 
 type InsertCompanies = { id: number; company_name: string };
 type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
 
-const production = false; // false for debug, true for production
-
+const production = true; // false for debug, true for production
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
-  if(production.valueOf() === true) {
+  if (production.valueOf() === true) {
     await knex(tables.VEHICLE_DEVICE).del();
     await knex(tables.COMPANY_VEHICLES).del();
     await knex(tables.ALERT_DATA).del();
@@ -41,10 +47,10 @@ export async function seed(knex: Knex): Promise<void> {
     return mapping;
   }, new Map<string, number>());
 
-    // devices
+  // devices
   const devices = await knex<InsertDevices>(tables.DEVICES)
-  .insert(insertDevices)
-  .returning(['device_eui', 'id']);
+    .insert(insertDevices)
+    .returning(['device_eui', 'id']);
 
   const devicesMap = devices.reduce((mapping, device) => {
     mapping.set(device.device_eui, device.id);
@@ -79,5 +85,4 @@ export async function seed(knex: Knex): Promise<void> {
   }));
 
   await knex(tables.VEHICLE_DEVICE).insert(vehicleDevice);
-  
 }
