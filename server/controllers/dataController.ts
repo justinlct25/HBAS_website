@@ -219,7 +219,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  
+
   deleteVehicles = async (req: Request, res: Response) => {
     try {
       const idArray: number[] = req.body;

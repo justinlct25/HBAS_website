@@ -164,7 +164,9 @@ export class DataService {
         'vehicle_device.is_active': true,
         'alert_data.msg_type': 'A',
       })
-      .andWhereRaw(`${alert_data}.date >= ${date} 00:00:00 AND ${alert_data}.date < ${nextDate} 00:00:00`)
+      .andWhereRaw(
+        `${alert_data}.date >= ${date} 00:00:00 AND ${alert_data}.date < ${nextDate} 00:00:00`
+      )
       .count(`${alert_data}.id`);
   }
 
@@ -269,21 +271,21 @@ export class DataService {
     switch (table) {
       case vehicles:
         whereField = 'vehicle_id';
-        returnField = 'company_id';  
-      break;
+        returnField = 'company_id';
+        break;
       case companies:
         whereField = 'company_id';
         returnField = 'vehicle_id';
         break;
-    } 
+    }
     return await this.knex(company_vehicles)
-                .whereIn(`${whereField}`, id)
-                .andWhere('is_active', true)
-                .update({
-                  is_active: false,
-                  updated_at: new Date(Date.now()),
-                })
-                .returning<number[]>(`${returnField}`);
+      .whereIn(`${whereField}`, id)
+      .andWhere('is_active', true)
+      .update({
+        is_active: false,
+        updated_at: new Date(Date.now()),
+      })
+      .returning<number[]>(`${returnField}`);
   } // delete#vehicles 2 || delete#companies 2
   async deleteVehicleDevice(id: number[], table: string) {
     let query;
@@ -299,13 +301,13 @@ export class DataService {
         break;
       default:
         query = this.knex(vehicle_device)
-        .whereIn('vehicle_id', id)
-        .andWhere('is_active', true)
-        .update({
-          is_active: false,
-          updated_at: new Date(Date.now()),
-        });
-      break;
+          .whereIn('vehicle_id', id)
+          .andWhere('is_active', true)
+          .update({
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          });
+        break;
     }
     return await query;
   } // delete#vehicles 3 || delete#companies 4 || delete#devices 2
