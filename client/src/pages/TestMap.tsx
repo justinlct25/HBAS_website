@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
+import { useEffect } from "react";
 
 type lastSeenLocations = Array<{
   battery: string;
@@ -14,69 +15,93 @@ type lastSeenLocations = Array<{
   msgType: string;
 }>;
 
-const Map = ReactMapboxGL({ accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN! });
+const Map = ReactMapboxGL({
+  accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
+});
 
 const TestMap = () => {
   const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
+  const fetchAllLastSeen = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/latest-locations`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+        }
+      );
+      const result = await res.json();
+      // setIncidentPoints(result.data);
+      //mock One-dot
+      setIncidentPoints([
+        {
+          battery: "1",
+          carPlate: "1",
+          companyName: "1",
+          date: "1",
+          deviceEui: "1",
+          deviceId: 1,
+          deviceName: "1",
+          geolocation: { x: 22.35499699048897, y: 114.14865316808854 },
+          msgType: "1",
+        },
+      ]);
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+
   return (
-      <Map
-        // eslint-disable-next-line react/style-prop-object
-        style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
-        zoom={[10.5]}
-        center={[114.14865316808854, 22.35499699048897]}
-        containerStyle={{ height: "80vh" }}
-        onStyleLoad={async () => {
-          try {
-            const res = await fetch(
-              `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/latest-locations`,
-              {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json; charset=utf-8",
-                },
-              }
-            );
-            const result = await res.json();
-            setIncidentPoints(result.data);
-          } catch (e) {
-            console.error(e.message);
-          }
-      }}
-      >
-        <>
-          <Layer
-            type="circle"
-            paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
-          >
-            {incidentPoints.map((point, idx) => 
-              <Feature
-                key={idx}
-                coordinates={[point.geolocation.y, point.geolocation.x]}
-                onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
-                onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-              />
-            )}
-          </Layer>
-          <CSSTransition
-            in={hoverAnimate.onHover}
-            timeout={400}
-            classNames="popup"
-            mountOnEnter
-            unmountOnExit
-          >
-            {incidentPoints[hoverAnimate.idx] ?
+    <Map
+      // eslint-disable-next-line react/style-prop-object
+      style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
+      // style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+      // style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
+      zoom={[10.5]}
+      center={[114.14865316808854, 22.35499699048897]}
+      containerStyle={{ height: "80vh" }}
+      onStyleLoad={fetchAllLastSeen}
+    >
+      <>
+        <Layer
+          type="circle"
+          paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
+        >
+          {incidentPoints.map((point, idx) => (
+            <Feature
+              key={idx}
+              coordinates={[point.geolocation.y, point.geolocation.x]}
+              onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
+              onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
+            />
+          ))}
+        </Layer>
+        <CSSTransition
+          in={hoverAnimate.onHover}
+          timeout={400}
+          classNames="popup"
+          mountOnEnter
+          unmountOnExit
+        >
+          {incidentPoints[hoverAnimate.idx] ? (
             <Popup
-              coordinates={[incidentPoints[hoverAnimate.idx].geolocation.y, incidentPoints[hoverAnimate.idx].geolocation.x]}
+              coordinates={[
+                incidentPoints[hoverAnimate.idx].geolocation.y,
+                incidentPoints[hoverAnimate.idx].geolocation.x,
+              ]}
               anchor="bottom-right"
               className="popup"
-            >
-              
-            </Popup> : <></>}
-          </CSSTransition>
-        </>
-      </Map>
+            ></Popup>
+          ) : (
+            <></>
+          )}
+        </CSSTransition>
+      </>
+    </Map>
   );
   // return (
   //   // Important! Always set the container height explicitly

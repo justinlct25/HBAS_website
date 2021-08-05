@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import GoogleMapReact from "google-map-react";
+import { useState } from "react";
+import ReactMapboxGL, { Feature, Layer } from "react-mapbox-gl";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
 import { IRootState } from "../redux/store";
+
+const Map = ReactMapboxGL({ accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN! });
 
 interface IncidentPointProps {
   lat: number;
@@ -44,6 +46,8 @@ function IncidentPage() {
     latitude: number;
   }>({ longitude: Number(data.longitude), latitude: Number(data.latitude) });
 
+  const [mapLoaded, setMapLoaded] = useState(false);
+
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
     year: "numeric",
@@ -78,21 +82,25 @@ function IncidentPage() {
           }}
         >
           {/* Map here */}
-          <GoogleMapReact
-            bootstrapURLKeys={{
-              key: process.env.REACT_APP_API_GOOGLE_MAP as string,
-            }}
-            defaultCenter={{
-              lat: incidentLocation.latitude,
-              lng: incidentLocation.longitude,
-            }}
-            defaultZoom={18}
+          <Map
+            // eslint-disable-next-line react/style-prop-object
+            style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+            zoom={[18]}
+            center={[incidentLocation.longitude, incidentLocation.latitude]}
+            containerStyle={{ height: "100%", width: "100%" }}
+            onStyleLoad={() => setMapLoaded(true)}
           >
-            <IncidentPoint
-              lat={incidentLocation.latitude}
-              lng={incidentLocation.longitude}
-            />
-          </GoogleMapReact>
+            <Layer
+              type="circle"
+              paint={{ "circle-color": "#00F900", "circle-radius": 10 }}
+            >
+              {mapLoaded ?
+                <Feature
+                  coordinates={[incidentLocation.longitude, incidentLocation.latitude]}
+                /> : <></>
+              }
+            </Layer>
+          </Map>
           <div
             className={
               isReportOpen

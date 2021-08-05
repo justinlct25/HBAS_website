@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import AddNewForm from "../components/AddNewForm";
 import { AnimatedVehicleCards } from "../components/AnimatedVehicleCards";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
-import EditVehicle from "../components/EditVehicle";
+import EditVehicle from "../components/Modal/EditVehicle";
 import { AddIcon, BackButton, EditIcon } from "../components/IconsOnly";
 import { DeleteModal } from "../components/Modal/DeleteModal";
 import { VehicleCards } from "../components/VehicleCards";
