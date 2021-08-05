@@ -217,19 +217,19 @@ export class DataController {
   //   }
   // }
 
-  getAllTypeData = async (req: Request, res: Response) => {
-    try {
-      const page: number = parseInt(String(req.query.page));
-      const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1);
-      const result = await this.dataService.getAllMsgTypeData(OFFSET, LIMIT);
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'get all type data' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
+  // getAllTypeData = async (req: Request, res: Response) => {
+  //   try {
+  //     const page: number = parseInt(String(req.query.page));
+  //     const LIMIT: number = 10;
+  //     const OFFSET: number = LIMIT * (page - 1);
+  //     const result = await this.dataService.getAllMsgTypeData(OFFSET, LIMIT);
+  //     res.status(httpStatusCodes.OK).json({ data: result, message: 'get all type data' });
+  //     return;
+  //   } catch (err) {
+  //     logger.error(err.message);
+  //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+  //   }
+  // };
 
   deleteCompanies = async (req: Request, res: Response) => {
     try {

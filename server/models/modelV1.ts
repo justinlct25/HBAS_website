@@ -14,12 +14,3 @@ export interface getAlertData{
     vehicle_type: string;
     msg_type: string;
 }
-
-export interface getCompanies{
-    id: number;
-    company_name: string;
-    tel: string;
-    contact_person: string;
-    vehicles_quantity: number;
-    updated_at: Date;
-}

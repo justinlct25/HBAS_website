@@ -1,6 +1,6 @@
 import { Knex } from 'knex';
 import { tables } from '../utils/table_model';
-import { getAlertData, getCompanies } from '../models/modelV1';
+import { getAlertData } from '../models/modelV1';
 
 const alert_data = tables.ALERT_DATA;
 const companies = tables.COMPANIES;
