@@ -158,9 +158,12 @@ export class CompaniesService {
   // -----------vehicles management-----------
   checkExistingVehicles = async (carPlates: string[]) => {
     return await this.knex(tables.VEHICLES)
-      .distinct<{ car_plate: string }[]>('car_plate')
+      .distinct<{ id: number; car_plate: string }[]>(['id', 'car_plate'])
       .where('is_active', true)
-      .whereIn('car_plate', carPlates);
+      .whereIn(
+        'car_plate',
+        carPlates.map((v) => v.toUpperCase())
+      );
   };
 
   addVehicles = async (vehicles: INewVehicle[], companyId: number) => {
@@ -169,7 +172,7 @@ export class CompaniesService {
       const ids = await trx(tables.VEHICLES)
         .insert(
           vehicles.map((v) => ({
-            car_plate: v.carPlate,
+            car_plate: v.carPlate.toUpperCase(),
             vehicle_model: v.vehicleModel,
             vehicle_type: v.vehicleType,
           }))
@@ -190,5 +193,27 @@ export class CompaniesService {
       await trx.rollback();
       return;
     }
+  };
+
+  editVehicle = async (
+    vehicleId: number,
+    carPlate: string,
+    vehicleModel: string | null,
+    vehicleType: string | null
+  ) => {
+    return await this.knex(tables.VEHICLES)
+      .update(
+        {
+          car_plate: carPlate.toUpperCase(),
+          vehicle_model: vehicleModel,
+          vehicle_type: vehicleType,
+          updated_at: new Date(),
+        },
+        'id'
+      )
+      .where({
+        is_active: true,
+        id: vehicleId,
+      });
   };
 }

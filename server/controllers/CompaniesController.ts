@@ -106,26 +106,34 @@ export class CompaniesController {
     });
   };
 
-  addVehicles = async (req: Request, res: Response) => {
-    const { companyId } = req.params;
-    const { vehicles }: { vehicles: INewVehicle[] } = req.body;
-
+  vehicleChecking = async (vehicles: INewVehicle[], vehicleId?: number) => {
     // check if required info is provided
-    if (!vehicles || !vehicles.length)
-      return res.status(httpStatusCodes.BAD_REQUEST).json({
-        message: 'Missing required information.',
-      });
-
-    vehicles.forEach((v) => (v.carPlate = v.carPlate.toUpperCase()));
+    if (!vehicles || !vehicles.length || vehicles.some((item) => !item.carPlate))
+      return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Missing required information.' };
 
     // check duplicates
     const existingVehicles = await this.companiesService.checkExistingVehicles(
       vehicles.map((v) => v.carPlate)
     );
-    if (!!existingVehicles && existingVehicles.length > 0)
-      return res.status(httpStatusCodes.CONFLICT).json({
-        message: 'Company name already exists.',
+    if (!!existingVehicles && existingVehicles.length > 0 && existingVehicles[0].id !== vehicleId)
+      return {
+        statusCode: httpStatusCodes.CONFLICT,
+        message: 'Vehicle already exists.',
         existingCarPlates: existingVehicles.map((v) => v.car_plate),
+      };
+
+    return;
+  };
+
+  addVehicles = async (req: Request, res: Response) => {
+    const { companyId } = req.params;
+    const { vehicles }: { vehicles: INewVehicle[] } = req.body;
+
+    const checkingRes = await this.vehicleChecking(vehicles);
+    if (!!checkingRes)
+      return res.status(checkingRes.statusCode).json({
+        message: checkingRes.message,
+        existingCarPlates: checkingRes.existingCarPlates ?? [],
       });
 
     // insert data
@@ -139,6 +147,41 @@ export class CompaniesController {
     return res.status(httpStatusCodes.CREATED).json({
       message: `Added ${ids.length} ${ids.length > 1 ? 'vehicles' : 'vehicle'} successfully.`,
       ids,
+    });
+  };
+
+  editVehicle = async (req: Request, res: Response) => {
+    const { vehicleId } = req.params;
+    const { carPlate, vehicleModel, vehicleType }: INewVehicle = req.body;
+
+    const checkingRes = await this.vehicleChecking(
+      [{ carPlate, vehicleModel, vehicleType }],
+      parseInt(vehicleId)
+    );
+    console.log('checkingRes')
+    console.log(checkingRes)
+    console.log(!!checkingRes)
+    if (!!checkingRes)
+      return res.status(checkingRes.statusCode).json({
+        message: checkingRes.message,
+        existingCarPlates: checkingRes.existingCarPlates ?? [],
+      });
+
+    // update data
+    const success = await this.companiesService.editVehicle(
+      parseInt(vehicleId),
+      carPlate,
+      vehicleModel,
+      vehicleType
+    );
+
+    // if update failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot update vehicle.' });
+
+    // update successful
+    return res.status(httpStatusCodes.OK).json({
+      message: `Edited vehicle successfully.`,
     });
   };
 }
