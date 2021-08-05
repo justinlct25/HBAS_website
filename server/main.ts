@@ -14,11 +14,13 @@ import { DataService } from './services/dataService';
 import { DevicesService } from './services/DevicesService';
 import { CompaniesService } from './services/CompaniesService';
 import { AlertDataService } from './services/AlertDataService';
+import { VehiclesService } from './services/VehiclesService';
 
 import { DataController } from './controllers/dataController';
 import { DevicesController } from './controllers/DevicesController';
 import { CompaniesController } from './controllers/CompaniesController';
 import { AlertDataController } from './controllers/AlertDataController';
+import { VehiclesController } from './controllers/VehiclesController';
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
@@ -58,12 +60,14 @@ const dataService = new DataService(knex);
 const devicesService = new DevicesService(knex);
 const companiesService = new CompaniesService(knex);
 const alertDataService = new AlertDataService(knex);
+const vehiclesService = new VehiclesService(knex);
 
 // create controllers
 export const dataController = new DataController(dataService);
 export const devicesController = new DevicesController(devicesService);
 export const companiesController = new CompaniesController(companiesService);
 export const alertDataController = new AlertDataController(alertDataService);
+export const vehiclesController = new VehiclesController(vehiclesService);
 
 //route
 import { dataRoutes } from './routes/dataRoute';

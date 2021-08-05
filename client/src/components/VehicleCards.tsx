@@ -6,27 +6,14 @@ import { IProfile } from "../redux/profile/state";
 
 interface VehicleProps {
   item: IProfile;
+  callFunction: () => void;
 }
 
 export const VehicleCards = (props: VehicleProps) => {
-  const { item } = props;
-  const dispatch = useDispatch();
+  const { item, callFunction } = props;
 
   return (
-    <div
-      className="deviceVehicleCard"
-      onClick={() => {
-        dispatch(push(`/vehicle-logs/${item.deviceId}`));
-        dispatch(
-          setSelectedItemAction({
-            carPlate: item.carPlate,
-            vehicleId: item.vehicleId,
-            deviceEui: item.deviceEui,
-            deviceId: item.deviceId,
-          })
-        );
-      }}
-    >
+    <div className="deviceVehicleCard" onClick={callFunction}>
       <div className="flex-center">
         <div className="incidentReportText">Device ID:</div>
         <div

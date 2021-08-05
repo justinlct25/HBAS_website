@@ -8,6 +8,9 @@ import {
 import { createBrowserHistory } from "history";
 import { applyMiddleware, combineReducers, compose, createStore } from "redux";
 import thunk, { ThunkDispatch as OldThunkDispatch } from "redux-thunk";
+import { AddNewFormAction } from "./addNewForm/action";
+import { addNewFormReducer } from "./addNewForm/reducer";
+import { AddNewFormState } from "./addNewForm/state";
 import { IAlertDataPageActions } from "./alertDataPage/action";
 import { IAlertDataPageReducer } from "./alertDataPage/reducer";
 import { IAlertDataPageState } from "./alertDataPage/state";
@@ -18,6 +21,9 @@ import { AssignDeviceState } from "./assignDeviceModal/state";
 import { ICompaniesDataActions } from "./companies/action";
 import { ICompaniesDataReducer } from "./companies/reducer";
 import { ICompaniesDataState } from "./companies/state";
+import { DeleteModalAction } from "./deleteModal/action";
+import { deleteModalReducer } from "./deleteModal/reducer";
+import { DeleteModalState } from "./deleteModal/state";
 //devices
 import { IDevicesDataActions } from "./devices/action";
 import { IDevicesDataReducer } from "./devices/reducer";
@@ -47,6 +53,8 @@ export interface IRootState {
   incidentPage: IIncidentPageState;
   profileList: IProfileState;
   assignDevice: AssignDeviceState;
+  addNewForm: AddNewFormState;
+  deleteModal: DeleteModalState;
 }
 
 // initState
@@ -58,7 +66,9 @@ type IRootAction =
   | ILoadingPageAction
   | IIncidentPageAction
   | IProfileActions
-  | AssignDeviceAction;
+  | AssignDeviceAction
+  | AddNewFormAction
+  | DeleteModalAction;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
@@ -73,6 +83,8 @@ const rootReducer = combineReducers<IRootState>({
   incidentPage: IIncidentPageReducer,
   profileList: IProfileReducer,
   assignDevice: assignDeviceReducer,
+  addNewForm: addNewFormReducer,
+  deleteModal: deleteModalReducer,
 });
 
 declare global {
