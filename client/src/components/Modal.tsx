@@ -132,7 +132,7 @@ export const Modal = (props: ModalProps) => {
     const fetchVehiclesByCompanyId = async () => {
       try {
         const res = await fetch(
-          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/vehicles/${selectedItem.companyId}`,
+          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${selectedItem.companyId}`,
           {
             method: "GET",
             headers: {

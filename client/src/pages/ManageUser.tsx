@@ -34,14 +34,11 @@ function ManageUser() {
     }>
   >([]);
 
-  const [companyDetail, setCompanyDetail] = useState<
-    Array<{
-      companyName: string;
-
-      contactPerson: string;
-      tel: string;
-    }>
-  >([{ companyName: "", contactPerson: "", tel: "" }]);
+  const [companyDetail, setCompanyDetail] = useState<{
+    companyName: string;
+    contactPerson: string;
+    tel: string;
+  }>({ companyName: "", contactPerson: "", tel: "" });
 
   const companiesDataList = useSelector(
     (state: IRootState) => state.companiesDataList
@@ -70,7 +67,7 @@ function ManageUser() {
 
   const handleReset = () => {
     setTotalVehicle([]);
-    setCompanyDetail([{ companyName: "", contactPerson: "", tel: "" }]);
+    setCompanyDetail({ companyName: "", contactPerson: "", tel: "" });
     setPopUpIsActive(false);
   };
 
@@ -254,14 +251,12 @@ function ManageUser() {
                     <div className="formRightColumn">
                       <input
                         className="formInput"
-                        value={companyDetail[0].companyName}
+                        value={companyDetail.companyName}
                         onChange={(e) => {
-                          const newArr = companyDetail.slice();
-                          newArr[0] = {
-                            ...companyDetail[0],
+                          setCompanyDetail({
+                            ...companyDetail,
                             companyName: e.target.value,
-                          };
-                          setCompanyDetail(newArr);
+                          });
                         }}
                       />
                     </div>
@@ -271,14 +266,12 @@ function ManageUser() {
                     <div className="formRightColumn">
                       <input
                         className="formInput"
-                        value={companyDetail[0].contactPerson}
+                        value={companyDetail.contactPerson}
                         onChange={(e) => {
-                          const newArr = companyDetail.slice();
-                          newArr[0] = {
-                            ...companyDetail[0],
+                          setCompanyDetail({
+                            ...companyDetail,
                             contactPerson: e.target.value,
-                          };
-                          setCompanyDetail(newArr);
+                          });
                         }}
                       />
                     </div>
@@ -288,14 +281,12 @@ function ManageUser() {
                     <div className="formRightColumn">
                       <input
                         className="formInput"
-                        value={companyDetail[0].tel}
+                        value={companyDetail.tel}
                         onChange={(e) => {
-                          const newArr = companyDetail.slice();
-                          newArr[0] = {
-                            ...companyDetail[0],
+                          setCompanyDetail({
+                            ...companyDetail,
                             tel: e.target.value,
-                          };
-                          setCompanyDetail(newArr);
+                          });
                         }}
                       />
                     </div>

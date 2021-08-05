@@ -1,3 +1,4 @@
+import httpStatusCodes from "http-status-codes";
 import { Dispatch } from "redux";
 import {
   ICompaniesDataActions,
@@ -11,7 +12,7 @@ const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: Dispatch<ICompaniesDataActions>) => {
     try {
-        dispatch(resetCompaniesDataList());
+      dispatch(resetCompaniesDataList());
 
       // construct api url with (or within) search params
       const url = new URL(
@@ -42,60 +43,90 @@ export function getCompaniesDataListThunk(activePage: number) {
   };
 }
 
-export function postCompaniesDataThunk(totalVehicle: any, companyDetail: any) {
+export function postCompaniesDataThunk(
+  vehicles: {
+    carPlate: string;
+    vehicleModel: string | null;
+    vehicleType: string | null;
+  }[],
+  companyDetail: {
+    companyName: string;
+    tel: string;
+    contactPerson: string;
+  }
+) {
   return async (
     dispatch: Dispatch<ICompaniesDataActions>,
     dispatch2: Dispatch<ICompaniesDataActions>
   ) => {
     try {
-      const res = await fetch(`${REACT_APP_API_SERVER}/api/v1/companies`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-        body: JSON.stringify(companyDetail),
-      });
+      const { companyName, tel, contactPerson } = companyDetail;
+      const res = await fetch(
+        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies`,
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+          },
+          body: JSON.stringify({
+            companyName,
+            tel,
+            contactPerson,
+          }),
+        }
+      );
       if (res.status === 201 || res.status === 200) {
-        const data = await res.json();
-        if (totalVehicle.length > 0) {
+        const companyRes = await res.json();
+        if (vehicles.length > 0) {
           const res = await fetch(
-            `${REACT_APP_API_SERVER}/api/v1/vehicles/${data.data}`,
+            `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${companyRes.id}`,
             {
               method: "post",
               headers: {
                 "Content-Type": "application/json; charset=utf-8",
               },
-              body: JSON.stringify(totalVehicle),
+              body: JSON.stringify({ vehicles }),
             }
           );
+
+          // ????????? don't know wts this, pls fix
+          // ????????? don't know wts this, pls fix
+          // ????????? don't know wts this, pls fix
+          // ????????? don't know wts this, pls fix
           if (res.status === 201 || res.status === 200) {
-            const data = await res.json();
-            if (data.data.length > 0 || data.blank > 0) {
-              alert(`${data.message}`);
+            const result = await res.json();
+            if (result.data.length > 0 || result.blank > 0) {
+              alert(`${result.message}`);
             }
             dispatch(errorCompaniesInput(false));
             //@ts-ignore
             dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
             return;
+          } else if (res.status === httpStatusCodes.CONFLICT) {
+            const result = await res.json();
+            alert(
+              `${result.message}${
+                !!result.existingCarPlates.length ?? result.existingCarPlates
+              }`
+            );
           }
         }
         dispatch(errorCompaniesInput(false));
-        //@ts-ignore
-        dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
       }
       if (res.status === 400) {
-        const data = await res.json();
-        alert(`${data.message}: ${data.data} `);
+        const result = await res.json();
+        alert(result.message);
         dispatch(errorCompaniesInput(true));
       }
-      //@ts-ignore
-      dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
       return;
     } catch (err) {
       console.error(err);
       //handle error
       dispatch(errorCompaniesInput(true));
       return;
+    } finally {
+      //@ts-ignore
+      dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
     }
   };
 }

@@ -12,5 +12,5 @@ dataRoutes.delete(`/vehicles`, dataController.deleteVehicles);
 
 dataRoutes.delete(`/devices`, dataController.deleteDevices);
 
-dataRoutes.get(`/batteryData`, dataController.getBatteryData);
-dataRoutes.get(`/alertBatteryData`, dataController.getAllTypeData);
+// dataRoutes.get(`/batteryData`, dataController.getBatteryData);
+// dataRoutes.get(`/alertBatteryData`, dataController.getAllTypeData);
