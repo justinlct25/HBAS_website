@@ -1,10 +1,9 @@
 import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
-import * as gpsFetch from 'node-fetch';
 import { io } from '../main';
 import { DataService } from '../services/dataService';
 import { logger } from '../utils/logger';
-import { base64ToHex } from '../utils/eui_decoder';
+import { base64ToHex, jsonHandler, gpsFetch } from '../utils/postDataFunc';
 
 export class DataController {
   constructor(private dataService: DataService) {}
@@ -103,14 +102,8 @@ export class DataController {
       }
 
       //replace json broken data
-      let JsonStr = JSON.stringify(dataResult);
-      JsonStr = JsonStr.replace(/\"\[\{/gi, `\[\{`);
-      JsonStr = JsonStr.replace(/\'\[\{/gi, `\[\{`);
-      JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\}\]\'/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\}\]\"/gi, `\}\]`);
-      JsonStr = JsonStr.replace(/\\\"/gi, `\"`);
-      const newJSON = JSON.parse(JsonStr);
+      const JsonStr = JSON.stringify(dataResult);
+      const newJSON = JSON.parse(jsonHandler(JsonStr));
 
       //check data code is alive
       if (!newJSON.data) {
@@ -120,8 +113,6 @@ export class DataController {
         return;
       }
       //check json is undefined or good
-      // newJSON.objectJSON[0].latitude == '0' ||
-      // newJSON.objectJSON[0].longitude == '0' ||
       let jsonDate = new Date(newJSON.objectJSON[0].date).getFullYear();
       let checkDate = new Date().getFullYear();
       if (
@@ -152,42 +143,8 @@ export class DataController {
         checkLongitude >= 113.75 &&
         checkLongitude <= 114.45
       ) {
-        await gpsFetch
-          .default(
-            `https://nominatim.openstreetmap.org/reverse?lat=${newJSON.objectJSON[0].latitude}&lon=${newJSON.objectJSON[0].longitude}&format=json&zoom=16`
-          )
-          .then((response: any) => response.json())
-          .then((data: any) => {
-            data.address.county
-              ? addressJSON.push(
-                  JSON.stringify(data.address.county)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.city_district
-              ? addressJSON.push(
-                  JSON.stringify(data.address.city_district)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.quarter
-              ? addressJSON.push(
-                  JSON.stringify(data.address.quarter)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : data.address.suburb
-              ? addressJSON.push(
-                  JSON.stringify(data.address.suburb)
-                    .replace(/\ /, `++`)
-                    .split('++')[1]
-                    .replace(/\"/, ``)
-                )
-              : addressJSON.push('GPS not found');
-          });
+        let result = await gpsFetch(checkLalatitude, checkLongitude);
+        addressJSON.push(result);
       } else {
         addressJSON.push('GPS not found');
       }
@@ -213,98 +170,6 @@ export class DataController {
       return;
     } catch (err) {
       logger.error(err);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-
-  // post /companies
-  postCompaniesData = async (req: Request, res: Response) => {
-    try {
-      const mBody = req.body;
-      if (!mBody[0].companyName || !mBody[0].tel) {
-        res
-          .status(httpStatusCodes.BAD_REQUEST)
-          .json({ message: 'Blank columns is found, please press valid input.' });
-        return;
-      }
-      let duplicateCompany: string[] = [];
-      let checkDuplicate = await this.dataService.checkCompanyDuplicate(mBody[0].companyName);
-      if (checkDuplicate.length > 0) {
-        duplicateCompany.push(mBody[0].companyName);
-        res
-          .status(httpStatusCodes.BAD_REQUEST)
-          .json({ data: duplicateCompany, message: 'Duplicate company found' });
-        return;
-      }
-      const companiesResult: number = await this.dataService.postCompaniesData(
-        mBody[0].companyName,
-        mBody[0].contactPerson,
-        mBody[0].tel
-      );
-
-      // io.emit('get-new-companies');
-      res
-        .status(httpStatusCodes.CREATED)
-        .json({ data: companiesResult[0], message: 'company created' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res
-        .status(httpStatusCodes.INTERNAL_SERVER_ERROR)
-        .json({ formInput: false, message: 'Internal server error!' });
-    }
-  };
-
-  //post vehicles
-  postVehicles = async (req: Request, res: Response) => {
-    try {
-      const mBody = req.body;
-      const companyID: number = parseInt(String(req.params.id));
-      let vehiclesArray: number[] = [];
-      let vehiclesResult: number;
-      let duplicateResult: string[] = [];
-      let blankResult: number = 0;
-      if (mBody.length > 0) {
-        for (let i = 0; i < mBody.length; i++) {
-          if (mBody[i].carPlate === '') {
-            ++blankResult;
-          } else {
-            let checkDuplicate = await this.dataService.checkCarPlateDuplicate(mBody[i].carPlate);
-            if (checkDuplicate.length > 0) {
-              duplicateResult.push(mBody[i].carPlate);
-            } else {
-              vehiclesResult = await this.dataService.postVehicles(
-                mBody[i].carPlate,
-                mBody[i].vehicleType,
-                mBody[i].vehicleModel
-              );
-              vehiclesArray.push(vehiclesResult);
-            }
-          }
-        }
-        if (vehiclesArray.length > 0) {
-          for (let i = 0; i < vehiclesArray.length; i++) {
-            await this.dataService.postCompanyVehicles(companyID, vehiclesArray[i][0]);
-          }
-        }
-      }
-      if (duplicateResult.length > 0 || blankResult > 0) {
-        res.status(httpStatusCodes.OK).json({
-          data: duplicateResult,
-          blank: blankResult,
-          message: `Success insert: ${vehiclesArray.length}, 
-            Duplicate car plate: ${duplicateResult.length}, 
-            Empty car plate: ${blankResult}
-            `,
-        });
-      } else {
-        res
-          .status(httpStatusCodes.CREATED)
-          .json({ data: [], blank: 0, message: 'Vehicles created successful' });
-      }
-      return;
-    } catch (err) {
-      logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
@@ -336,38 +201,10 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  // 20210802 edit / delete companies & vehicles
-  putCompanies = async (req: Request, res: Response) => {
-    try {
-      const { id, company_name, tel, contact_person } = req.body;
-      if (!company_name || !tel) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
-        return;
-      }
-      if (tel.length !== 8) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'tel is invalid length' });
-        return;
-      }
-      const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
-      if (duplicate.length > 0) {
-        if (duplicate[0].id === id) {
-        } else {
-          res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'company name is duplicate' });
-          return;
-        }
-      }
-      const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
 
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'company detail updated' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
   deleteCompanies = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName = 'companies';
 
       const result: number[] = await this.dataService.deleteCompanies(idArray);
@@ -382,52 +219,10 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  putVehicles = async (req: Request, res: Response) => {
-    try {
-      const {
-        id,
-        car_plate,
-        vehicle_model,
-        vehicle_type,
-      }: {
-        id: number;
-        car_plate: string;
-        vehicle_model: string;
-        vehicle_type: string;
-      } = req.body;
-      if (!car_plate) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Empty car plate detected' });
-        return;
-      }
-      if (car_plate.length > 8) {
-        res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate length invalid' });
-        return;
-      }
-      const duplicate = await this.dataService.checkCarPlateDuplicate(car_plate);
-      if (duplicate.length > 0) {
-        if (duplicate[0].id === id) {
-        } else {
-          res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate is duplicate' });
-          return;
-        }
-      }
-      const result = await this.dataService.putVehicles(
-        id,
-        car_plate.toUpperCase(),
-        vehicle_model,
-        vehicle_type
-      );
 
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'vehicle detail updated' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
   deleteVehicles = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName: string = 'vehicles';
 
       const result: number[] = await this.dataService.deleteVehicles(idArray);
@@ -444,7 +239,7 @@ export class DataController {
   // 20210803
   deleteDevices = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName: string = 'devices';
 
       const result: number[] = await this.dataService.deleteDevices(idArray);

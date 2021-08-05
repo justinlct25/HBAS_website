@@ -1,12 +1,49 @@
+export const insertCompany = [
+  {
+    company_name: 'Sheung Moon',
+    tel: '64780038',
+    contact_person: 'Tong sir'
+  }
+]
+
 export const insertDevices = [
+  {
+    device_eui: '8CF95720-0003BD23',
+    device_name: 'HbAs_002'
+  },
+  {
+    device_eui: '8CF95720-00078B4A',
+    device_name: 'HbAs_004'
+  },
+  {
+    device_eui: '8CF95720-00078C08',
+    device_name: 'HbAs_005'
+  },
+  {
+    device_eui: '8CF95720-00078BF3',
+    device_name: 'HbAs_007'
+  },
+  {
+    device_eui: '8CF95720-00078BF6',
+    device_name: 'HbAs_008'
+  },
+  {
+    device_eui: '8CF95720-00078B3F',
+    device_name: 'HbAs_009'
+  },
   {
     device_eui: '8CF95720-00078C41',
     device_name: 'HbAs_011'
   },
   {
+    device_eui: '8CF95720-00078B70',
+    device_name: 'HbAs_016'
+  },
+  {
     device_eui: '8CF95720-0007875A',
     device_name: 'HbAs_021'
-  }
+  },
+
 ]
 
 export const insertData = [
@@ -1109,4 +1146,119 @@ export const insertData = [
       data: 'MTM0NjQ3NDthMzY5OzZiMTEzZjg7MTE4YTQ0YzA7MWEwO0E='
     }
   ]
+
+export const insertCars = [
+  {
+    car_plate: 'VL8428',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'RN8518',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'SW5672',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'VL5806',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'XJ9535',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'XG5896',
+    vehicle_model: 'Isuzu',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'VG3940',
+    vehicle_model: 'DONGFENG',
+    vehicle_type: '',
+  },
+  {
+    car_plate: 'VG4360',
+    vehicle_model: 'DONGFENG',
+    vehicle_type: '',
+  },
   
+]
+
+export const insertVehicleDevice = [
+  {
+    device_eui: '8CF95720-0003BD23',
+    car_plate: 'VL8428'
+  },
+  {
+    device_eui: '8CF95720-00078B4A',
+    car_plate: 'RN8518'
+  },
+  {
+    device_eui: '8CF95720-00078C08',
+    car_plate: 'SW5672'
+  },
+  {
+    device_eui: '8CF95720-00078BF3',
+    car_plate: 'VL5806'
+  },
+  {
+    device_eui: '8CF95720-00078BF6',
+    car_plate: 'XJ9535'
+  },
+  {
+    device_eui: '8CF95720-00078B3F',
+    car_plate: 'XG5896'
+  },
+  {
+    device_eui: '8CF95720-00078C41',
+    car_plate: 'VG3940'
+  },
+  {
+    device_eui: '8CF95720-00078B70',
+    car_plate: 'VG4360'
+  },
+  
+]
+
+export const insertCompanyVehicles = [
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VL8428',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'RN8518',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'SW5672',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VL5806',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'XJ9535',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'XG5896',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VG3940',
+  },
+  {
+    company_name: 'Sheung Moon',
+    car_plate: 'VG4360',
+  },
+  
+]

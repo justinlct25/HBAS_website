@@ -191,54 +191,33 @@ body {
   font-size: 36px;
   margin: 16px;
 }
-.tooltip {
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-  background-color: #222;
-  width: max-content;
-  height: max-content;
-  white-space: nowrap;
-  overflow: visible;
-  border-radius: 10px;
-  flex-direction: column;
-  padding: 8px;
-  transition: all 0.4s cubic-bezier(0.09, 1, 0.22, 1);
-  z-index: 1;
+.popup {
+  opacity: 0;
+  top: 120px;
+  transition: top 0.4s cubic-bezier(0.09, 1, 0.22, 1), opacity 0.4s cubic-bezier(0.09, 1, 0.22, 1);
 }
-.tooltipField {
-  color: #eee;
-  padding-right: 8px;
+.popup-enter {
+  opacity: 0 !important;
+  top: 120px !important;
 }
-.tooltip::before {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  right: -8px;
-  width: 30px;
-  height: 30px;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 30px solid #222;
-  transform: rotate(70deg);
-  z-index: 0;
-  transition: all 0.5s cubic-bezier(0.09, 1, 0.22, 1);
+.popup-enter-active {
+  opacity: 1 !important;
+  top: 0 !important;
 }
-.editButtonContainer {
-  height: 64px;
-  width: 64px;
-  box-shadow: inset 0 0 0 2px #555, 0 0 0 #000;
-  transform: translateY(0px);
-  padding-left: 4px;
-  border-radius: 50%;
-  transition: all 0.3s;
+.popup-enter-done {
+  opacity: 1 !important;
+  top: 0 !important;
 }
-.editButtonContainer:hover {
-  box-shadow: inset 0 0 0 64px #3663ecdc, 0 4px 4px #0004;
-  transform: translateY(-4px);
-  transition: all 0.3s;
+.popup-exit {
+  opacity: 1 !important;
+  top: 0 !important;
 }
-.editButtonContainer:hover svg path {
-  fill: #eee;
-  transition: all 0.3s;
+.popup-exit-active {
+  opacity: 0 !important;
+  top: 120px !important;
+}
+.popup-exit-done {
+  opacity: 0 !important;
+  top: 120px !important;
+}
 }
