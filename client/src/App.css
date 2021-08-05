@@ -194,7 +194,8 @@ body {
 .popup {
   opacity: 0;
   top: 120px;
-  transition: top 0.4s cubic-bezier(0.09, 1, 0.22, 1), opacity 0.4s cubic-bezier(0.09, 1, 0.22, 1);
+  transition: top 0.4s cubic-bezier(0.09, 1, 0.22, 1),
+    opacity 0.4s cubic-bezier(0.09, 1, 0.22, 1);
 }
 .popup-enter {
   opacity: 0 !important;
@@ -219,5 +220,4 @@ body {
 .popup-exit-done {
   opacity: 0 !important;
   top: 120px !important;
-}
 }

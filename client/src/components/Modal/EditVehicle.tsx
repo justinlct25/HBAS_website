@@ -1,10 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "../css/TablePage.css";
-import { resetAddNewFormAction } from "../redux/addNewForm/action";
-import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
-import { IRootState } from "../redux/store";
-import { CloseIcon } from "./IconsOnly";
+import "../../css/TablePage.css";
+import { resetAddNewFormAction } from "../../redux/addNewForm/action";
+import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
+import { IRootState } from "../../redux/store";
+import { CloseIcon } from "../IconsOnly";
 
 function EditVehicle() {
   const dispatch = useDispatch();
