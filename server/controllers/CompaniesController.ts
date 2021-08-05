@@ -99,4 +99,20 @@ export class CompaniesController {
       message: `Edited company successfully.`,
     });
   };
+
+  deleteCompany = async (req: Request, res: Response) => {
+    const { companyId } = req.params;
+
+    // delete data
+    const success = await this.companiesService.deleteCompany(parseInt(companyId));
+
+    // if delete failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot delete company.' });
+
+    // delete successful
+    return res.status(httpStatusCodes.OK).json({
+      message: `Deleted company successfully.`,
+    });
+  };
 }

@@ -81,7 +81,7 @@ export class DevicesService {
       builder
         .select('device_id')
         .from(tables.VEHICLE_DEVICE)
-        .whereRaw(`${tables.DEVICES}.id = ${tables.VEHICLE_DEVICE}.device_id`)
+        .whereRaw(/* SQL*/ `${tables.DEVICES}.id = ${tables.VEHICLE_DEVICE}.device_id`)
         .andWhere('is_active', true);
     };
 
