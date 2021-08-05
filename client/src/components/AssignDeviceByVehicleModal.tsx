@@ -51,6 +51,7 @@ function AssignDeviceByVehicleModal() {
 
   return (
     <div
+      style={{ zIndex: 10 }}
       className={
         popUpIsActive
           ? "flex-center popUpContainer popUp"

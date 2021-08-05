@@ -118,6 +118,7 @@ body {
   padding: 16px 0 0 16px;
 }
 .deviceVehicleCard {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -130,19 +131,47 @@ body {
   white-space: nowrap;
   overflow-x: hidden;
   transition: all 0.3s;
-  cursor: pointer;
-  transform: translateY(0px);
 }
 .deviceVehicleCard:hover {
-  background: #777;
   box-shadow: 0 4px 8px #5554;
-  transform: translateY(-10px);
   transition: all 0.3s;
+  z-index: 1;
+  transform: scale(1.14);
 }
 .deviceVehicleCard:hover .flex-center .incidentReportText {
-  color: #eee;
   transition: all 0.4s;
 }
+.hiddenButtonContainer {
+  position: absolute;
+  right: -100%;
+  width: max-content;
+  top: 0;
+  height: 100%;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.3s;
+  background: linear-gradient(to left, #ddd, transparent);
+}
+.hiddenButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 0px 0px #5554;
+}
+.hiddenButton:hover {
+  transform: scale(1.2);
+  transition: all 0.3s;
+  box-shadow: 0 2px 2px #5554;
+}
+.deviceVehicleCard:hover .hiddenButtonContainer {
+  right: 0;
+  transition: all 0.3s;
+}
+
 .deviceName {
   width: 196px;
   text-overflow: ellipsis;
@@ -194,4 +223,22 @@ body {
   transform: rotate(70deg);
   z-index: 0;
   transition: all 0.5s cubic-bezier(0.09, 1, 0.22, 1);
+}
+.editButtonContainer {
+  height: 64px;
+  width: 64px;
+  box-shadow: inset 0 0 0 2px #555, 0 0 0 #000;
+  transform: translateY(0px);
+  padding-left: 4px;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.editButtonContainer:hover {
+  box-shadow: inset 0 0 0 64px #3663ecdc, 0 4px 4px #0004;
+  transform: translateY(-4px);
+  transition: all 0.3s;
+}
+.editButtonContainer:hover svg path {
+  fill: #eee;
+  transition: all 0.3s;
 }

@@ -4,6 +4,8 @@
   justify-content: flex-start;
 }
 .deviceId {
+  width: max-content;
+  white-space: nowrap;
   justify-content: flex-start;
   color: #aaa;
   transition: all 0.4s;
@@ -46,4 +48,23 @@
   font-size: 18px;
   outline-style: none;
   transition: all 0.4s;
+}
+.deleteModalContainer {
+  z-index: 10;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  background: #0002;
+  backdrop-filter: blur(2px);
+  transition: all 0.4s;
+}
+.deleteModal {
+  width: 70%;
+  height: 30%;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 4px #1113;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 16px;
 }

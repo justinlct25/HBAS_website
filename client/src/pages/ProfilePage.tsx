@@ -1,11 +1,21 @@
+import { push } from "connected-react-router";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import AddNewForm from "../components/AddNewForm";
+import { AnimatedVehicleCards } from "../components/AnimatedVehicleCards";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
-import { BackButton } from "../components/IconsOnly";
+import EditVehicle from "../components/EditVehicle";
+import { AddIcon, BackButton, EditIcon } from "../components/IconsOnly";
+import { DeleteModal } from "../components/Modal/DeleteModal";
 import { VehicleCards } from "../components/VehicleCards";
 import { useRouter } from "../helpers/useRouter";
-import { resetPopUpAction } from "../redux/assignDeviceModal/action";
+import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
+import {
+  resetPopUpAction,
+  setPopUpIsActiveAction,
+  setSelectedItemAction,
+} from "../redux/assignDeviceModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
@@ -35,7 +45,7 @@ function ProfilePage() {
     <div className="flex-center pageContainer">
       <div
         className="flex-center topRowContainer"
-        style={{ justifyContent: "flex-start" }}
+        style={{ justifyContent: "space-between" }}
       >
         <div
           className="flex-center"
@@ -124,7 +134,23 @@ function ProfilePage() {
               profileList
                 .filter((i) => i.deviceId)
                 .map((item, idx) => {
-                  return <VehicleCards key={idx} item={item} />;
+                  return (
+                    <VehicleCards
+                      key={idx}
+                      item={item}
+                      callFunction={() => {
+                        dispatch(push(`/vehicle-logs/${item.deviceId}`));
+                        dispatch(
+                          setSelectedItemAction({
+                            carPlate: item.carPlate,
+                            vehicleId: item.vehicleId,
+                            deviceEui: item.deviceEui,
+                            deviceId: item.deviceId,
+                          })
+                        );
+                      }}
+                    />
+                  );
                 })}
           </div>
         </div>
@@ -132,8 +158,10 @@ function ProfilePage() {
           <div className="flex-center">
             <div className="titleText">{"Devices & Vehicles"}</div>
           </div>
+
           <div
             style={{
+              position: "relative",
               paddingBottom: "16px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
@@ -141,11 +169,18 @@ function ProfilePage() {
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                return <VehicleCards key={idx} item={item} />;
+                return (
+                  <>
+                    <AnimatedVehicleCards key={idx} item={item} />
+                  </>
+                );
               })}
           </div>
         </div>
         <AssignDeviceByVehicleModal />
+        {/* <AddNewForm /> */}
+        <EditVehicle />
+        <DeleteModal />
       </div>
     </div>
   );

@@ -150,7 +150,6 @@ function ManageUser() {
             </div>
           </div>
           <div />
-          {/* <div style={{ position: "relative" }}> */}
           <div
             className="dropDownListContainer"
             style={{
@@ -177,7 +176,6 @@ function ManageUser() {
                 }
               })}
           </div>
-          {/* </div> */}
         </div>
         <div
           className="table"
@@ -208,7 +206,6 @@ function ManageUser() {
                     key={item.id}
                     className="flex-center tableRow"
                     onClick={() => {
-                      //dispatch something ...
                       dispatch(
                         setSelectedItemAction({
                           companyName: item.companyName,
