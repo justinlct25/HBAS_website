@@ -4,3 +4,4 @@ test/jsonMake.*
 test/jsonMaker.*
 test/20210804Data.*
 server/utils/20210804T*
+.DS_Store

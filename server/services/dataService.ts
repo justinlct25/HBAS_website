@@ -275,65 +275,6 @@ export class DataService {
       .first();
   }
 
-  // check duplicate #company_name
-  async checkCompanyDuplicate(company_name: string) {
-    return await this.knex(companies)
-      .where(`company_name`, 'ILIKE', `${company_name}`)
-      .andWhere(`is_active`, true)
-      .select<{ id: number }[]>('id');
-  }
-  // check duplicate #car_plate
-  async checkCarPlateDuplicate(car_plate: string) {
-    return await this.knex(vehicles)
-      .where(`car_plate`, 'ILIKE', `${car_plate}`)
-      .andWhere('is_active', true)
-      .select<{ id: number }[]>('id');
-  }
-
-  //// 20210802 edit / delete companies & vehicles
-  async putCompanies(id: number, company_name: string, tel: string, contact_person: string) {
-    return await this.knex(companies)
-      .where({ id: id, is_active: true })
-      .update({ company_name, tel, contact_person, updated_at: new Date(Date.now()) });
-  }
-  async putVehicles(id: number, car_plate: string, vehicle_model: string, vehicle_type: string) {
-    return await this.knex(vehicles)
-      .where({ id: id, is_active: true })
-      .update({ car_plate, vehicle_model, vehicle_type, updated_at: new Date(Date.now()) });
-  }
-  async deleteCompanies(id: number[]) {
-    return await this.knex(companies)
-      .whereIn('id', id)
-      .update({ is_active: false, updated_at: new Date(Date.now()) })
-      .returning<number[]>('id');
-  } // delete#companies 1
-  async deleteVehicles(id: number[]) {
-    return await this.knex(vehicles)
-      .whereIn('id', id)
-      .update({ is_active: false, updated_at: new Date(Date.now()) })
-      .returning<number[]>('id');
-  } // delete#vehicles 1 || delete#companies 3
-  async deleteCompanyVehicles(id: number[], table: string) {
-    let whereField, returnField;
-    switch (table) {
-      case vehicles:
-        whereField = 'vehicle_id';
-        returnField = 'company_id';
-        break;
-      case companies:
-        whereField = 'company_id';
-        returnField = 'vehicle_id';
-        break;
-    }
-    return await this.knex(company_vehicles)
-      .whereIn(`${whereField}`, id)
-      .andWhere('is_active', true)
-      .update({
-        is_active: false,
-        updated_at: new Date(Date.now()),
-      })
-      .returning<number[]>(`${returnField}`);
-  } // delete#vehicles 2 || delete#companies 2
   async deleteVehicleDevice(id: number[], table: string) {
     let query;
     switch (table) {
@@ -357,7 +298,9 @@ export class DataService {
         break;
     }
     return await query;
-  } // delete#vehicles 3 || delete#companies 4 || delete#devices 2
+  }
+
+  // delete#vehicles 3 || delete#companies 4 || delete#devices 2
   //// 20210803 delete devices
   async deleteDevices(id: number[]) {
     return await this.knex(devices)

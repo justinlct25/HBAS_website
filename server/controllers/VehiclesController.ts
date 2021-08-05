@@ -94,4 +94,20 @@ export class VehiclesController {
       message: `Edited vehicle successfully.`,
     });
   };
+
+  deleteVehicle = async (req: Request, res: Response) => {
+    const { vehicleId } = req.params;
+
+    // delete data
+    const success = await this.vehiclesService.deleteVehicle(parseInt(vehicleId));
+
+    // if delete failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot delete vehicle.' });
+
+    // delete successful
+    return res.status(httpStatusCodes.OK).json({
+      message: `Deleted vehicle successfully.`,
+    });
+  };
 }

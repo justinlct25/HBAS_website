@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import { ICompanyInfo } from '../models/models';
+import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
 export class CompaniesService {
@@ -82,5 +83,35 @@ export class CompaniesService {
         is_active: true,
         id: companyId,
       });
+  };
+
+  deleteCompany = async (companyId: number) => {
+    const trx = await this.knex.transaction();
+    try {
+      const query = () => {
+        return trx
+          .update({ is_active: false, updated_at: new Date() }, 'id')
+          .where('is_active', true);
+      };
+
+      const selectVehiclesQuery = (builder: Knex.QueryBuilder) => {
+        builder
+          .select('vehicle_id')
+          .from(tables.COMPANY_VEHICLES)
+          .where({ is_active: true, company_id: companyId });
+      };
+
+      await query().from(tables.VEHICLE_DEVICE).whereIn('vehicle_id', selectVehiclesQuery);
+      await query().from(tables.VEHICLES).whereIn('id', selectVehiclesQuery);
+      await query().from(tables.COMPANY_VEHICLES).andWhere('company_id', companyId);
+      const ids = await query().from(tables.COMPANIES).andWhere('id', companyId);
+
+      await trx.commit();
+      return ids;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
   };
 }

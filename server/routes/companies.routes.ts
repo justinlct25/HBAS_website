@@ -11,3 +11,4 @@ companiesRoutes.get('/:companyId', createAsyncMiddleware(companiesController.get
 // other apis
 companiesRoutes.post('/', createAsyncMiddleware(companiesController.addCompany));
 companiesRoutes.put('/:companyId', createAsyncMiddleware(companiesController.editCompany));
+companiesRoutes.delete('/:companyId', createAsyncMiddleware(companiesController.deleteCompany));

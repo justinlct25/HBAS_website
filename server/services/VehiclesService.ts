@@ -123,4 +123,26 @@ export class VehiclesService {
         id: vehicleId,
       });
   };
+
+  deleteVehicle = async (vehicleId: number) => {
+    const trx = await this.knex.transaction();
+    try {
+      const query = () => {
+        return trx
+          .update({ is_active: false, updated_at: new Date() }, 'id')
+          .where('is_active', true);
+      };
+
+      await query().from(tables.VEHICLE_DEVICE).andWhere('vehicle_id', vehicleId);
+      await query().from(tables.COMPANY_VEHICLES).andWhere('vehicle_id', vehicleId);
+      const id = await query().from(tables.VEHICLES).andWhere('id', vehicleId);
+
+      await trx.commit();
+      return id;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
+  };
 }

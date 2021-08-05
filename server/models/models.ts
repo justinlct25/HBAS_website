@@ -1,4 +1,5 @@
 export type direction = 'asc' | 'desc';
+export type msgType = 'A' | 'B';
 
 export interface ICompanyInfo {
   id?: number;
