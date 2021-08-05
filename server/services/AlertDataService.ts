@@ -1,9 +1,79 @@
 import { Knex } from 'knex';
-import { IDataHistory, ILocationDetail } from '../models/models';
+import { IDataHistory, ILocationDetail, msgType } from '../models/models';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
   constructor(private knex: Knex) {}
+
+  getData = async (
+    msgType: msgType,
+    perPage: number,
+    currentPage: number,
+    searchString: string | null,
+    startDate: string | null,
+    endDate: string | null
+  ) => {
+    const query = this.knex
+      .select({
+        id: `${tables.ALERT_DATA}.id`,
+        date: `${tables.ALERT_DATA}.date`,
+        geolocation: `${tables.ALERT_DATA}.geolocation`,
+        address: `${tables.ALERT_DATA}.address`,
+        msgType: `${tables.ALERT_DATA}.msg_type`,
+        battery: `${tables.ALERT_DATA}.battery`,
+        receivedAt: `${tables.ALERT_DATA}.created_at`,
+        deviceId: `${tables.ALERT_DATA}.device_id`,
+        deviceName: `${tables.DEVICES}.device_name`,
+        deviceEui: `${tables.DEVICES}.device_eui`,
+        deviceVersion: `${tables.DEVICES}.version`,
+        deviceIsActive: `${tables.DEVICES}.is_active`,
+        vehicleId: `${tables.VEHICLES}.id`,
+        carPlate: `${tables.VEHICLES}.car_plate`,
+        vehicleIsActive: `${tables.VEHICLES}.is_active`,
+        companyId: `${tables.COMPANIES}.id`,
+        companyName: `${tables.COMPANIES}.company_name`,
+        companyTel: `${tables.COMPANIES}.tel`,
+        companyContactPerson: `${tables.COMPANIES}.contact_person`,
+        companyIsActive: `${tables.COMPANIES}.is_active`,
+      })
+      .from(tables.ALERT_DATA)
+      .leftJoin(tables.DEVICES, `${tables.ALERT_DATA}.device_id`, `${tables.DEVICES}.id`)
+      .leftJoin(tables.VEHICLE_DEVICE, `${tables.DEVICES}.id`, `${tables.VEHICLE_DEVICE}.device_id`)
+      .leftJoin(tables.VEHICLES, `${tables.VEHICLES}.id`, `${tables.VEHICLE_DEVICE}.vehicle_id`)
+      .leftJoin(
+        tables.COMPANY_VEHICLES,
+        `${tables.COMPANY_VEHICLES}.vehicle_id`,
+        `${tables.VEHICLES}.id`
+      )
+      .leftJoin(tables.COMPANIES, `${tables.COMPANY_VEHICLES}.company_id`, `${tables.COMPANIES}.id`)
+      .where({
+        [`${tables.ALERT_DATA}.is_active`]: true,
+        [`${tables.ALERT_DATA}.msg_type`]: msgType,
+      })
+      .orderBy(`${tables.ALERT_DATA}.created_at`, 'desc');
+
+    const searchQuery = (builder: Knex.QueryBuilder) => {
+      builder
+        .where(`${tables.ALERT_DATA}.address`, 'ILIKE', searchString)
+        .orWhere(`${tables.DEVICES}.device_name`, 'ILIKE', searchString)
+        .orWhere(`${tables.DEVICES}.device_eui`, 'ILIKE', searchString)
+        .orWhere(`${tables.DEVICES}.version`, 'ILIKE', searchString)
+        .orWhere(`${tables.VEHICLES}.car_plate`, 'ILIKE', searchString)
+        .orWhere(`${tables.COMPANIES}.company_name`, 'ILIKE', searchString)
+        .orWhere(`${tables.COMPANIES}.tel`, 'ILIKE', searchString);
+    };
+
+    const dateQuery = (builder: Knex.QueryBuilder) => {
+      builder.whereBetween(`${tables.ALERT_DATA}.date`, [
+        new Date(`${startDate} 00:00:00`).toISOString(),
+        !!endDate ? new Date(`${endDate} 23:59:59`).toISOString() : new Date().toISOString(),
+      ]);
+    };
+
+    if (!!searchString) query.andWhere(searchQuery);
+    if (!!startDate) query.andWhere(dateQuery);
+    return await query.paginate({ perPage, currentPage, isLengthAware: true });
+  };
 
   getLatestLocations = async () => {
     const d = new Date();
@@ -80,7 +150,7 @@ export class AlertDataService {
         device_id: deviceId,
       })
       .andWhereRaw(`date_trunc('day', date) = ?`, [
-        !!date ? date : new Date().toLocaleDateString('en-CA'),
+        !!date ? new Date(`${date} 00:00:00`).toISOString() : new Date().toISOString(),
       ])
       .orderBy('date', 'desc');
   };

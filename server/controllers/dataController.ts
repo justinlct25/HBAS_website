@@ -38,27 +38,26 @@ export class DataController {
       }
 
       // if (newSearchType == '') {
-        const {result, dataCount} = 
-        await this.dataService.getHandBrakeData(
-          OFFSET, 
-          LIMIT, 
-          !!msgType ? `${msgType}` : null, 
-          !!newSearchType ? newSearchType : null, 
-          !!searchString ? `${searchString}` : null
-        );
-        let totalPage = dataCount[0].count / LIMIT;
-        if (totalPage > Math.floor(totalPage)) {
-          totalPage = Math.ceil(totalPage);
-        } else {
-          totalPage = Math.floor(totalPage);
-        }
-        res.status(httpStatusCodes.OK).json({
-          alertData: result,
-          totalPage: totalPage,
-          limit: LIMIT,
-          message: 'handbrake data get',
-        });
-        return;
+      const { result, dataCount } = await this.dataService.getHandBrakeData(
+        OFFSET,
+        LIMIT,
+        !!msgType ? `${msgType}` : null,
+        !!newSearchType ? newSearchType : null,
+        !!searchString ? `${searchString}` : null
+      );
+      let totalPage = dataCount[0].count / LIMIT;
+      if (totalPage > Math.floor(totalPage)) {
+        totalPage = Math.ceil(totalPage);
+      } else {
+        totalPage = Math.floor(totalPage);
+      }
+      res.status(httpStatusCodes.OK).json({
+        alertData: result,
+        totalPage: totalPage,
+        limit: LIMIT,
+        message: 'handbrake data get',
+      });
+      return;
       // } else {
       //   const dataResult = await this.dataService.getAlertDataBySearch(
       //     OFFSET,
@@ -231,40 +230,6 @@ export class DataController {
   //   }
   // };
 
-  deleteCompanies = async (req: Request, res: Response) => {
-    try {
-      const idArray: number[] = req.body;
-      const tableName = 'companies';
-
-      const result: number[] = await this.dataService.deleteCompanies(idArray);
-      const result2: number[] = await this.dataService.deleteCompanyVehicles(result, tableName);
-      const result3: number[] = await this.dataService.deleteVehicles(result2);
-      await this.dataService.deleteVehicleDevice(result3, tableName);
-
-      res.status(httpStatusCodes.OK).json({ message: `Records deleted` });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
-
-  deleteVehicles = async (req: Request, res: Response) => {
-    try {
-      const idArray: number[] = req.body;
-      const tableName: string = 'vehicles';
-
-      const result: number[] = await this.dataService.deleteVehicles(idArray);
-      await this.dataService.deleteCompanyVehicles(result, tableName);
-      await this.dataService.deleteVehicleDevice(result, tableName);
-
-      res.status(httpStatusCodes.OK).json({ message: `Vehicle Records deleted` });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
   // 20210803
   deleteDevices = async (req: Request, res: Response) => {
     try {

@@ -4,6 +4,7 @@ import { createAsyncMiddleware } from '../utils/middleware';
 
 export const alertDataRoutes = express.Router();
 
+alertDataRoutes.get('/:msgType', createAsyncMiddleware(alertDataController.getData));
 alertDataRoutes.get('/latest-locations', createAsyncMiddleware(alertDataController.getLatestLocations));
 
 // history
