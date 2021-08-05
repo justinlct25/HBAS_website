@@ -12,11 +12,12 @@ export class DataController {
   getAlertData = async (req: Request, res: Response) => {
     try {
       const page: number = parseInt(String(req.query.page));
+      const msgType = req.query.msgType;
       const searchType = String(req.query.searchType);
       const searchString = String(req.query.searchString);
       const LIMIT: number = 10;
       const OFFSET: number = LIMIT * (page - 1);
-      let newSearchType = '';
+      let newSearchType = null;
       // check dropdown list string and replace in DB stucture.
       switch (searchType) {
         case 'Device ID':
@@ -34,43 +35,45 @@ export class DataController {
         case 'Location':
           newSearchType = 'address';
           break;
-        default:
-          break;
       }
-      const counting =
-        newSearchType === ''
-          ? await this.dataService.getCountingAlertData()
-          : await this.dataService.getCountingAlertDataBySearch(newSearchType, searchString);
-      let totalPage = parseInt(String(counting[0].count)) / LIMIT;
-      if (totalPage > Math.floor(totalPage)) {
-        totalPage = Math.ceil(totalPage);
-      } else {
-        totalPage = Math.floor(totalPage);
-      }
-      if (newSearchType == '') {
-        const dataResult = await this.dataService.getAlertData(OFFSET, LIMIT);
-        res.status(httpStatusCodes.OK).json({
-          alertData: dataResult,
-          totalPage: totalPage,
-          limit: LIMIT,
-          message: 'handbrake data get',
-        });
-        return;
-      } else {
-        const dataResult = await this.dataService.getAlertDataBySearch(
-          OFFSET,
-          LIMIT,
-          newSearchType,
-          searchString
+
+      // if (newSearchType == '') {
+        const {result, dataCount} = 
+        await this.dataService.getHandBrakeData(
+          OFFSET, 
+          LIMIT, 
+          !!msgType ? `${msgType}` : null, 
+          !!newSearchType ? newSearchType : null, 
+          !!searchString ? `${searchString}` : null
         );
+        let totalPage = dataCount[0].count / LIMIT;
+        if (totalPage > Math.floor(totalPage)) {
+          totalPage = Math.ceil(totalPage);
+        } else {
+          totalPage = Math.floor(totalPage);
+        }
         res.status(httpStatusCodes.OK).json({
-          alertData: dataResult,
+          alertData: result,
           totalPage: totalPage,
           limit: LIMIT,
           message: 'handbrake data get',
         });
         return;
-      }
+      // } else {
+      //   const dataResult = await this.dataService.getAlertDataBySearch(
+      //     OFFSET,
+      //     LIMIT,
+      //     newSearchType,
+      //     searchString
+      //   );
+      //   res.status(httpStatusCodes.OK).json({
+      //     alertData: dataResult,
+      //     totalPage: totalPage,
+      //     limit: LIMIT,
+      //     message: 'handbrake data get',
+      //   });
+      //   return;
+      // }
     } catch (err) {
       logger.error(err.message);
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
@@ -174,33 +177,46 @@ export class DataController {
     }
   };
 
-  getBatteryData = async (req: Request, res: Response) => {
-    try {
-      const page: number = parseInt(String(req.query.page));
-      const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1);
-      const result = await this.dataService.getBatteryData(OFFSET, LIMIT);
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'get battery data' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
+  // getBatteryData = async (req: Request, res: Response) => {
+  //   try {
+  //     const page: number = parseInt(String(req.query.page));
+  //     const LIMIT: number = 10;
+  //     const OFFSET: number = LIMIT * (page - 1);
+  //     const {dataResult, dataCount} = await this.dataService.getHandBrakeData(OFFSET, LIMIT, 'B');
+  //     let totalPage = dataCount[0].count / LIMIT;
+  //       if (totalPage > Math.floor(totalPage)) {
+  //         totalPage = Math.ceil(totalPage);
+  //       } else {
+  //         totalPage = Math.floor(totalPage);
+  //       }
+  //     res.status(httpStatusCodes.OK).json({ data: dataResult, total: totalPage, message: 'get battery data' });
+  //     return;
+  //   } catch (err) {
+  //     logger.error(err.message);
+  //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+  //   }
+  // };
 
-  getAllTypeData = async (req: Request, res: Response) => {
-    try {
-      const page: number = parseInt(String(req.query.page));
-      const LIMIT: number = 10;
-      const OFFSET: number = LIMIT * (page - 1);
-      const result = await this.dataService.getAllMsgTypeData(OFFSET, LIMIT);
-      res.status(httpStatusCodes.OK).json({ data: result, message: 'get all type data' });
-      return;
-    } catch (err) {
-      logger.error(err.message);
-      res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-    }
-  };
+  // getAllTypeData = async (req: Request, res: Response) => {
+  //   try {
+  //     const page: number = parseInt(String(req.query.page));
+  //     const LIMIT: number = 10;
+  //     const OFFSET: number = LIMIT * (page - 1);
+  //     const {dataResult, dataCount} = await this.dataService.getHandBrakeData(OFFSET, LIMIT, null);
+  //     let totalPage = dataCount[0].count / LIMIT;
+  //       if (totalPage > Math.floor(totalPage)) {
+  //         totalPage = Math.ceil(totalPage);
+  //       } else {
+  //         totalPage = Math.floor(totalPage);
+  //       }
+  //     res.status(httpStatusCodes.OK).json({ data: dataResult, total: totalPage, message: 'get all type data' });
+  //     return;
+  //   } catch (err) {
+  //     logger.error(err.message);
+  //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
+  //   }
+  // }
+
   // 20210802 edit / delete companies & vehicles
   // putCompanies = async (req: Request, res: Response) => {
   //   try {
