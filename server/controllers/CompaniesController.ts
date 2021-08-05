@@ -39,20 +39,26 @@ export class CompaniesController {
     return res.status(httpStatusCodes.OK).json({ data });
   };
 
+  companyChecking = async (requiredFields: (string | null | undefined)[], companyId?: number) => {
+    // check if required info is provided
+    if (requiredFields.some((item) => !item))
+      return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Missing required information.' };
+
+    // check duplicate
+    const existingCompany = await this.companiesService.checkDuplicatedCompany(requiredFields[0]!);
+    if (!!existingCompany && existingCompany.id !== companyId)
+      return { statusCode: httpStatusCodes.CONFLICT, message: 'Company name already exists.' };
+
+    return;
+  };
+
   addCompany = async (req: Request, res: Response) => {
     const { companyName, tel, contactPerson }: INewCompany = req.body;
 
-    // check if required info is provided
-    if (!companyName || !tel)
-      return res.status(httpStatusCodes.BAD_REQUEST).json({
-        message: 'Missing required information.',
-      });
-
-    // check duplicate
-    const existingCompany = await this.companiesService.checkDuplicatedCompany(companyName);
-    if (!!existingCompany)
-      return res.status(httpStatusCodes.CONFLICT).json({
-        message: 'Company name already exists.',
+    const checkingRes = await this.companyChecking([companyName, tel, contactPerson]);
+    if (!!checkingRes)
+      return res.status(checkingRes.statusCode).json({
+        message: checkingRes.message,
       });
 
     // insert data
@@ -73,17 +79,13 @@ export class CompaniesController {
     const { companyId } = req.params;
     const { companyName, tel, contactPerson }: INewCompany = req.body;
 
-    // check if required info is provided
-    if (!companyName || !tel)
-      return res.status(httpStatusCodes.BAD_REQUEST).json({
-        message: 'Missing required information.',
-      });
-
-    // check duplicate
-    const existingCompany = await this.companiesService.checkDuplicatedCompany(companyName);
-    if (!!existingCompany && existingCompany.id !== parseInt(companyId))
-      return res.status(httpStatusCodes.CONFLICT).json({
-        message: 'Company name already exists.',
+    const checkingRes = await this.companyChecking(
+      [companyName, tel, contactPerson],
+      parseInt(companyId)
+    );
+    if (!!checkingRes)
+      return res.status(checkingRes.statusCode).json({
+        message: checkingRes.message,
       });
 
     // update data
