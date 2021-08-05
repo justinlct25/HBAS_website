@@ -8,12 +8,12 @@ export function getProfileListThunk(id: number) {
     try {
       dispatch(resetProfileList());
       const res = await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/vehicles/${id}`
+        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${id}`
       );
 
       if (res.status === 200) {
-        const data = await res.json();
-        dispatch(setProfileList(data.data));
+        const result = await res.json();
+        dispatch(setProfileList(result.data));
       }
       return;
     } catch (err) {
