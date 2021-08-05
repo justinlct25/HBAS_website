@@ -238,7 +238,7 @@ export class DataController {
 
   deleteCompanies = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName = 'companies';
 
       const result: number[] = await this.dataService.deleteCompanies(idArray);
@@ -298,7 +298,7 @@ export class DataController {
   // };
   deleteVehicles = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName: string = 'vehicles';
 
       const result: number[] = await this.dataService.deleteVehicles(idArray);
@@ -315,7 +315,7 @@ export class DataController {
   // 20210803
   deleteDevices = async (req: Request, res: Response) => {
     try {
-      const { idArray }: { idArray: number[] } = req.body;
+      const idArray: number[] = req.body;
       const tableName: string = 'devices';
 
       const result: number[] = await this.dataService.deleteDevices(idArray);

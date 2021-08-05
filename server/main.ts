@@ -73,9 +73,6 @@ app.use('/api/v2', routes);
 
 const PORT = process.env.PORT || 8085;
 
-// app.listen(PORT, ()=> {
-//     logger.info(`listening to PORT: [${PORT}]`);
-// });
 server.listen(PORT, () => {
   logger.info(`Socket listening to PORT: [${PORT}]`);
 });
