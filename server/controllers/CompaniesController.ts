@@ -122,6 +122,12 @@ export class CompaniesController {
         existingCarPlates: existingVehicles.map((v) => v.car_plate),
       };
 
+    if (vehicles.some((v) => v.carPlate.length > 8))
+      return {
+        statusCode: httpStatusCodes.BAD_REQUEST,
+        message: 'Car plate length should not exceed 8 characters.',
+      };
+
     return;
   };
 
@@ -158,9 +164,7 @@ export class CompaniesController {
       [{ carPlate, vehicleModel, vehicleType }],
       parseInt(vehicleId)
     );
-    console.log('checkingRes')
-    console.log(checkingRes)
-    console.log(!!checkingRes)
+
     if (!!checkingRes)
       return res.status(checkingRes.statusCode).json({
         message: checkingRes.message,

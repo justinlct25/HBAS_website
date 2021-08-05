@@ -201,40 +201,6 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  // 20210802 edit / delete companies & vehicles
-  // putCompanies = async (req: Request, res: Response) => {
-  //   try {
-  //     const { id, company_name, tel, contact_person } : { 
-  //       id: number, 
-  //       company_name: string, 
-  //       tel: string, 
-  //       contact_person: string
-  //     } = req.body;
-  //     if (!company_name || !tel) {
-  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Emtpy company name or tel' });
-  //       return;
-  //     }
-  //     if (tel.length !== 8) {
-  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'tel is invalid length' });
-  //       return;
-  //     }
-  //     const duplicate = await this.dataService.checkCompanyDuplicate(company_name);
-  //     if (duplicate.length > 0) {
-  //       if (duplicate[0].id === id) {
-  //       } else {
-  //         res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'company name is duplicate' });
-  //         return;
-  //       }
-  //     }
-  //     const result = await this.dataService.putCompanies(id, company_name, tel, contact_person);
-
-  //     res.status(httpStatusCodes.OK).json({ data: result, message: 'company detail updated' });
-  //     return;
-  //   } catch (err) {
-  //     logger.error(err.message);
-  //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-  //   }
-  // };
 
   deleteCompanies = async (req: Request, res: Response) => {
     try {
@@ -253,49 +219,7 @@ export class DataController {
       res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
     }
   };
-  // putVehicles = async (req: Request, res: Response) => {
-  //   try {
-  //     const {
-  //       id,
-  //       car_plate,
-  //       vehicle_model,
-  //       vehicle_type,
-  //     }: {
-  //       id: number;
-  //       car_plate: string;
-  //       vehicle_model: string;
-  //       vehicle_type: string;
-  //     } = req.body;
-  //     if (!car_plate) {
-  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Empty car plate detected' });
-  //       return;
-  //     }
-  //     if (car_plate.length > 8) {
-  //       res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate length invalid' });
-  //       return;
-  //     }
-  //     const duplicate = await this.dataService.checkCarPlateDuplicate(car_plate);
-  //     if (duplicate.length > 0) {
-  //       if (duplicate[0].id === id) {
-  //       } else {
-  //         res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'car plate is duplicate' });
-  //         return;
-  //       }
-  //     }
-  //     const result = await this.dataService.putVehicles(
-  //       id,
-  //       car_plate.toUpperCase(),
-  //       vehicle_model,
-  //       vehicle_type
-  //     );
-
-  //     res.status(httpStatusCodes.OK).json({ data: result, message: 'vehicle detail updated' });
-  //     return;
-  //   } catch (err) {
-  //     logger.error(err.message);
-  //     res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Internal server error!' });
-  //   }
-  // };
+  
   deleteVehicles = async (req: Request, res: Response) => {
     try {
       const { idArray }: { idArray: number[] } = req.body;

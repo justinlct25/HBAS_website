@@ -123,32 +123,20 @@ export class CompaniesService {
       .first();
   };
 
-  addCompany = async (companyName: string, tel: string, contactPerson: string | null) => {
+  addCompany = async (company_name: string, tel: string, contact_person: string | null) => {
     return await this.knex(tables.COMPANIES)
-      .insert({
-        company_name: companyName,
-        tel,
-        contact_person: contactPerson,
-      })
+      .insert({ company_name, tel, contact_person })
       .returning<number[]>('id');
   };
 
   editCompany = async (
     companyId: number,
-    companyName: string,
+    company_name: string,
     tel: string,
-    contactPerson: string | null
+    contact_person: string | null
   ) => {
     return await this.knex(tables.COMPANIES)
-      .update(
-        {
-          company_name: companyName,
-          tel,
-          contact_person: contactPerson,
-          updated_at: new Date(),
-        },
-        'id'
-      )
+      .update({ company_name, tel, contact_person, updated_at: new Date() }, 'id')
       .where({
         is_active: true,
         id: companyId,
