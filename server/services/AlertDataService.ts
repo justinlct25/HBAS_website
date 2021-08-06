@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IDataHistory, ILocationDetail, msgType } from '../models/models';
+import { IAlertData, IDataHistory, ILocationDetail, msgType } from '../models/models';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
@@ -14,7 +14,7 @@ export class AlertDataService {
     endDate: string | null
   ) => {
     const query = this.knex
-      .select({
+      .select<IAlertData[]>({
         id: `${tables.ALERT_DATA}.id`,
         date: `${tables.ALERT_DATA}.date`,
         geolocation: `${tables.ALERT_DATA}.geolocation`,
@@ -70,7 +70,7 @@ export class AlertDataService {
     if (!!msgType) query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType.toUpperCase());
     if (!!searchString) query.andWhere(searchQuery);
     if (!!startDate) query.andWhere(dateQuery);
-    return await query.paginate({ perPage, currentPage, isLengthAware: true });
+    return await query.paginate<IAlertData[]>({ perPage, currentPage, isLengthAware: true });
   };
 
   getLatestLocations = async () => {

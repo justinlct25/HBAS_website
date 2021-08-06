@@ -74,3 +74,26 @@ export interface IDeviceInfo {
   deviceEui: string;
   version?: string;
 }
+
+export interface IAlertData {
+  id: number;
+  date: string;
+  geolocation: string;
+  address: string;
+  msgType: string;
+  battery: string;
+  receivedAt: string;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
+  deviceVersion: string;
+  deviceIsActive: boolean;
+  vehicleId: number | null;
+  carPlate: string | null;
+  vehicleIsActive: boolean | null;
+  companyId: number | null;
+  companyName: string | null;
+  companyTel: string | null;
+  companyContactPerson: string | null;
+  companyIsActive: boolean | null;
+}

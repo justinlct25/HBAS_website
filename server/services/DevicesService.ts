@@ -94,7 +94,7 @@ export class DevicesService {
 
     const filterQuery = (builder: Knex.QueryBuilder) => {
       builder
-        .select('device_id')
+        .select<{ device_id: number }>('device_id')
         .from(tables.VEHICLE_DEVICE)
         .whereRaw(/* SQL*/ `${tables.DEVICES}.id = ${tables.VEHICLE_DEVICE}.device_id`)
         .andWhere('is_active', true);
