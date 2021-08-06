@@ -105,10 +105,23 @@ export class DevicesService {
         })
         .andWhere('is_active', true);
 
-      // link up device and vehicle
+      // delete and insert device as a new one
+      const deviceDetails = await trx(tables.DEVICES)
+        .update(
+          {
+            is_active: false,
+            updated_at: new Date(Date.now()),
+          },
+          ['device_name', 'device_eui', 'version']
+        )
+        .where('id', deviceId);
+
+      const newDeviceId = await trx(tables.DEVICES).insert(deviceDetails).returning<number[]>('id');
+
+      // link up new device and vehicle
       const ids = await trx(tables.VEHICLE_DEVICE)
         .insert({
-          device_id: deviceId,
+          device_id: newDeviceId[0],
           vehicle_id: vehicleId,
         })
         .returning<number[]>('id');
