@@ -61,7 +61,7 @@ export class DevicesService {
         .orWhere(`${tempCompanies}.contact_person`, 'ILIKE', searchString)
         .orWhere(`${tables.DEVICES}.device_name`, 'ILIKE', searchString)
         .orWhere(`${tables.DEVICES}.device_eui`, 'ILIKE', searchString)
-        .orWhere(`${tables.VEHICLES}.car_plate`, 'ILIKE', searchString);
+        .orWhere(`${tempVehicles}.car_plate`, 'ILIKE', searchString);
     };
 
     if (!!searchString) query.andWhere(searchQuery);

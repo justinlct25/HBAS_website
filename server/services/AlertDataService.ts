@@ -150,7 +150,9 @@ export class AlertDataService {
         device_id: deviceId,
       })
       .andWhereRaw(`date_trunc('day', date) = ?`, [
-        !!date ? new Date(`${date} 00:00:00`).toISOString() : new Date().toISOString(),
+        !!date
+          ? new Date(`${date} 00:00:00`).toISOString()
+          : new Date(`${new Date(Date.now()).toLocaleDateString('en-CA')} 00:00:00`).toISOString(),
       ])
       .orderBy('date', 'desc');
   };

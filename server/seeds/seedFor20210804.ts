@@ -13,7 +13,7 @@ type InsertCompanies = { id: number; company_name: string };
 type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
 
-const production = true; // false for debug, true for production
+const production = false; // false for debug, true for production
 
 export async function seed(knex: Knex): Promise<void> {
   // Deletes ALL existing entries
