@@ -152,4 +152,26 @@ export class AlertDataService {
       ])
       .orderBy('date', 'desc');
   };
+
+  postData = async (
+    device_id: number,
+    date: string,
+    geolocation: string,
+    address: string,
+    msg_type: string,
+    battery: string,
+    data: string
+  ) => {
+    return await this.knex(tables.ALERT_DATA)
+      .insert({
+        device_id,
+        date,
+        geolocation,
+        address,
+        msg_type,
+        battery,
+        data,
+      })
+      .returning<number[]>('id');
+  };
 }

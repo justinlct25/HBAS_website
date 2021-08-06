@@ -72,4 +72,5 @@ export interface IDeviceInfo {
   id: number;
   deviceName: string;
   deviceEui: string;
+  version?: string;
 }

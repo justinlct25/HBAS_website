@@ -68,6 +68,21 @@ export class DevicesService {
     return await query.paginate<IDeviceDetail[]>({ perPage, currentPage, isLengthAware: true });
   };
 
+  getDeviceDetails = async (device_eui: string) => {
+    return await this.knex(tables.DEVICES)
+      .select<IDeviceInfo>({
+        id: 'id',
+        deviceName: 'device_name',
+        deviceEui: 'device_eui',
+        version: 'version',
+      })
+      .where({
+        device_eui,
+        is_active: true,
+      })
+      .first();
+  };
+
   getDevicesForLinking = async (deviceId: number | null) => {
     const query = () => {
       return this.knex(tables.DEVICES)
@@ -89,6 +104,12 @@ export class DevicesService {
       linkedDevices: await query().whereExists(filterQuery),
       newDevices: await query().whereNotExists(filterQuery),
     };
+  };
+
+  addDevice = async (device_name: string, device_eui: string) => {
+    return await this.knex(tables.DEVICES)
+      .insert({ device_name, device_eui })
+      .returning<number[]>('id');
   };
 
   linkDeviceAndVehicle = async (deviceId: number, vehicleId: number) => {
