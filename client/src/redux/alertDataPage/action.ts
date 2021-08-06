@@ -1,22 +1,39 @@
-import { CallHistoryMethodAction } from 'connected-react-router';
-import { IAlertDataPage } from './state';
+import { CallHistoryMethodAction } from "connected-react-router";
+import { IAlertDataPage } from "./state";
 
-export function setAlertDataList(alertDataList: Array<IAlertDataPage>, activePage:number, totalPage:number, limit:number){  
-    return{
-        type: "@@AlertDataPage/SET_AlertDataList" as const,
-        alertDataList, 
-        activePage, 
-        totalPage,
-        limit,
-    };
+export function setAlertDataList(
+  alertDataList: Array<IAlertDataPage>,
+  activePage: number,
+  totalPage: number,
+  limit: number
+) {
+  return {
+    type: "@@AlertDataPage/SET_AlertDataList" as const,
+    alertDataList,
+    activePage,
+    totalPage,
+    limit,
+  };
 }
 
-export function resetAlertDataList(){
-    return{
-        type: "@@AlertDataPage/RESET" as const,
-    };
+export function setAlertData(alertData: Array<IAlertDataPage>) {
+  return {
+    type: "@@AlertDataPage/setAlertData" as const,
+    alertData,
+  };
 }
 
-type AlertDataPageActionCreators = typeof setAlertDataList | typeof resetAlertDataList;
+export function resetAlertDataList() {
+  return {
+    type: "@@AlertDataPage/RESET" as const,
+  };
+}
 
-export type IAlertDataPageActions = ReturnType<AlertDataPageActionCreators> | CallHistoryMethodAction;
+type AlertDataPageActionCreators =
+  | typeof setAlertDataList
+  | typeof resetAlertDataList
+  | typeof setAlertData;
+
+export type IAlertDataPageActions =
+  | ReturnType<AlertDataPageActionCreators>
+  | CallHistoryMethodAction;

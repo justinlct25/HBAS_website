@@ -14,6 +14,11 @@ export const IAlertDataPageReducer = (
         totalPage: action.totalPage,
         limit: action.limit,
       };
+    case "@@AlertDataPage/setAlertData":
+      return {
+        ...state,
+        alertDataList: action.alertData,
+      };
     case "@@AlertDataPage/RESET":
       return {
         ...state,

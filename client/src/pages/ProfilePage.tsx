@@ -2,18 +2,15 @@ import { push } from "connected-react-router";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import AddNewForm from "../components/AddNewForm";
 import { AnimatedVehicleCards } from "../components/AnimatedVehicleCards";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
-import EditVehicle from "../components/Modal/EditVehicle";
-import { AddIcon, BackButton, EditIcon } from "../components/IconsOnly";
+import { BackButton } from "../components/IconsOnly";
 import { DeleteModal } from "../components/Modal/DeleteModal";
+import EditVehicle from "../components/Modal/EditVehicle";
 import { VehicleCards } from "../components/VehicleCards";
 import { useRouter } from "../helpers/useRouter";
-import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
 import {
   resetPopUpAction,
-  setPopUpIsActiveAction,
   setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
@@ -67,7 +64,7 @@ function ProfilePage() {
           padding: "0 32px",
         }}
       >
-        <div style={{ width: "50%" }}>
+        <div className="profileLeftColumn">
           <div className="flex-center" style={{ width: "100%" }}>
             <div className="titleText">Company Details</div>
           </div>
@@ -129,7 +126,10 @@ function ProfilePage() {
           >
             <div className="titleText">Vehicle Logs</div>
           </div>
-          <div className="flex-center vehicleCardContainer">
+          <div
+            className="flex-center vehicleCardContainer"
+            style={{ width: "80%" }}
+          >
             {profileList.length > 0 &&
               profileList
                 .filter((i) => i.deviceId)
@@ -162,18 +162,15 @@ function ProfilePage() {
           <div
             style={{
               position: "relative",
-              paddingBottom: "16px",
+              padding: "16px 32px 32px 32px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
+              overflowY: "scroll",
             }}
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                return (
-                  <>
-                    <AnimatedVehicleCards key={idx} item={item} />
-                  </>
-                );
+                return <AnimatedVehicleCards key={idx} item={item} />;
               })}
           </div>
         </div>

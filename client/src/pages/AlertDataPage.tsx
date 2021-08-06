@@ -12,7 +12,7 @@ import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
-const TABLE_WIDTH = "90%";
+const TABLE_WIDTH = "92%";
 const { REACT_APP_API_SERVER } = process.env;
 
 function AlertDataPage() {
@@ -89,14 +89,7 @@ function AlertDataPage() {
               onClick={
                 placeHolderText !== "Select"
                   ? () => {
-                      dispatch(
-                        getAlertDataListThunk(
-                          1,
-                          true,
-                          placeHolderText,
-                          searchInput
-                        )
-                      );
+                      dispatch(getAlertDataListThunk(1, true, searchInput));
                     }
                   : () => {}
               }
@@ -162,33 +155,31 @@ function AlertDataPage() {
             alertDataList.map((item, idx) => {
               return (
                 <div
-                  key={item.device_eui + idx}
+                  key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
                     dispatch(
                       await setIncidentPageData({
                         date: item.date,
-                        time: item.time,
+                        time: item.date,
                         longitude: item.geolocation.y,
                         latitude: item.geolocation.x,
-                        deviceId: item.device_eui,
-                        deviceName: item.device_name,
-                        companyName: item.company_name,
-                        contactPerson: item.contact_person,
-                        phoneNumber: item.tel,
-                        carPlate: item.car_plate,
+                        deviceId: item.deviceEui,
+                        deviceName: item.deviceName,
+                        companyName: item.companyName,
+                        contactPerson: item.companyContactPerson,
+                        phoneNumber: item.companyTel,
+                        carPlate: item.carPlate,
                       })
                     );
 
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >
-                  <div className="flex-center tdMainItem">
-                    {item.device_eui}
-                  </div>
-                  <div className="flex-center tdItem">{item.car_plate}</div>
-                  <div className="flex-center tdItem">{item.company_name}</div>
-                  <div className="flex-center tdItem">{item.tel}</div>
+                  <div className="flex-center tdMainItem">{item.deviceEui}</div>
+                  <div className="flex-center tdItem">{item.carPlate}</div>
+                  <div className="flex-center tdItem">{item.companyName}</div>
+                  <div className="flex-center tdItem">{item.companyTel}</div>
                   <div className="flex-center tdItem">{item.address}</div>
                   <div className="flex-center tdItem">
                     {`${new Date(item.date).toLocaleDateString(

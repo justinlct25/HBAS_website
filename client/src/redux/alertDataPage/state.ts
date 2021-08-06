@@ -1,19 +1,24 @@
 export interface IAlertDataPage {
-  id: number;
-  device_name: string;
-  device_eui: string;
-  date: string;
-  time: string;
-  geolocation: {x:number, y:number};
-  //location: {[index: string]: string},
-  address:string;
+  address: string;
   battery: string;
-  company_name: string;
-  tel: string;
-  contact_person: string;
-  car_plate: string;
-  vehicle_model: string;
-  vehicle_type: string;
+  carPlate: string;
+  companyContactPerson: string;
+  companyId: number;
+  companyIsActive: boolean;
+  companyName: string;
+  companyTel: string;
+  date: string;
+  deviceEui: string;
+  deviceId: number;
+  deviceIsActive: boolean;
+  deviceName: string;
+  deviceVersion: string;
+  geolocation: { x: number; y: number };
+  id: number;
+  msgType: string;
+  receivedAt: string;
+  vehicleId: number;
+  vehicleIsActive: boolean;
 }
 
 export interface IAlertDataPageState {
