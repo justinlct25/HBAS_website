@@ -414,7 +414,7 @@ export const insertedDevices = [
 export const insertedAlertData = [
   {
     device_eui: '473AC868-002A0037',
-    date: '2021-08-03T05:19:53',
+    date: '2021-08-06T05:19:53',
     geolocation: '22.277112,114.27389',
     address: 'Sai Kung District',
     battery: '1.95',
@@ -441,7 +441,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD0D',
-    date: '2021-08-04T18:12:30',
+    date: '2021-08-06T18:12:30',
     geolocation: '22.277091,114.27387',
     address: 'Sai Kung District',
     battery: '1.93',
@@ -495,7 +495,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD39',
-    date: '2021-08-03T18:12:30',
+    date: '2021-08-05T18:12:30',
     geolocation: '22.277112,114.27389',
     address: 'Sai Kung District',
     battery: '1.89',
@@ -1987,7 +1987,6 @@ export const insertedAlertData = [
     data: 'MTsyZTtjMDszNjdiMjsxMTZkYTE7MDsxYTsw',
     msg_type: 'A',
   },
-  
 ];
 
 export const insertCompanyVehicles = [
