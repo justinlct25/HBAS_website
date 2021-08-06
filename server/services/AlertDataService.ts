@@ -134,7 +134,7 @@ export class AlertDataService {
 
   getHistoryByDeviceAndDate = async (deviceId: number, date: string | null) => {
     return await this.knex(tables.ALERT_DATA)
-      .select<IDataHistory>({
+      .select<IDataHistory[]>({
         id: 'id',
         deviceId: 'device_id',
         geolocation: 'geolocation',

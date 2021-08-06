@@ -100,19 +100,25 @@ export class AlertDataController {
       !!startDate ? String(startDate) : null,
       !!endDate ? String(endDate) : null
     );
-    return res.status(httpStatusCodes.OK).json(data);
+    return res
+      .status(!data.data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json(data);
   };
 
   getLatestLocations = async (req: Request, res: Response) => {
     const data = await this.alertDataService.getLatestLocations();
-    return res.status(httpStatusCodes.OK).json({ data });
+    return res
+      .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json({ data });
   };
 
   getDatesWithMessages = async (req: Request, res: Response) => {
     const { deviceId } = req.params;
     const data = await this.alertDataService.getDatesWithMessages(parseInt(deviceId));
     data.forEach((d) => (d.messageCount = parseInt(String(d.messageCount))));
-    return res.status(httpStatusCodes.OK).json({ data });
+    return res
+      .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json({ data });
   };
 
   getHistoryByDeviceAndDate = async (req: Request, res: Response) => {
@@ -122,6 +128,8 @@ export class AlertDataController {
       parseInt(deviceId),
       !!date ? String(date) : null
     );
-    return res.status(httpStatusCodes.OK).json({ data });
+    return res
+      .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json({ data });
   };
 }
