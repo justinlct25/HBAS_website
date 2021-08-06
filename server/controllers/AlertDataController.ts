@@ -16,7 +16,7 @@ export class AlertDataController {
 
     // get data
     const data = await this.alertDataService.getData(
-      msgType,
+      !!msgType ? (msgType as msgType) : null,
       !!perPage ? parseInt(String(perPage)) : 20,
       !!currentPage ? parseInt(String(currentPage)) : 1,
       !!searchString ? `%${String(searchString)}%` : null,

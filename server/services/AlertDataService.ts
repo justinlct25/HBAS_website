@@ -6,7 +6,7 @@ export class AlertDataService {
   constructor(private knex: Knex) {}
 
   getData = async (
-    msgType: msgType,
+    msgType: msgType | null,
     perPage: number,
     currentPage: number,
     searchString: string | null,
@@ -46,11 +46,8 @@ export class AlertDataService {
         `${tables.VEHICLES}.id`
       )
       .leftJoin(tables.COMPANIES, `${tables.COMPANY_VEHICLES}.company_id`, `${tables.COMPANIES}.id`)
-      .where({
-        [`${tables.ALERT_DATA}.is_active`]: true,
-        [`${tables.ALERT_DATA}.msg_type`]: msgType,
-      })
-      .orderBy(`${tables.ALERT_DATA}.created_at`, 'desc');
+      .where(`${tables.ALERT_DATA}.is_active`, true)
+      .orderBy(`${tables.ALERT_DATA}.date`, 'desc');
 
     const searchQuery = (builder: Knex.QueryBuilder) => {
       builder
@@ -70,6 +67,7 @@ export class AlertDataService {
       ]);
     };
 
+    if (!!msgType) query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType.toUpperCase());
     if (!!searchString) query.andWhere(searchQuery);
     if (!!startDate) query.andWhere(dateQuery);
     return await query.paginate({ perPage, currentPage, isLengthAware: true });
