@@ -6,7 +6,9 @@ import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
 import { IRootState } from "../redux/store";
 
-const Map = ReactMapboxGL({ accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN! });
+const Map = ReactMapboxGL({
+  accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
+});
 
 interface IncidentPointProps {
   lat: number;
@@ -85,7 +87,7 @@ function IncidentPage() {
           <Map
             // eslint-disable-next-line react/style-prop-object
             style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
-            zoom={[18]}
+            zoom={[14]}
             center={[incidentLocation.longitude, incidentLocation.latitude]}
             containerStyle={{ height: "100%", width: "100%" }}
             onStyleLoad={() => setMapLoaded(true)}
@@ -94,11 +96,16 @@ function IncidentPage() {
               type="circle"
               paint={{ "circle-color": "#00F900", "circle-radius": 10 }}
             >
-              {mapLoaded ?
+              {mapLoaded ? (
                 <Feature
-                  coordinates={[incidentLocation.longitude, incidentLocation.latitude]}
-                /> : <></>
-              }
+                  coordinates={[
+                    incidentLocation.longitude,
+                    incidentLocation.latitude,
+                  ]}
+                />
+              ) : (
+                <></>
+              )}
             </Layer>
           </Map>
           <div

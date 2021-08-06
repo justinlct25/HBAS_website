@@ -20,7 +20,7 @@ function NavBar() {
     { display: "Pulse Message", link: "/pulse-message" },
     { display: "Manage User", link: "/manage-user" },
     { display: "Manage Device", link: "/manage-device" },
-    { display: "Statistics (Coming soon)", link: "/statistics" },
+    // { display: "Statistics (Coming soon)", link: "/statistics" },
     { display: "Test Map Page", link: "/test-map" },
   ];
 
