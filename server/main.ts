@@ -10,13 +10,11 @@ import { Server as SocketIO, Socket } from 'socket.io';
 import { attachPaginate } from 'knex-paginate';
 
 // import services & controllers
-import { DataService } from './services/dataService';
 import { DevicesService } from './services/DevicesService';
 import { CompaniesService } from './services/CompaniesService';
 import { AlertDataService } from './services/AlertDataService';
 import { VehiclesService } from './services/VehiclesService';
 
-import { DataController } from './controllers/dataController';
 import { DevicesController } from './controllers/DevicesController';
 import { CompaniesController } from './controllers/CompaniesController';
 import { AlertDataController } from './controllers/AlertDataController';
@@ -56,25 +54,24 @@ io.on('connection', (socket: Socket) => {
 });
 
 // create services
-const dataService = new DataService(knex);
 const devicesService = new DevicesService(knex);
 const companiesService = new CompaniesService(knex);
 const alertDataService = new AlertDataService(knex);
 const vehiclesService = new VehiclesService(knex);
 
 // create controllers
-export const dataController = new DataController(dataService);
 export const devicesController = new DevicesController(devicesService);
 export const companiesController = new CompaniesController(companiesService);
-export const alertDataController = new AlertDataController(alertDataService);
+export const alertDataController = new AlertDataController(alertDataService, devicesService);
 export const vehiclesController = new VehiclesController(vehiclesService);
 
 //route
-import { dataRoutes } from './routes/dataRoute';
 import { routes } from './routes';
-app.use('/api/v1', dataRoutes);
-app.use('/api/v2', routes);
 
+const API_VERSION = process.env.API_VERSION ?? '/api/v2';
+app.use(API_VERSION, routes);
+
+// port
 const PORT = process.env.PORT || 8085;
 
 server.listen(PORT, () => {
