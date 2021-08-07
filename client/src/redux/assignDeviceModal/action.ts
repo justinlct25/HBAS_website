@@ -20,6 +20,8 @@ export function setSelectedItemAction(selectedItem: {
   deviceEui?: string;
   carPlate?: string;
   vehicleId?: number;
+  vehicleType?: string;
+  vehicleModel?: string;
 }) {
   return {
     type: "@@assignDeviceModal/setSelectedItem" as const,
@@ -27,18 +29,9 @@ export function setSelectedItemAction(selectedItem: {
   };
 }
 
-export function setDeviceIdAction(id: number, eui: string) {
-  return {
-    type: "@@assignDeviceModal/setDeviceId" as const,
-    id,
-    eui,
-  };
-}
-
 type ActionCreators =
   | typeof setPopUpIsActiveAction
   | typeof resetPopUpAction
-  | typeof setSelectedItemAction
-  | typeof setDeviceIdAction;
+  | typeof setSelectedItemAction;
 
 export type AssignDeviceAction = ReturnType<ActionCreators>;

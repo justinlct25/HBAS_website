@@ -8,6 +8,8 @@ export interface AssignDeviceData {
     contactPerson: string;
     deviceEui: string;
     carPlate: string;
+    vehicleType: string;
+    vehicleModel: string;
     vehicleId: number;
   };
 }

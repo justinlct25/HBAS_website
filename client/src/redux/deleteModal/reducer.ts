@@ -4,8 +4,11 @@ import { DeleteModalState } from "./state";
 export const initialState: DeleteModalState = {
   deleteModal: {
     isOpen: false,
+    deleteType: "",
     vehicleId: -1,
     carPlate: "",
+    companyId: -1,
+    companyName: "",
   },
 };
 
@@ -20,6 +23,7 @@ export const deleteModalReducer = (
         deleteModal: {
           ...state.deleteModal,
           isOpen: action.isOpen,
+          deleteType: action.deleteType,
         },
       };
     case "@@deleteModal/setDeleteModalDataAction":
@@ -27,8 +31,11 @@ export const deleteModalReducer = (
         ...state,
         deleteModal: {
           ...state.deleteModal,
-          vehicleId: action.vehicleDeviceDetails.vehicleId,
-          carPlate: action.vehicleDeviceDetails.carPlate,
+          vehicleId: action.details.vehicleId ?? state.deleteModal.vehicleId,
+          carPlate: action.details.carPlate ?? state.deleteModal.carPlate,
+          companyId: action.details.companyId ?? state.deleteModal.companyId,
+          companyName:
+            action.details.companyName ?? state.deleteModal.companyName,
         },
       };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { CSSTransition } from "react-transition-group";
 import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
-import { useEffect } from "react";
+import { CSSTransition } from "react-transition-group";
+import { headers } from "../helpers/headers";
 
 type lastSeenLocations = Array<{
   battery: string;
@@ -29,12 +29,11 @@ const TestMap = () => {
         `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/latest-locations`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
+          headers,
         }
       );
       const result = await res.json();
+      console.log(result);
       // setIncidentPoints(result.data);
       //mock One-dot
       setIncidentPoints([

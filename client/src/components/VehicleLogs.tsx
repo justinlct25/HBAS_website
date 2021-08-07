@@ -2,6 +2,7 @@ import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { headers } from "../helpers/headers";
 import { useRouter } from "../helpers/useRouter";
 import { BackButton } from "./IconsOnly";
 
@@ -34,6 +35,7 @@ const IncidentPoint = (props: IncidentPointProps) => {
   } = props;
   return (
     <div
+      key={lat + lng}
       className="flex-center"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -71,9 +73,7 @@ const VehicleLogs = () => {
 
         const res = await fetch(url.toString(), {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
+          headers,
         });
         if (res.status === 200) {
           const result = await res.json();

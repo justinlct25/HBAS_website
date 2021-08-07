@@ -1,22 +1,27 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { AddIcon, CloseIcon, MinusIcon } from "../components/IconsOnly";
-import "../css/TablePage.css";
-import {
-  inputCompanyDetailsAction,
-  resetAddNewFormAction,
-} from "../redux/addNewForm/action";
-import { postCompaniesDataThunk } from "../redux/companies/thunk";
-import { IRootState } from "../redux/store";
+import { AddIcon, CloseIcon, MinusIcon } from "../../components/IconsOnly";
+import "../../css/TablePage.css";
+import { headers } from "../../helpers/headers";
+import { resetAddNewFormAction } from "../../redux/addNewForm/action";
+import { IRootState } from "../../redux/store";
 
-function AddNewForm() {
+const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
+
+function AddNewVehicles() {
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
       vehicleType: string;
       vehicleModel: string;
     }>
-  >([]);
+  >([
+    {
+      carPlate: "",
+      vehicleType: "",
+      vehicleModel: "",
+    },
+  ]);
 
   const dispatch = useDispatch();
   const addNewForm = useSelector(
@@ -25,6 +30,11 @@ function AddNewForm() {
 
   const isOpen = addNewForm.isOpen;
   const modalType = addNewForm.modalType;
+
+  const selectedItem = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
+  );
+  const companyId = selectedItem.companyId;
 
   const handleDeleteVehicle = (idx: number) => {
     const newArr = totalVehicle.slice();
@@ -43,11 +53,32 @@ function AddNewForm() {
     dispatch(resetAddNewFormAction());
   };
 
+  const handleSubmit = async () => {
+    try {
+      await fetch(
+        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${companyId}`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            vehicles: totalVehicle,
+          }),
+        }
+      );
+    } catch (e) {
+      console.error(e.message);
+    } finally {
+      handleReset();
+    }
+  };
+
+  const overLength = totalVehicle.some((i) => i.carPlate.length >= 8);
+
   return (
     <>
       <div
         className={
-          isOpen && modalType === "addNew"
+          isOpen && modalType === "addNewVehicle"
             ? "flex-center popUpContainer popUp"
             : "flex-center popUpContainer"
         }
@@ -58,57 +89,6 @@ function AddNewForm() {
           </div>
           <div className="formScreen">
             <div className="flex-center form">
-              <div className="flex-center companySection">
-                <div className="titleText">Company Details</div>
-                <div className="flex-center formRow">
-                  <div className="formLeftColumn">Company Name :</div>
-                  <div className="formRightColumn">
-                    <input
-                      className="formInput"
-                      value={addNewForm.companyName}
-                      onChange={(e) => {
-                        dispatch(
-                          inputCompanyDetailsAction({
-                            companyName: e.target.value,
-                          })
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="flex-center formRow">
-                  <div className="formLeftColumn">Contact Person :</div>
-                  <div className="formRightColumn">
-                    <input
-                      className="formInput"
-                      value={addNewForm.contactPerson}
-                      onChange={(e) => {
-                        dispatch(
-                          inputCompanyDetailsAction({
-                            contactPerson: e.target.value,
-                          })
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="flex-center formRow">
-                  <div className="formLeftColumn">Phone Number :</div>
-                  <div className="formRightColumn">
-                    <input
-                      className="formInput"
-                      value={addNewForm.tel}
-                      onChange={(e) => {
-                        dispatch(
-                          inputCompanyDetailsAction({
-                            tel: e.target.value,
-                          })
-                        );
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
               <div className="flex-center vehicleSection">
                 <div style={{ position: "relative", width: "100%" }}>
                   <div className="titleText">Vehicles</div>
@@ -125,7 +105,7 @@ function AddNewForm() {
                     <div
                       style={{
                         width: "100%",
-                        marginBottom: "24px",
+                        margin: "24px 0",
                         position: "relative",
                       }}
                     >
@@ -145,6 +125,11 @@ function AddNewForm() {
                               setTotalVehicle(newArr);
                             }}
                           />
+                          {totalVehicle[idx].carPlate.length >= 8 && (
+                            <div className="overLengthWarning">
+                              Car plate length should not exceed 8 characters
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex-center formRow">
@@ -204,16 +189,8 @@ function AddNewForm() {
               </div>
               <div
                 className="button"
-                onClick={() => {
-                  dispatch(
-                    postCompaniesDataThunk(totalVehicle, {
-                      companyName: addNewForm.companyName,
-                      contactPerson: addNewForm.contactPerson,
-                      tel: addNewForm.tel,
-                    })
-                  );
-                  handleReset();
-                }}
+                onClick={overLength ? () => {} : handleSubmit}
+                style={{ backgroundColor: overLength ? "#AAA" : "#555" }}
               >
                 Confirm
               </div>
@@ -225,4 +202,4 @@ function AddNewForm() {
   );
 }
 
-export default AddNewForm;
+export default AddNewVehicles;

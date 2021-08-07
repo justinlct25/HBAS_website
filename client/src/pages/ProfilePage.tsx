@@ -4,15 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { AnimatedVehicleCards } from "../components/AnimatedVehicleCards";
 import AssignDeviceByVehicleModal from "../components/AssignDeviceByVehicleModal";
-import { BackButton } from "../components/IconsOnly";
+import AddNewVehicles from "../components/Form/AddNewVehicles";
+import { AddIcon, BackButton, EditIcon } from "../components/IconsOnly";
 import { DeleteModal } from "../components/Modal/DeleteModal";
+import EditCompany from "../components/Modal/EditCompany";
 import EditVehicle from "../components/Modal/EditVehicle";
 import { VehicleCards } from "../components/VehicleCards";
 import { useRouter } from "../helpers/useRouter";
+import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
 import {
   resetPopUpAction,
   setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
+import {
+  setDeleteModalDataAction,
+  setDeleteModalOpenAction,
+} from "../redux/deleteModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
@@ -23,15 +30,23 @@ function ProfilePage() {
     (state: IRootState) => state.profileList.profileList
   );
   const dispatch = useDispatch();
-  const selectedItem = useSelector(
-    (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
+  const assignDeviceModal = useSelector(
+    (state: IRootState) => state.assignDevice.assignDeviceModal
+  );
+  const selectedItem = assignDeviceModal.selectedItem;
+  const popUpIsActive = assignDeviceModal.popUpIsActive;
+  const addNewFormIsOpen = useSelector(
+    (state: IRootState) => state.addNewForm.addNewForm.isOpen
+  );
+  const deleteModalIsOpen = useSelector(
+    (state: IRootState) => state.deleteModal.deleteModal.isOpen
   );
 
   useEffect(() => {
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
     dispatch(getProfileListThunk(parseInt(routeId)));
-  }, [dispatch]);
+  }, [dispatch, popUpIsActive, addNewFormIsOpen, deleteModalIsOpen]);
 
   const handleReset = () => {
     dispatch(resetPopUpAction());
@@ -54,19 +69,35 @@ function ProfilePage() {
             <div style={{ margin: "8px", fontSize: "24px" }}>BACK</div>
           </div>
         </div>
+        <div
+          className="deleteCompanyButton"
+          onClick={() => {
+            dispatch(setDeleteModalOpenAction(true, "company"));
+            dispatch(
+              setDeleteModalDataAction({
+                companyId: selectedItem.companyId,
+                companyName: selectedItem.companyName,
+              })
+            );
+          }}
+        >
+          Delete Company
+        </div>
       </div>
-      <div
-        className="flex-center"
-        style={{
-          width: "100%",
-          maxHeight: "80%",
-          alignItems: "flex-start",
-          padding: "0 32px",
-        }}
-      >
+      <div className="profilePageContainer">
         <div className="profileLeftColumn">
           <div className="flex-center" style={{ width: "100%" }}>
             <div className="titleText">Company Details</div>
+            <div
+              className="hiddenButton flex-center"
+              style={{ backgroundColor: "#8BB3FF" }}
+              onClick={() => {
+                dispatch(setAddNewFormOpenAction(true, "editCompany"));
+                console.log("called");
+              }}
+            >
+              <EditIcon />
+            </div>
           </div>
           <div className="flex-center">
             <div
@@ -138,6 +169,7 @@ function ProfilePage() {
                     <VehicleCards
                       key={idx}
                       item={item}
+                      cursor={"pointer"}
                       callFunction={() => {
                         dispatch(push(`/vehicle-logs/${item.deviceId}`));
                         dispatch(
@@ -157,6 +189,15 @@ function ProfilePage() {
         <div className="flex-center companyDetailsRightColumn">
           <div className="flex-center">
             <div className="titleText">{"Devices & Vehicles"}</div>
+            <div
+              className="flex-center"
+              style={{ height: "40px", width: "40px", cursor: "pointer" }}
+              onClick={() => {
+                dispatch(setAddNewFormOpenAction(true, "addNewVehicle"));
+              }}
+            >
+              <AddIcon />
+            </div>
           </div>
 
           <div
@@ -175,7 +216,8 @@ function ProfilePage() {
           </div>
         </div>
         <AssignDeviceByVehicleModal />
-        {/* <AddNewForm /> */}
+        <AddNewVehicles />
+        <EditCompany />
         <EditVehicle />
         <DeleteModal />
       </div>

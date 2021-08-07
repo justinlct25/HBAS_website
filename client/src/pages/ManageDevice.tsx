@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssignDeviceModal from "../components/AssignDeviceModal";
-import { CaretIcon, SearchIcon } from "../components/IconsOnly";
+import { SearchIcon } from "../components/IconsOnly";
 import {
-  setDeviceIdAction,
   setPopUpIsActiveAction,
   setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
@@ -18,10 +17,7 @@ const TABLE_WIDTH = "70%";
 export type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
-
   const devicesDataList = useSelector(
     (state: IRootState) => state.devicesDataList
   );
@@ -61,76 +57,31 @@ function ManageDevice() {
       <div className="flex-center pageContainer">
         <div className="flex-center topRowContainer">
           <div className="flex-center">
-            <div style={{ padding: "8px" }}>Search by:</div>
-            <div
-              style={{
-                color: placeHolderText === "Select" ? "#ccc" : "#555",
-                minWidth: "64px",
-                transition: "all 1s ease",
-              }}
-            >
-              {placeHolderText}
-            </div>
-            <div
-              className="caretIconContainer"
-              style={{
-                transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-              }}
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <CaretIcon />
-            </div>
             <div className="flex-center" style={{ padding: "8px" }}>
               <input
                 className="searchInput"
                 placeholder={"Search"}
                 value={searchInput}
-                style={{
-                  width: placeHolderText !== "Select" ? "240px" : "0px",
-                }}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    dispatch(getDeviceDataListThunk(1));
+                  }
                 }}
               />
               <div
                 style={{ cursor: "pointer", padding: "8px" }}
-                onClick={
-                  placeHolderText !== "Select"
-                    ? () => {
-                        dispatch(getDeviceDataListThunk(1));
-                      }
-                    : () => {}
-                }
+                onClick={() => {
+                  dispatch(getDeviceDataListThunk(1));
+                }}
               >
                 <SearchIcon />
               </div>
             </div>
           </div>
           <div />
-          <div
-            className="dropDownListContainer"
-            style={{
-              zIndex: 1,
-              maxHeight: isOpen ? `${(tableHeaders.length + 1) * 64}px` : 0,
-            }}
-          >
-            {isOpen &&
-              tableHeaders.map((item, idx) => {
-                return (
-                  <div
-                    key={item + idx}
-                    className="flex-center dropDownItem"
-                    style={{ height: isOpen ? "48px" : "0px" }}
-                    onClick={() => {
-                      setPlaceHolderText(item);
-                      setIsOpen(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                );
-              })}
-          </div>
         </div>
         <div
           className="table"
@@ -171,10 +122,9 @@ function ManageDevice() {
                     onClick={() => {
                       dispatch(setPopUpIsActiveAction(true));
                       dispatch(
-                        setDeviceIdAction(item.deviceId, item.deviceEui)
-                      );
-                      dispatch(
                         setSelectedItemAction({
+                          deviceId: item.deviceId,
+                          deviceEui: item.deviceEui,
                           vehicleId: item.vehicleId,
                           carPlate: item.carPlate,
                           companyId: item.companyId,

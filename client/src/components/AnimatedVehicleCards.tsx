@@ -66,8 +66,8 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
               setSelectedItemAction({
                 carPlate: item.carPlate,
                 vehicleId: item.vehicleId,
-                deviceEui: item.deviceEui,
-                deviceId: item.deviceId,
+                deviceEui: item.deviceEui ?? "",
+                deviceId: item.deviceId ?? -1,
               })
             );
           }}
@@ -78,10 +78,14 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
           className="hiddenButton flex-center"
           style={{ backgroundColor: "#8BB3FF" }}
           onClick={() => {
-            dispatch(setAddNewFormOpenAction(true));
+            dispatch(setAddNewFormOpenAction(true, "editVehicle"));
             dispatch(
               setSelectedItemAction({
+                deviceId: item.deviceId,
+                vehicleId: item.vehicleId,
                 carPlate: item.carPlate,
+                vehicleModel: item.vehicleModel ?? "",
+                vehicleType: item.vehicleType ?? "",
               })
             );
           }}
@@ -92,7 +96,7 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
           className="hiddenButton flex-center"
           style={{ backgroundColor: "#FF8989" }}
           onClick={() => {
-            dispatch(setDeleteModalOpenAction(true));
+            dispatch(setDeleteModalOpenAction(true, "vehicle"));
             dispatch(
               setDeleteModalDataAction({
                 vehicleId: item.vehicleId,

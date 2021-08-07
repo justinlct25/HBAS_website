@@ -21,6 +21,7 @@
 
 .searchInput {
   height: var(--inputHeight);
+  width: 240px;
   border-style: none;
   outline: none;
   border: none;
@@ -198,7 +199,7 @@
 }
 .formRow {
   width: 100%;
-  margin: 16px 0;
+  margin: 24px 0;
 }
 .titleText {
   font-size: 36px;
@@ -295,4 +296,12 @@ h1 {
 .eachDevice:hover {
   background: #ddd;
   color: #555;
+}
+.overLengthWarning {
+  color: #f00d;
+  position: absolute;
+  width: 50%;
+  margin-left: 8px;
+  text-align: right;
+  font-size: 0.87em;
 }

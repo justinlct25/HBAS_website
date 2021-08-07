@@ -18,6 +18,7 @@ const IncidentPoint = (props: IncidentPointProps) => {
   const { lat, lng } = props;
   return (
     <div
+      key={lat + lng}
       style={{
         width: "25px",
         height: "25px",

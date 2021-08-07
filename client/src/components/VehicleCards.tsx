@@ -4,13 +4,18 @@ import { IProfile } from "../redux/profile/state";
 interface VehicleProps {
   item: IProfile;
   callFunction: () => void;
+  cursor?: string;
 }
 
 export const VehicleCards = (props: VehicleProps) => {
-  const { item, callFunction } = props;
+  const { item, callFunction, cursor = "default" } = props;
 
   return (
-    <div className="deviceVehicleCard" onClick={callFunction}>
+    <div
+      className="deviceVehicleCard"
+      onClick={callFunction}
+      style={{ cursor }}
+    >
       <div className="flex-center">
         <div className="incidentReportText">Device ID:</div>
         <div

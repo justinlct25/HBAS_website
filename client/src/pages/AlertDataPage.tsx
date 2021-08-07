@@ -2,7 +2,7 @@ import { push } from "connected-react-router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
-import { CaretIcon, SearchIcon } from "../components/IconsOnly";
+import { SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
@@ -16,8 +16,6 @@ const TABLE_WIDTH = "92%";
 const { REACT_APP_API_SERVER } = process.env;
 
 function AlertDataPage() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [placeHolderText, setPlaceHolderText] = useState("Select");
   const [searchInput, setSearchInput] = useState("");
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
 
@@ -53,32 +51,15 @@ function AlertDataPage() {
         style={{ justifyContent: "center" }}
       >
         <div className="flex-center">
-          <div style={{ padding: "8px" }}>Search by:</div>
-          <div
-            style={{
-              color: placeHolderText === "Select" ? "#ccc" : "#555",
-              minWidth: "64px",
-              transition: "all 1s ease",
-            }}
-          >
-            {placeHolderText}
-          </div>
-          <div
-            className="caretIconContainer"
-            style={{
-              transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-            }}
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            <CaretIcon />
-          </div>
           <div className="flex-center" style={{ padding: "8px" }}>
             <input
               className="searchInput"
               placeholder={"Search"}
               value={searchInput}
-              style={{
-                width: placeHolderText !== "Select" ? "240px" : "0px",
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  dispatch(getAlertDataListThunk(1, true, searchInput));
+                }
               }}
               onChange={(e) => {
                 setSearchInput(e.target.value);
@@ -86,40 +67,12 @@ function AlertDataPage() {
             />
             <div
               style={{ cursor: "pointer", padding: "8px" }}
-              onClick={
-                placeHolderText !== "Select"
-                  ? () => {
-                      dispatch(getAlertDataListThunk(1, true, searchInput));
-                    }
-                  : () => {}
+              onClick={() =>
+                dispatch(getAlertDataListThunk(1, true, searchInput))
               }
             >
               <SearchIcon />
             </div>
-          </div>
-          <div
-            className="dropDownListContainer"
-            style={{
-              zIndex: 1,
-              maxHeight: isOpen ? `${(tableHeaders.length + 1) * 64}px` : 0,
-            }}
-          >
-            {isOpen &&
-              tableHeaders.map((item, idx) => {
-                return (
-                  <div
-                    key={item + idx}
-                    className="flex-center dropDownItem"
-                    style={{ height: isOpen ? "48px" : "0px" }}
-                    onClick={() => {
-                      setPlaceHolderText(item);
-                      setIsOpen(false);
-                    }}
-                  >
-                    {item}
-                  </div>
-                );
-              })}
           </div>
         </div>
       </div>

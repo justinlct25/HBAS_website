@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
+import { headers } from "../helpers/headers";
 import { ModalType } from "../pages/ManageDevice";
-import {
-  setDeviceIdAction,
-  setSelectedItemAction,
-} from "../redux/assignDeviceModal/action";
+import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 
 interface ModalProps {
@@ -79,9 +77,7 @@ export const Modal = (props: ModalProps) => {
             `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/devices/link-device-vehicle`,
             {
               method: "GET",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-              },
+              headers,
             }
           );
           if (res.status === 200) {
@@ -111,9 +107,7 @@ export const Modal = (props: ModalProps) => {
 
           const res = await fetch(url.toString(), {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
+            headers,
           });
           if (res.status === 200) {
             const result = await res.json();
@@ -135,9 +129,7 @@ export const Modal = (props: ModalProps) => {
           `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${selectedItem.companyId}`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
+            headers,
           }
         );
         if (res.status === 201 || res.status === 200) {
@@ -217,7 +209,12 @@ export const Modal = (props: ModalProps) => {
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(setDeviceIdAction(item.id, item.deviceEui));
+                        dispatch(
+                          setSelectedItemAction({
+                            deviceId: item.id,
+                            deviceEui: item.deviceEui,
+                          })
+                        );
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
@@ -234,7 +231,12 @@ export const Modal = (props: ModalProps) => {
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
-                        dispatch(setDeviceIdAction(item.id, item.deviceEui));
+                        dispatch(
+                          setSelectedItemAction({
+                            deviceId: item.id,
+                            deviceEui: item.deviceEui,
+                          })
+                        );
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >

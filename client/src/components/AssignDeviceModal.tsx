@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
+import { headers } from "../helpers/headers";
 import { ModalType } from "../pages/ManageDevice";
-import {
-  resetPopUpAction,
-  setPopUpIsActiveAction,
-} from "../redux/assignDeviceModal/action";
+import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
@@ -28,29 +26,24 @@ function AssignDeviceModal() {
     dispatch(setPopUpIsActiveAction(false));
   };
 
-  const handleSubmit = () => {
-    const assignDevice = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-            },
-            body: JSON.stringify({
-              vehicleID: assignDeviceModal.selectedItem.vehicleId,
-              deviceID: assignDeviceModal.deviceId,
-            }),
-          }
-        );
-      } catch (e) {
-        console.error(e.message);
-      }
-    };
-    assignDevice();
-
-    dispatch(setPopUpIsActiveAction(false));
+  const handleSubmit = async () => {
+    try {
+      await fetch(
+        `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            vehicleId: assignDeviceModal.selectedItem.vehicleId,
+            deviceId: assignDeviceModal.deviceId,
+          }),
+        }
+      );
+    } catch (e) {
+      console.error(e.message);
+    } finally {
+      dispatch(setPopUpIsActiveAction(false));
+    }
   };
 
   return (

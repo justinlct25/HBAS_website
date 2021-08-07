@@ -1,7 +1,9 @@
 import React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../css/TablePage.css";
 import { headers } from "../../helpers/headers";
+import { useRouter } from "../../helpers/useRouter";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
 import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
 import { IRootState } from "../../redux/store";
@@ -9,7 +11,8 @@ import { CloseIcon } from "../IconsOnly";
 
 const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
-function EditVehicle() {
+function EditCompany() {
+  const router = useRouter();
   const dispatch = useDispatch();
 
   const selectedItem = useSelector(
@@ -21,17 +24,45 @@ function EditVehicle() {
   const isOpen = addNewForm.isOpen;
   const modalType = addNewForm.modalType;
 
+  useEffect(() => {
+    const splitRoute = router.pathname.split("/");
+    const companyId = splitRoute[splitRoute.length - 1];
+    const fetchCompanyById = async () => {
+      try {
+        const res = await fetch(
+          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/${companyId}`,
+          {
+            method: "GET",
+            headers,
+          }
+        );
+        const result = await res.json();
+        dispatch(
+          setSelectedItemAction({
+            companyId: parseInt(companyId),
+            companyName: result.data.companyName,
+            contactPerson: result.data.contactPerson,
+            tel: result.data.tel,
+          })
+        );
+      } catch (e) {
+        console.error(e.message);
+      }
+    };
+    fetchCompanyById();
+  }, []);
+
   const handleSubmit = async () => {
     try {
       await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/${selectedItem.vehicleId}`,
+        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/${selectedItem.companyId}`,
         {
           method: "PUT",
           headers,
           body: JSON.stringify({
-            carPlate: selectedItem.carPlate,
-            vehicleModel: selectedItem.vehicleModel ?? "",
-            vehicleType: selectedItem.vehicleType ?? "",
+            companyName: selectedItem.companyName,
+            tel: selectedItem.tel,
+            contactPerson: selectedItem.contactPerson,
           }),
         }
       );
@@ -49,7 +80,7 @@ function EditVehicle() {
     <div
       style={{ zIndex: 10 }}
       className={
-        isOpen && modalType === "editVehicle"
+        isOpen && modalType === "editCompany"
           ? "flex-center popUpContainer popUp"
           : "flex-center popUpContainer"
       }
@@ -62,7 +93,7 @@ function EditVehicle() {
           <div className="flex-center form">
             <div className="flex-center vehicleSection">
               <div style={{ position: "relative", width: "100%" }}>
-                <div className="titleText">Edit Vehicle</div>
+                <div className="titleText">Edit Company</div>
               </div>
 
               <div
@@ -73,15 +104,15 @@ function EditVehicle() {
                 }}
               >
                 <div className="flex-center formRow">
-                  <div className="formLeftColumn">Car Plate :</div>
+                  <div className="formLeftColumn">Company name :</div>
                   <div className="formRightColumn">
                     <input
                       className="formInput"
-                      value={selectedItem.carPlate}
+                      value={selectedItem.companyName}
                       onChange={(e) => {
                         dispatch(
                           setSelectedItemAction({
-                            carPlate: e.target.value,
+                            companyName: e.target.value,
                           })
                         );
                       }}
@@ -89,15 +120,15 @@ function EditVehicle() {
                   </div>
                 </div>
                 <div className="flex-center formRow">
-                  <div className="formLeftColumn">Vehicle Type :</div>
+                  <div className="formLeftColumn">Contact person :</div>
                   <div className="formRightColumn">
                     <input
                       className="formInput"
-                      value={selectedItem.vehicleType}
+                      value={selectedItem.contactPerson}
                       onChange={(e) => {
                         dispatch(
                           setSelectedItemAction({
-                            vehicleType: e.target.value,
+                            contactPerson: e.target.value,
                           })
                         );
                       }}
@@ -105,15 +136,15 @@ function EditVehicle() {
                   </div>
                 </div>
                 <div className="flex-center formRow">
-                  <div className="formLeftColumn">Vehicle Model :</div>
+                  <div className="formLeftColumn">Phone number :</div>
                   <div className="formRightColumn">
                     <input
                       className="formInput"
-                      value={selectedItem.vehicleModel}
+                      value={selectedItem.tel}
                       onChange={(e) => {
                         dispatch(
                           setSelectedItemAction({
-                            vehicleModel: e.target.value,
+                            tel: e.target.value,
                           })
                         );
                       }}
@@ -142,4 +173,4 @@ function EditVehicle() {
   );
 }
 
-export default EditVehicle;
+export default EditCompany;

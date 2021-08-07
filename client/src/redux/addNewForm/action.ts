@@ -1,7 +1,10 @@
-export function setAddNewFormOpenAction(isOpen: boolean) {
+import { ModalType } from "./state";
+
+export function setAddNewFormOpenAction(isOpen: boolean, modalType: ModalType) {
   return {
     type: "@@addNewForm/setAddNewFormOpen" as const,
     isOpen,
+    modalType,
   };
 }
 

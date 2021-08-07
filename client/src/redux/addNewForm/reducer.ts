@@ -4,6 +4,7 @@ import { AddNewFormState } from "./state";
 export const initialState: AddNewFormState = {
   addNewForm: {
     isOpen: false,
+    modalType: "",
     companyName: "",
     contactPerson: "",
     tel: "",
@@ -28,6 +29,7 @@ export const addNewFormReducer = (
         addNewForm: {
           ...state.addNewForm,
           isOpen: action.isOpen,
+          modalType: action.modalType,
         },
       };
     case "@@addNewForm/inputCompanyDetails":

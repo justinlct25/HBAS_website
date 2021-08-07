@@ -18,11 +18,12 @@ export function getAlertDataListThunk(
         }
 
         const url = new URL(
-          `${REACT_APP_API_VERSION}/alert-data/A`,
+          `${REACT_APP_API_VERSION}/alert-data`,
           `${REACT_APP_API_SERVER}`
         );
+        url.searchParams.set("msg", "A");
         url.searchParams.set("page", String(activePage));
-        if (!!searchString) url.searchParams.set("searchString", searchString);
+        if (!!searchString) url.searchParams.set("search", searchString);
 
         const res = await fetch(url.toString());
 

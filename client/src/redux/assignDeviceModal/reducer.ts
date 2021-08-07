@@ -13,6 +13,8 @@ export const initialState: AssignDeviceState = {
       contactPerson: "",
       deviceEui: "",
       carPlate: "",
+      vehicleModel: "",
+      vehicleType: "",
       vehicleId: -1,
     },
   },
@@ -64,18 +66,12 @@ export const assignDeviceReducer = (
             vehicleId:
               action.selectedItem.vehicleId ??
               state.assignDeviceModal.selectedItem.vehicleId,
-          },
-        },
-      };
-    case "@@assignDeviceModal/setDeviceId":
-      return {
-        ...state,
-        assignDeviceModal: {
-          ...state.assignDeviceModal,
-          deviceId: action.id,
-          selectedItem: {
-            ...state.assignDeviceModal.selectedItem,
-            deviceEui: action.eui,
+            vehicleType:
+              action.selectedItem.vehicleType ??
+              state.assignDeviceModal.selectedItem.vehicleType,
+            vehicleModel:
+              action.selectedItem.vehicleModel ??
+              state.assignDeviceModal.selectedItem.vehicleModel,
           },
         },
       };

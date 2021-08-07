@@ -1,7 +1,13 @@
-export function setDeleteModalOpenAction(isOpen: boolean) {
+import { DeleteType } from "./state";
+
+export function setDeleteModalOpenAction(
+  isOpen: boolean,
+  deleteType: DeleteType
+) {
   return {
     type: "@@deleteModal/setDeleteModalOpen" as const,
     isOpen,
+    deleteType,
   };
 }
 
@@ -11,13 +17,15 @@ export function resetDeleteModalAction() {
   };
 }
 
-export function setDeleteModalDataAction(vehicleDeviceDetails: {
-  vehicleId: number;
-  carPlate: string;
+export function setDeleteModalDataAction(details: {
+  vehicleId?: number;
+  carPlate?: string;
+  companyId?: number;
+  companyName?: string;
 }) {
   return {
     type: "@@deleteModal/setDeleteModalDataAction" as const,
-    vehicleDeviceDetails,
+    details,
   };
 }
 

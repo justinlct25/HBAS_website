@@ -1,5 +1,6 @@
 import httpStatusCodes from "http-status-codes";
 import { Dispatch } from "redux";
+import { headers } from "../../helpers/headers";
 import {
   ICompaniesDataActions,
   resetCompaniesDataList,
@@ -65,9 +66,7 @@ export function postCompaniesDataThunk(
         `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies`,
         {
           method: "post",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-          },
+          headers,
           body: JSON.stringify({
             companyName,
             tel,
@@ -82,9 +81,7 @@ export function postCompaniesDataThunk(
             `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${companyRes.id}`,
             {
               method: "post",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-              },
+              headers,
               body: JSON.stringify({ vehicles }),
             }
           );
