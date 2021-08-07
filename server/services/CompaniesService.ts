@@ -6,18 +6,6 @@ import { tables } from './../utils/table_model';
 export class CompaniesService {
   constructor(private knex: Knex) {}
 
-  getCompanyDetails = async (companyId: number) => {
-    return await this.knex(tables.COMPANIES)
-      .select<ICompanyInfo>({
-        companyName: 'company_name',
-        tel: 'tel',
-        contactPerson: 'contact_person',
-        updatedAt: 'updated_at',
-      })
-      .where({ is_active: true, id: companyId })
-      .first();
-  };
-
   getCompaniesInfo = async (perPage: number, currentPage: number, searchString: string | null) => {
     const tempCountTable = 'temp_count';
 
@@ -55,6 +43,18 @@ export class CompaniesService {
 
     if (!!searchString) query.andWhere(searchQuery);
     return await query.paginate<ICompanyInfo[]>({ perPage, currentPage, isLengthAware: true });
+  };
+
+  getCompanyDetails = async (companyId: number) => {
+    return await this.knex(tables.COMPANIES)
+      .select<ICompanyInfo>({
+        companyName: 'company_name',
+        tel: 'tel',
+        contactPerson: 'contact_person',
+        updatedAt: 'updated_at',
+      })
+      .where({ is_active: true, id: companyId })
+      .first();
   };
 
   checkDuplicatedCompany = async (companyName: string) => {

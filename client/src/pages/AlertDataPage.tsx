@@ -35,7 +35,7 @@ function AlertDataPage() {
   useEffect(() => {
     const socket = io(`${REACT_APP_API_SERVER}`);
 
-    socket.on("get-new-alertData", () => {
+    socket.on("new-data-type-A", () => {
       dispatch(getAlertDataListThunk(activePage, false));
     });
 

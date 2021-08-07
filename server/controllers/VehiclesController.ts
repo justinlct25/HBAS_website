@@ -9,7 +9,9 @@ export class VehiclesController {
   getCompanyVehicles = async (req: Request, res: Response) => {
     const { companyId } = req.params;
     const data = await this.vehiclesService.getCompanyVehicles(parseInt(companyId));
-    return res.status(httpStatusCodes.OK).json({ data });
+    return res
+      .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json({ data });
   };
 
   vehicleChecking = async (vehicles: INewVehicle[], vehicleId?: number) => {
