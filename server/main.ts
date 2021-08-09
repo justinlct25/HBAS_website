@@ -10,11 +10,13 @@ import { Server as SocketIO, Socket } from 'socket.io';
 import { attachPaginate } from 'knex-paginate';
 
 // import services & controllers
+import { LoginService } from './services/LoginService';
 import { DevicesService } from './services/DevicesService';
 import { CompaniesService } from './services/CompaniesService';
 import { AlertDataService } from './services/AlertDataService';
 import { VehiclesService } from './services/VehiclesService';
 
+import { LoginController } from './controllers/LoginController';
 import { DevicesController } from './controllers/DevicesController';
 import { CompaniesController } from './controllers/CompaniesController';
 import { AlertDataController } from './controllers/AlertDataController';
@@ -54,12 +56,14 @@ io.on('connection', (socket: Socket) => {
 });
 
 // create services
+export const loginService = new LoginService();
 const devicesService = new DevicesService(knex);
 const companiesService = new CompaniesService(knex);
 const alertDataService = new AlertDataService(knex);
 const vehiclesService = new VehiclesService(knex);
 
 // create controllers
+export const loginController = new LoginController(loginService);
 export const devicesController = new DevicesController(devicesService);
 export const companiesController = new CompaniesController(companiesService);
 export const alertDataController = new AlertDataController(alertDataService, devicesService);
