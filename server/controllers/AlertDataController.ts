@@ -132,4 +132,23 @@ export class AlertDataController {
       .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
       .json({ data });
   };
+
+  getLowBatteryNotifications = async (req: Request, res: Response) => {
+    const data = await this.alertDataService.getLowBatteryNotifications();
+    return res
+      .status(!data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
+      .json({ data });
+  };
+
+  updateNotificationsStatus = async (req: Request, res: Response) => {
+    const { notificationIds }: { notificationIds: number[] } = req.body;
+    const successIds = await this.alertDataService.updateNotificationsStatus(notificationIds);
+
+    if (!successIds || !successIds.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot post data.' });
+
+    return res
+      .status(httpStatusCodes.OK)
+      .json({ message: `Updated notifications' status successfully.` });
+  };
 }

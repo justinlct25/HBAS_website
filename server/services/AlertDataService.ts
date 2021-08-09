@@ -1,9 +1,32 @@
 import { Knex } from 'knex';
 import { IAlertData, IDataHistory, ILocationDetail, msgType } from '../models/models';
+import { BATTERY_MIN } from '../utils/variables';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
   constructor(private knex: Knex) {}
+
+  postData = async (
+    device_id: number,
+    date: string,
+    geolocation: string,
+    address: string,
+    msg_type: string,
+    battery: string,
+    data: string
+  ) => {
+    return await this.knex(tables.ALERT_DATA)
+      .insert({
+        device_id,
+        date,
+        geolocation,
+        address,
+        msg_type,
+        battery,
+        data,
+      })
+      .returning<number[]>('id');
+  };
 
   getData = async (
     msgType: msgType | null,
@@ -115,7 +138,11 @@ export class AlertDataService {
         [`${tables.COMPANY_VEHICLES}.is_active`]: true,
         [`${tables.COMPANIES}.is_active`]: true,
       })
-      .andWhereBetween(`${tables.ALERT_DATA}.date`, [d, new Date()]);
+      .andWhereBetween(`${tables.ALERT_DATA}.date`, [d, new Date()])
+      .orderBy([
+        { column: `${tables.ALERT_DATA}.device_id`, order: 'asc' },
+        { column: `${tables.ALERT_DATA}.date`, order: 'desc' },
+      ]);
   };
 
   getDatesWithMessages = async (deviceId: number) => {
@@ -155,25 +182,54 @@ export class AlertDataService {
       .orderBy('date', 'desc');
   };
 
-  postData = async (
-    device_id: number,
-    date: string,
-    geolocation: string,
-    address: string,
-    msg_type: string,
-    battery: string,
-    data: string
-  ) => {
-    return await this.knex(tables.ALERT_DATA)
-      .insert({
-        device_id,
-        date,
-        geolocation,
-        address,
-        msg_type,
-        battery,
-        data,
+  getLowBatteryNotifications = async () => {
+    const tempAlertDataTable = 'temp_alert_data';
+
+    return await this.knex
+      .with(tempAlertDataTable, (qb) => {
+        qb.from(tables.ALERT_DATA)
+          .distinctOn(`${tables.ALERT_DATA}.device_id`)
+          .select({
+            id: `${tables.ALERT_DATA}.id`,
+            deviceId: `${tables.ALERT_DATA}.device_id`,
+            deviceName: `${tables.DEVICES}.device_name`,
+            deviceEui: `${tables.DEVICES}.device_eui`,
+            date: `${tables.ALERT_DATA}.date`,
+            battery: `${tables.ALERT_DATA}.battery`,
+          })
+          .leftJoin(tables.DEVICES, `${tables.ALERT_DATA}.device_id`, `${tables.DEVICES}.id`)
+          .where({
+            [`${tables.ALERT_DATA}.is_active`]: true,
+            [`${tables.ALERT_DATA}.is_read`]: false,
+            [`${tables.DEVICES}.is_active`]: true,
+          })
+          .andWhere(`${tables.ALERT_DATA}.battery`, '<=', BATTERY_MIN)
+          .orderBy([
+            { column: `${tables.ALERT_DATA}.device_id`, order: 'asc' },
+            { column: `${tables.ALERT_DATA}.date`, order: 'desc' },
+          ]);
       })
-      .returning<number[]>('id');
+      .select('*')
+      .from(tempAlertDataTable)
+      .orderBy([
+        { column: `${tempAlertDataTable}.date`, order: 'desc' },
+        { column: `${tempAlertDataTable}.deviceName`, order: 'asc' },
+      ]);
+  };
+
+  updateNotificationsStatus = async (notificationIds: number[]) => {
+    return await this.knex(tables.ALERT_DATA)
+      .update(
+        {
+          is_read: true,
+          updated_at: new Date(Date.now()),
+        },
+        ['id']
+      )
+      .whereIn('id', notificationIds)
+      .andWhere({
+        is_read: false,
+        is_active: true,
+      });
   };
 }

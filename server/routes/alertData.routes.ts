@@ -11,3 +11,7 @@ alertDataRoutes.get('/latest-locations', createAsyncMiddleware(alertDataControll
 // history
 alertDataRoutes.get('/history/dates/:deviceId', createAsyncMiddleware(alertDataController.getDatesWithMessages));
 alertDataRoutes.get('/history/:deviceId', createAsyncMiddleware(alertDataController.getHistoryByDeviceAndDate));
+
+// battery
+alertDataRoutes.get('/battery', createAsyncMiddleware(alertDataController.getLowBatteryNotifications));
+alertDataRoutes.put('/battery', createAsyncMiddleware(alertDataController.updateNotificationsStatus));
