@@ -15,8 +15,19 @@ import Statistics from "./pages/Statistics";
 // import Statistics from "./pages/Statistics.jsx";
 import TestMap from "./pages/TestMap";
 import { history } from "./redux/store";
+import axios from "axios";
 
 function App() {
+  const token = localStorage.getItem("token");
+
+  // Axios setups
+  axios.defaults.baseURL = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  axios.defaults.headers.get["Content-Type"] =
+    "application/json; charset=utf-8";
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json; charset=utf-8";
+
   return (
     <div className="App">
       <ConnectedRouter history={history}>

@@ -36,6 +36,9 @@ import { IIncidentPageState } from "./incidentPage/state";
 import { ILoadingPageAction } from "./loading/action";
 import { ILoadingReducer } from "./loading/reducer";
 import { ILoadingState } from "./loading/state";
+import { ILoginActions } from "./login/actions";
+import { loginReducer } from "./login/reducers";
+import { ILoginState } from "./login/state";
 import { SetNotificationAction } from "./notification/action";
 import { notificationReducer } from "./notification/reducer";
 import { NotificationState } from "./notification/state";
@@ -48,6 +51,7 @@ export const history = createBrowserHistory();
 
 // IRootState
 export interface IRootState {
+  login: ILoginState;
   devicesDataList: IDevicesDataState;
   companiesDataList: ICompaniesDataState;
   alertDataPage: IAlertDataPageState;
@@ -63,6 +67,7 @@ export interface IRootState {
 
 // initState
 type IRootAction =
+  | ILoginActions
   | IAlertDataPageActions
   | ICompaniesDataActions
   | IDevicesDataActions
@@ -80,6 +85,7 @@ export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
 
 // createStore
 const rootReducer = combineReducers<IRootState>({
+  login: loginReducer,
   devicesDataList: IDevicesDataReducer,
   companiesDataList: ICompaniesDataReducer,
   alertDataPage: IAlertDataPageReducer,
