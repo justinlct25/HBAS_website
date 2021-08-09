@@ -1,16 +1,14 @@
+import axios from "axios";
+import { push } from "connected-react-router";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import "../../css/Modal.css";
 import {
   resetDeleteModalAction,
-  setDeleteModalOpenAction,
+  setDeleteModalOpenAction
 } from "../../redux/deleteModal/action";
+import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
-import "../../css/Modal.css";
-import { headers } from "../../helpers/headers";
-import { setPopUpIsActiveAction } from "../../redux/assignDeviceModal/action";
-import { push } from "connected-react-router";
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export const DeleteModal = () => {
   const dispatch = useDispatch();
@@ -21,30 +19,18 @@ export const DeleteModal = () => {
   const handleSubmit = async () => {
     if (deleteModal.deleteType === "vehicle") {
       try {
-        await fetch(
-          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/${deleteModal.vehicleId}`,
-          {
-            method: "DELETE",
-            headers,
-          }
-        );
-      } catch (e) {
-        console.error(e.message);
+        await axios.delete(`/vehicles/${deleteModal.vehicleId}`);
+      } catch (error) {
+        dispatch(handleAxiosError(error));
       } finally {
         dispatch(setDeleteModalOpenAction(false, ""));
       }
     }
     if (deleteModal.deleteType === "company") {
       try {
-        await fetch(
-          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/${deleteModal.companyId}`,
-          {
-            method: "DELETE",
-            headers,
-          }
-        );
-      } catch (e) {
-        console.error(e.message);
+        await axios.delete(`/companies/${deleteModal.companyId}`);
+      } catch (error) {
+        dispatch(handleAxiosError(error));
       } finally {
         dispatch(resetDeleteModalAction());
         dispatch(push("/manage-user"));

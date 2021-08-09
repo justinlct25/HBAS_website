@@ -1,45 +1,35 @@
-import httpStatusCodes from "http-status-codes";
-import { Dispatch } from "redux";
-import { headers } from "../../helpers/headers";
-import {
-  ICompaniesDataActions,
-  resetCompaniesDataList,
-  setCompaniesDataList,
-  errorCompaniesInput,
-} from "./action";
+import axios from "axios";
+import { handleAxiosError } from "../login/thunk";
+import { ThunkDispatch } from "../store";
+import { resetCompaniesDataList, setCompaniesDataList } from "./action";
 
 const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export function getCompaniesDataListThunk(activePage: number) {
-  return async (dispatch: Dispatch<ICompaniesDataActions>) => {
+  return async (dispatch: ThunkDispatch) => {
     try {
       dispatch(resetCompaniesDataList());
 
-      // construct api url with (or within) search params
+      // construct api url with (or without) search params
       const url = new URL(
         `${REACT_APP_API_VERSION}/companies`,
-        `${REACT_APP_API_SERVER}`
+        REACT_APP_API_SERVER
       );
       url.searchParams.set("page", String(activePage));
+      url.searchParams.set("rows", String(10));
 
-      const res = await fetch(url.toString());
-
-      if (res.status === 200) {
-        const data = await res.json();
-        dispatch(
-          setCompaniesDataList(
-            data.data,
-            activePage,
-            data.pagination.lastPage,
-            data.limit
-          )
-        );
-      }
-      return;
-    } catch (err) {
-      console.error(err);
-      //handle error
-      return;
+      const res = await axios.get(url.toString());
+      const data = await res.data;
+      dispatch(
+        setCompaniesDataList(
+          data.data,
+          activePage,
+          data.pagination.lastPage,
+          data.limit
+        )
+      );
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     }
   };
 }
@@ -56,74 +46,25 @@ export function postCompaniesDataThunk(
     contactPerson: string;
   }
 ) {
-  return async (
-    dispatch: Dispatch<ICompaniesDataActions>,
-    dispatch2: Dispatch<ICompaniesDataActions>
-  ) => {
+  return async (dispatch: ThunkDispatch) => {
     try {
       const { companyName, tel, contactPerson } = companyDetail;
-      const res = await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies`,
-        {
-          method: "post",
-          headers,
-          body: JSON.stringify({
-            companyName,
-            tel,
-            contactPerson,
-          }),
-        }
-      );
-      if (res.status === 201 || res.status === 200) {
-        const companyRes = await res.json();
-        if (vehicles.length > 0) {
-          const res = await fetch(
-            `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${companyRes.id}`,
-            {
-              method: "post",
-              headers,
-              body: JSON.stringify({ vehicles }),
-            }
-          );
+      const res = await axios.post(`/companies`, {
+        companyName,
+        tel,
+        contactPerson,
+      });
+      const companyRes = res.data;
 
-          // ????????? don't know wts this, pls fix
-          // ????????? don't know wts this, pls fix
-          // ????????? don't know wts this, pls fix
-          // ????????? don't know wts this, pls fix
-          if (res.status === 201 || res.status === 200) {
-            const result = await res.json();
-            if (result.data.length > 0 || result.blank > 0) {
-              alert(`${result.message}`);
-            }
-            dispatch(errorCompaniesInput(false));
-            //@ts-ignore
-            dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
-            return;
-          } else if (res.status === httpStatusCodes.CONFLICT) {
-            const result = await res.json();
-            alert(
-              `${result.message}${
-                !!result.existingCarPlates.length ?? result.existingCarPlates
-              }`
-            );
-          }
-        }
-        dispatch(errorCompaniesInput(false));
+      if (vehicles.length > 0) {
+        await axios.post(`/vehicles/company-id/${companyRes.id}`, {
+          vehicles,
+        });
       }
-      if (res.status === 400) {
-        const result = await res.json();
-        alert(result.message);
-        dispatch(errorCompaniesInput(true));
-      }
-      return;
-    } catch (err) {
-      console.error(err);
-      //handle error
-      dispatch(errorCompaniesInput(true));
-      return;
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     } finally {
-      //@ts-ignore
-      dispatch(getCompaniesDataListThunk(1, true, "Select", ""));
+      dispatch(getCompaniesDataListThunk(1));
     }
   };
 }

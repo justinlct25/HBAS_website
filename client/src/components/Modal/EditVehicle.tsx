@@ -1,13 +1,12 @@
+import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../css/TablePage.css";
-import { headers } from "../../helpers/headers";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
 import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
+import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
 import { CloseIcon } from "../IconsOnly";
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 function EditVehicle() {
   const dispatch = useDispatch();
@@ -23,20 +22,13 @@ function EditVehicle() {
 
   const handleSubmit = async () => {
     try {
-      await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/${selectedItem.vehicleId}`,
-        {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({
-            carPlate: selectedItem.carPlate,
-            vehicleModel: selectedItem.vehicleModel ?? "",
-            vehicleType: selectedItem.vehicleType ?? "",
-          }),
-        }
-      );
-    } catch (e) {
-      console.error(e.message);
+      await axios.put(`/vehicles/${selectedItem.vehicleId}`, {
+        carPlate: selectedItem.carPlate,
+        vehicleModel: selectedItem.vehicleModel ?? "",
+        vehicleType: selectedItem.vehicleType ?? "",
+      });
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     } finally {
       dispatch(resetAddNewFormAction());
     }

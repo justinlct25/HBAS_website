@@ -7,6 +7,7 @@ import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
+import axios from "axios";
 
 function AssignDeviceByVehicleModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{
@@ -28,17 +29,10 @@ function AssignDeviceByVehicleModal() {
 
   const handleSubmit = async () => {
     try {
-      await fetch(
-        `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            deviceId: assignDeviceModal.deviceId,
-            vehicleId: assignDeviceModal.selectedItem.vehicleId,
-          }),
-        }
-      );
+      await axios.post(`/devices/link-device-vehicle`, {
+        deviceId: assignDeviceModal.deviceId,
+        vehicleId: assignDeviceModal.selectedItem.vehicleId,
+      });
     } catch (e) {
       console.error(e.message);
     } finally {

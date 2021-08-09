@@ -1,9 +1,10 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
-import { headers } from "../helpers/headers";
 import { ModalType } from "../pages/ManageDevice";
 import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
+import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
 
 interface ModalProps {
@@ -73,25 +74,17 @@ export const Modal = (props: ModalProps) => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await fetch(
-            `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/devices/link-device-vehicle`,
-            {
-              method: "GET",
-              headers,
-            }
-          );
-          if (res.status === 200) {
-            const result = await res.json();
-            const linkedDevices = await result.data.linkedDevices;
-            const notAssigned = await result.data.newDevices;
+          const res = await axios.get(`/devices/link-device-vehicle`);
+          const result = await res.data;
+          const linkedDevices = await result.data.linkedDevices;
+          const notAssigned = await result.data.newDevices;
 
-            await setAllDevices({
-              linkedDevices,
-              notAssigned,
-            });
-          }
-        } catch (e) {
-          console.error(e.message);
+          await setAllDevices({
+            linkedDevices,
+            notAssigned,
+          });
+        } catch (error) {
+          dispatch(handleAxiosError(error));
         }
       };
       fetchAllDevices();
@@ -101,20 +94,15 @@ export const Modal = (props: ModalProps) => {
           // construct api url with (or without) search params
           const url = new URL(
             `${REACT_APP_API_VERSION}/companies`,
-            `${REACT_APP_API_SERVER}`
+            REACT_APP_API_SERVER
           );
           url.searchParams.set("rows", "1000000"); // hardcoded rows to get all entries
 
-          const res = await fetch(url.toString(), {
-            method: "GET",
-            headers,
-          });
-          if (res.status === 200) {
-            const result = await res.json();
-            setCompanyList(result.data);
-          }
-        } catch (e) {
-          console.error(e.message);
+          const res = await axios.get(url.toString());
+          const result = await res.data;
+          setCompanyList(result.data);
+        } catch (error) {
+          dispatch(handleAxiosError(error));
         }
       };
       fetchAllCompanies();
@@ -125,19 +113,13 @@ export const Modal = (props: ModalProps) => {
     if (selectedItem.companyId === -1) return;
     const fetchVehiclesByCompanyId = async () => {
       try {
-        const res = await fetch(
-          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${selectedItem.companyId}`,
-          {
-            method: "GET",
-            headers,
-          }
+        const res = await axios.get(
+          `/vehicles/company-id/${selectedItem.companyId}`
         );
-        if (res.status === 201 || res.status === 200) {
-          const result = await res.json();
-          setAllVehicles(result.data);
-        }
-      } catch (e) {
-        console.error(e.message);
+        const result = await res.data;
+        setAllVehicles(result.data);
+      } catch (error) {
+        dispatch(handleAxiosError(error));
       }
     };
     fetchVehiclesByCompanyId();

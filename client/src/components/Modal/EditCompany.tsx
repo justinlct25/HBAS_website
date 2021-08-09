@@ -1,11 +1,12 @@
-import React from "react";
-import { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../css/TablePage.css";
 import { headers } from "../../helpers/headers";
 import { useRouter } from "../../helpers/useRouter";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
 import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
+import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
 import { CloseIcon } from "../IconsOnly";
 
@@ -29,14 +30,8 @@ function EditCompany() {
     const companyId = splitRoute[splitRoute.length - 1];
     const fetchCompanyById = async () => {
       try {
-        const res = await fetch(
-          `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/${companyId}`,
-          {
-            method: "GET",
-            headers,
-          }
-        );
-        const result = await res.json();
+        const res = await axios.get(`/companies/${companyId}`);
+        const result = await res.data;
         dispatch(
           setSelectedItemAction({
             companyId: parseInt(companyId),
@@ -45,8 +40,8 @@ function EditCompany() {
             tel: result.data.tel,
           })
         );
-      } catch (e) {
-        console.error(e.message);
+      } catch (error) {
+        dispatch(handleAxiosError(error));
       }
     };
     fetchCompanyById();
@@ -54,20 +49,13 @@ function EditCompany() {
 
   const handleSubmit = async () => {
     try {
-      await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/companies/${selectedItem.companyId}`,
-        {
-          method: "PUT",
-          headers,
-          body: JSON.stringify({
-            companyName: selectedItem.companyName,
-            tel: selectedItem.tel,
-            contactPerson: selectedItem.contactPerson,
-          }),
-        }
-      );
-    } catch (e) {
-      console.error(e.message);
+      await axios.put(`/companies/${selectedItem.companyId}`, {
+        companyName: selectedItem.companyName,
+        tel: selectedItem.tel,
+        contactPerson: selectedItem.contactPerson,
+      });
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     } finally {
       dispatch(resetAddNewFormAction());
     }
