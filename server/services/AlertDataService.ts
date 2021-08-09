@@ -29,6 +29,7 @@ export class AlertDataService {
   };
 
   getData = async (
+    id: number | null,
     msgType: msgType | null,
     perPage: number,
     currentPage: number,
@@ -90,6 +91,7 @@ export class AlertDataService {
       ]);
     };
 
+    if (!!id) query.andWhere(`${tables.ALERT_DATA}.id`, id);
     if (!!msgType) query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType.toUpperCase());
     if (!!searchString) query.andWhere(searchQuery);
     if (!!startDate) query.andWhere(dateQuery);
