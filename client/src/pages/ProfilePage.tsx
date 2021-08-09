@@ -93,7 +93,6 @@ function ProfilePage() {
               style={{ backgroundColor: "#8BB3FF" }}
               onClick={() => {
                 dispatch(setAddNewFormOpenAction(true, "editCompany"));
-                console.log("called");
               }}
             >
               <EditIcon />

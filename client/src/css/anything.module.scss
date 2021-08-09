@@ -36,3 +36,8 @@ $tableRowHeight: 40px;
   justify-content: center;
   align-items: center;
 }
+.popUpContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

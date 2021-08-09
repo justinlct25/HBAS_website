@@ -23,6 +23,7 @@ function Loading() {
         alignItems: "center",
         top: 0,
         left: 0,
+        backdropFilter: "blur(1.2px)",
       }}
     >
       <div

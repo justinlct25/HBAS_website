@@ -414,7 +414,7 @@ export const insertedDevices = [
 export const insertedAlertData = [
   {
     device_eui: '473AC868-002A0037',
-    date: '2021-08-06T05:19:53',
+    date: '2021-08-08T05:19:53',
     geolocation: '22.277112,114.27389',
     address: 'Sai Kung District',
     battery: '1.95',
@@ -423,7 +423,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002A0037',
-    date: '2021-08-05T10:25:23',
+    date: '2021-08-08T10:25:23',
     geolocation: '22.277088,114.27386',
     address: 'Sai Kung District',
     battery: '1.94',
@@ -441,7 +441,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD0D',
-    date: '2021-08-06T18:12:30',
+    date: '2021-08-08T18:12:30',
     geolocation: '22.277091,114.27387',
     address: 'Sai Kung District',
     battery: '1.93',
@@ -495,7 +495,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD39',
-    date: '2021-08-05T18:12:30',
+    date: '2021-08-08T18:12:30',
     geolocation: '22.277112,114.27389',
     address: 'Sai Kung District',
     battery: '1.89',
@@ -504,7 +504,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD36',
-    date: '2021-08-03T13:52:30',
+    date: '2021-08-08T13:52:30',
     geolocation: '22.276976,114.27376',
     address: 'Sai Kung District',
     battery: '1.62',
@@ -513,7 +513,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002AB037',
-    date: '2021-08-03T14:22:30',
+    date: '2021-08-08T14:22:30',
     geolocation: '22.277088,114.27386',
     address: 'Sai Kung District',
     battery: '1.52',
@@ -549,7 +549,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '8CF95720-0003BD0D',
-    date: '2021-08-05T00:01:00',
+    date: '2021-08-09T00:01:00',
     geolocation: '22.283192,114.27093',
     address: 'Sai Kung District',
     battery: '1.83',
@@ -1863,7 +1863,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002A0038',
-    date: '2021-08-05T20:16:00',
+    date: '2021-08-08T20:16:00',
     geolocation: '22.273161,114.19191',
     address: 'Wan Chai District',
     battery: '2.99',
@@ -1881,7 +1881,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002A0039',
-    date: '2021-08-05T18:31:00',
+    date: '2021-08-08T18:31:00',
     geolocation: '22.324917,114.21524',
     address: 'Kwun Tong District',
     battery: '2.99',
@@ -1899,7 +1899,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002A0010',
-    date: '2021-08-05T12:46:00',
+    date: '2021-08-08T12:46:00',
     geolocation: '22.336586,114.13054',
     address: 'Kwai Tsing District',
     battery: '2.99',
@@ -1917,7 +1917,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002A0012',
-    date: '2021-08-05T15:01:00',
+    date: '2021-08-09T15:01:00',
     geolocation: '22.381631,114.21422',
     address: 'Sha Tin District',
     battery: '2.99',
@@ -1935,7 +1935,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002AD99C',
-    date: '2021-08-05T16:16:00',
+    date: '2021-08-08T16:16:00',
     geolocation: '22.389370,113.98024',
     address: 'Tuen Mun District',
     battery: '2.99',
@@ -1953,7 +1953,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002ADA83',
-    date: '2021-08-05T17:30:00',
+    date: '2021-08-08T17:30:00',
     geolocation: '22.429402,114.03336',
     address: 'Yuen Long District',
     battery: '2.99',
@@ -1971,7 +1971,7 @@ export const insertedAlertData = [
   },
   {
     device_eui: '473AC868-002ADA85',
-    date: '2021-08-06T08:14:00',
+    date: '2021-08-09T08:14:00',
     geolocation: '22.483473,114.14601',
     address: 'North District',
     battery: '2.99',

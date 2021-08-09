@@ -1,0 +1,12 @@
+.popUpContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  > div {
+    display: flex;
+    justify-content: flex-start;
+    > div {
+      margin: 0 4px;
+    }
+  }
+}

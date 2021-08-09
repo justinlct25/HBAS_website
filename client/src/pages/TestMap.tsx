@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
 import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
+import styles from "../css/popUp.module.scss";
 import { handleAxiosError } from "../redux/login/thunk";
 
 type lastSeenLocations = Array<{
@@ -33,19 +34,19 @@ const TestMap = () => {
       console.log(result);
       // setIncidentPoints(result.data);
       //mock One-dot
-      setIncidentPoints([
-        {
-          battery: "1",
-          carPlate: "1",
-          companyName: "1",
-          date: "1",
-          deviceEui: "1",
-          deviceId: 1,
-          deviceName: "1",
-          geolocation: { x: 22.35499699048897, y: 114.14865316808854 },
-          msgType: "1",
-        },
-      ]);
+      // setIncidentPoints([
+      //   {
+      //     battery: "1",
+      //     carPlate: "1",
+      //     companyName: "1",
+      //     date: "1",
+      //     deviceEui: "1",
+      //     deviceId: 1,
+      //     deviceName: "1",
+      //     geolocation: { x: 22.35499699048897, y: 114.14865316808854 },
+      //     msgType: "1",
+      //   },
+      // ]);
     } catch (error) {
       dispatch(handleAxiosError(error));
     }
@@ -54,12 +55,12 @@ const TestMap = () => {
   return (
     <Map
       // eslint-disable-next-line react/style-prop-object
-      style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
-      // style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+      // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
+      style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
       // style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
-      zoom={[10.5]}
-      center={[114.14865316808854, 22.35499699048897]}
-      containerStyle={{ height: "80vh" }}
+      zoom={[9.8829]}
+      center={[114.56008287016687, 22.3739906560439]}
+      containerStyle={{ height: "45vh" }}
       onStyleLoad={fetchAllLastSeen}
     >
       <>
@@ -91,7 +92,38 @@ const TestMap = () => {
               ]}
               anchor="bottom-right"
               className="popup"
-            ></Popup>
+            >
+              <div className={`${styles.popUpContent}`}>
+                <div>
+                  <div>Car Plate:</div>
+                  <div>{incidentPoints[hoverAnimate.idx].carPlate}</div>
+                </div>
+                <div>
+                  <div>Device Eui:</div>
+                  <div>{incidentPoints[hoverAnimate.idx].deviceEui}</div>
+                </div>
+                <div>
+                  <div>Battery:</div>
+                  <div>{incidentPoints[hoverAnimate.idx].battery}</div>
+                </div>
+                <div>
+                  <div>Date:</div>
+                  <div>
+                    {new Date(
+                      incidentPoints[hoverAnimate.idx].date
+                    ).toLocaleDateString("en-CA")}
+                  </div>
+                </div>
+                <div>
+                  <div>Time:</div>
+                  <div>
+                    {new Date(
+                      incidentPoints[hoverAnimate.idx].date
+                    ).toLocaleTimeString("en-CA")}
+                  </div>
+                </div>
+              </div>
+            </Popup>
           ) : (
             <></>
           )}
