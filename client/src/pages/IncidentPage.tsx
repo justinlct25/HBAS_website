@@ -10,44 +10,13 @@ const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
-interface IncidentPointProps {
-  lat: number;
-  lng: number;
-}
-const IncidentPoint = (props: IncidentPointProps) => {
-  const { lat, lng } = props;
-  return (
-    <div
-      key={lat + lng}
-      style={{
-        width: "25px",
-        height: "25px",
-        background: "#00F9",
-        borderRadius: "50%",
-      }}
-    />
-  );
-};
-
 function IncidentPage() {
   const history = useHistory();
-  const incidentPageData = useSelector(
-    (state: IRootState) => state.incidentPage.incidentPage
-  );
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
-
-  const companiesDataList = useSelector(
-    (state: IRootState) => state.companiesDataList
-  );
-  const companiesList = companiesDataList.companiesDataList;
   const data = useSelector(
     (state: IRootState) => state.incidentPage.incidentPage
   );
-  const [incidentLocation, setIncidentLocation] = useState<{
-    longitude: number;
-    latitude: number;
-  }>({ longitude: Number(data.longitude), latitude: Number(data.latitude) });
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -84,12 +53,41 @@ function IncidentPage() {
             width: "100%",
           }}
         >
+          <div className="flex-center satelliteViewButtonContainer">
+            <div
+              className="flex-center satelliteButton"
+              style={{
+                borderRadius: "8px 0px 0px 8px",
+                color: isLiveView ? "#EEE" : "#555",
+                background: isLiveView ? "rgba(94, 147, 220, 0.76)" : "#FFF",
+              }}
+              onClick={() => setIsLiveView(true)}
+            >
+              {"Satellite View"}
+            </div>
+            <div
+              className="flex-center satelliteButton"
+              style={{
+                borderRadius: "0px 8px 8px 0px",
+                color: isLiveView ? "#555" : "#EEE",
+                background: isLiveView ? "#FFF" : "rgba(94, 147, 220, 0.76)",
+              }}
+              onClick={() => setIsLiveView(false)}
+            >
+              {"Map View"}
+            </div>
+          </div>
+
           {/* Map here */}
           <Map
             // eslint-disable-next-line react/style-prop-object
-            style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+            style={
+              isLiveView
+                ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
+                : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+            }
             zoom={[14]}
-            center={[incidentLocation.longitude, incidentLocation.latitude]}
+            center={[data.longitude, data.latitude]}
             containerStyle={{ height: "100%", width: "100%" }}
             onStyleLoad={() => setMapLoaded(true)}
           >
@@ -98,12 +96,7 @@ function IncidentPage() {
               paint={{ "circle-color": "#00F900", "circle-radius": 10 }}
             >
               {mapLoaded ? (
-                <Feature
-                  coordinates={[
-                    incidentLocation.longitude,
-                    incidentLocation.latitude,
-                  ]}
-                />
+                <Feature coordinates={[data.longitude, data.latitude]} />
               ) : (
                 <></>
               )}

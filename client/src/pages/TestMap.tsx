@@ -60,9 +60,9 @@ const TestMap = () => {
       // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
       style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
       // style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
-      zoom={[9.8829]}
-      center={[114.56008287016687, 22.3739906560439]}
-      containerStyle={{ height: "45vh" }}
+      zoom={[9.6]}
+      center={[114.15960518207243, 22.363101286562113]}
+      containerStyle={{ height: "80vh" }}
       onStyleLoad={fetchAllLastSeen}
     >
       <>
