@@ -72,14 +72,14 @@ const VehicleLogs = () => {
           REACT_APP_API_SERVER
         );
         const res = await axios.get(url.toString());
-        const result = await res.data;
+        const result = res.data;
         setIncidentPoints(result.data);
       } catch (error) {
         dispatch(handleAxiosError(error));
       }
     };
     fetchLocationHistory();
-  }, [dispatch]);
+  }, [dispatch, router.pathname]);
 
   return (
     <div className="flex-center pageContainer">
@@ -124,7 +124,7 @@ const VehicleLogs = () => {
                 <IncidentPoint
                   onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
                   onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-                  key={idx}
+                  key={`incident-${item.id}`}
                   lat={item.geolocation.x}
                   lng={item.geolocation.y}
                   backgroundColor={item.msgType === "A" ? "#F00C" : "#00F9"}

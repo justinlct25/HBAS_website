@@ -123,6 +123,7 @@ function AddNewForm() {
                 {totalVehicle.map((item, idx) => {
                   return (
                     <div
+                      key={`vehicle-idx-${idx}`}
                       style={{
                         width: "100%",
                         marginBottom: "24px",

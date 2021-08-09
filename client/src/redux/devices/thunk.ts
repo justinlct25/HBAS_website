@@ -18,7 +18,7 @@ export function getDeviceDataListThunk(activePage: number) {
       url.searchParams.set("rows", String(10));
 
       const res = await axios.get(url.toString());
-      const result = await res.data;
+      const result = res.data;
       dispatch(
         setDevicesDataList(
           result.data,

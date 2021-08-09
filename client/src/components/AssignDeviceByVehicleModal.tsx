@@ -1,13 +1,12 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
-import { headers } from "../helpers/headers";
 import { ModalType } from "../pages/ManageDevice";
 import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
 import { Modal } from "./Modal";
-import axios from "axios";
 
 function AssignDeviceByVehicleModal() {
   const [selectModalOpen, setSelectModalOpen] = useState<{

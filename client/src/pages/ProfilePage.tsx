@@ -14,11 +14,11 @@ import { useRouter } from "../helpers/useRouter";
 import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
 import {
   resetPopUpAction,
-  setSelectedItemAction,
+  setSelectedItemAction
 } from "../redux/assignDeviceModal/action";
 import {
   setDeleteModalDataAction,
-  setDeleteModalOpenAction,
+  setDeleteModalOpenAction
 } from "../redux/deleteModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
@@ -46,7 +46,13 @@ function ProfilePage() {
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
     dispatch(getProfileListThunk(parseInt(routeId)));
-  }, [dispatch, popUpIsActive, addNewFormIsOpen, deleteModalIsOpen]);
+  }, [
+    dispatch,
+    popUpIsActive,
+    addNewFormIsOpen,
+    deleteModalIsOpen,
+    router.pathname,
+  ]);
 
   const handleReset = () => {
     dispatch(resetPopUpAction());
@@ -166,7 +172,7 @@ function ProfilePage() {
                 .map((item, idx) => {
                   return (
                     <VehicleCards
-                      key={idx}
+                      key={`vehicle-${item.vehicleId}`}
                       item={item}
                       cursor={"pointer"}
                       callFunction={() => {
@@ -210,7 +216,12 @@ function ProfilePage() {
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                return <AnimatedVehicleCards key={idx} item={item} />;
+                return (
+                  <AnimatedVehicleCards
+                    key={item.vehicleId + idx}
+                    item={item}
+                  />
+                );
               })}
           </div>
         </div>

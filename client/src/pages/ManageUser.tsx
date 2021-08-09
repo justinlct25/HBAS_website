@@ -31,7 +31,7 @@ function ManageUser() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCompaniesDataListThunk(activePage));
-  }, [dispatch, isOpen]);
+  }, [dispatch, isOpen, activePage]);
 
   return (
     <div className="flex-center pageContainer">
@@ -108,7 +108,7 @@ function ManageUser() {
             companiesList.map((item, idx) => {
               return (
                 <div
-                  key={item.companyName}
+                  key={`company-${item.id}`}
                   className="flex-center tableRow"
                   onClick={() => {
                     dispatch(
@@ -122,18 +122,10 @@ function ManageUser() {
                     dispatch(push(`/profile/${item.id}`, { id: item.id }));
                   }}
                 >
-                  <div key={idx} className="flex-center tdItem">
-                    {item.companyName}
-                  </div>
-                  <div key={idx} className="tdItem">
-                    {item.contactPerson}
-                  </div>
-                  <div key={idx} className="tdItem">
-                    {item.tel}
-                  </div>
-                  <div key={idx} className="tdItem">
-                    {item.vehiclesCount}
-                  </div>
+                  <div className="flex-center tdItem">{item.companyName}</div>
+                  <div className="tdItem">{item.contactPerson}</div>
+                  <div className="tdItem">{item.tel}</div>
+                  <div className="tdItem">{item.vehiclesCount}</div>
                 </div>
               );
             })}

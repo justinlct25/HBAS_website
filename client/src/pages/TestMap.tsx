@@ -30,7 +30,7 @@ const TestMap = () => {
   const fetchAllLastSeen = async () => {
     try {
       const res = await axios.get(`/alert-data/latest-locations`);
-      const result = await res.data;
+      const result = res.data;
       console.log(result);
       // setIncidentPoints(result.data);
       //mock One-dot
@@ -70,7 +70,7 @@ const TestMap = () => {
         >
           {incidentPoints.map((point, idx) => (
             <Feature
-              key={idx}
+              key={point.deviceId + idx}
               coordinates={[point.geolocation.y, point.geolocation.x]}
               onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
               onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}

@@ -75,7 +75,7 @@ export const Modal = (props: ModalProps) => {
       const fetchAllDevices = async () => {
         try {
           const res = await axios.get(`/devices/link-device-vehicle`);
-          const result = await res.data;
+          const result = res.data;
           const linkedDevices = await result.data.linkedDevices;
           const notAssigned = await result.data.newDevices;
 
@@ -99,7 +99,7 @@ export const Modal = (props: ModalProps) => {
           url.searchParams.set("rows", "1000000"); // hardcoded rows to get all entries
 
           const res = await axios.get(url.toString());
-          const result = await res.data;
+          const result = res.data;
           setCompanyList(result.data);
         } catch (error) {
           dispatch(handleAxiosError(error));
@@ -107,7 +107,7 @@ export const Modal = (props: ModalProps) => {
       };
       fetchAllCompanies();
     }
-  }, [popUpIsActive, isOpen, modalType]);
+  }, [popUpIsActive, isOpen, modalType, dispatch]);
 
   useEffect(() => {
     if (selectedItem.companyId === -1) return;
@@ -116,14 +116,14 @@ export const Modal = (props: ModalProps) => {
         const res = await axios.get(
           `/vehicles/company-id/${selectedItem.companyId}`
         );
-        const result = await res.data;
+        const result = res.data;
         setAllVehicles(result.data);
       } catch (error) {
         dispatch(handleAxiosError(error));
       }
     };
     fetchVehiclesByCompanyId();
-  }, [selectedItem.companyId]);
+  }, [selectedItem.companyId, dispatch]);
 
   return (
     <div
@@ -187,7 +187,7 @@ export const Modal = (props: ModalProps) => {
                 .map((item) => {
                   return (
                     <div
-                      key={item.id}
+                      key={`device-${item.id}`}
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -209,7 +209,7 @@ export const Modal = (props: ModalProps) => {
                 .map((item) => {
                   return (
                     <div
-                      key={item.id}
+                      key={`device-${item.id}`}
                       className="eachDevice"
                       style={{ cursor: "pointer" }}
                       onClick={() => {
@@ -230,6 +230,7 @@ export const Modal = (props: ModalProps) => {
           ? allVehicles.map((item) => {
               return (
                 <div
+                  key={`vehicle-${item.vehicleId}-device-${item.deviceId}`}
                   className="eachDevice"
                   onClick={
                     selectedItem.companyName === ""
@@ -257,7 +258,7 @@ export const Modal = (props: ModalProps) => {
             companyList.map((item) => {
               return (
                 <div
-                  key={item.id}
+                  key={`company-${item.id}`}
                   className="eachDevice"
                   onClick={() => {
                     dispatch(

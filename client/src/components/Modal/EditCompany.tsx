@@ -2,15 +2,12 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../css/TablePage.css";
-import { headers } from "../../helpers/headers";
 import { useRouter } from "../../helpers/useRouter";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
 import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
 import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
 import { CloseIcon } from "../IconsOnly";
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 function EditCompany() {
   const router = useRouter();
@@ -31,7 +28,7 @@ function EditCompany() {
     const fetchCompanyById = async () => {
       try {
         const res = await axios.get(`/companies/${companyId}`);
-        const result = await res.data;
+        const result = res.data;
         dispatch(
           setSelectedItemAction({
             companyId: parseInt(companyId),
@@ -45,7 +42,7 @@ function EditCompany() {
       }
     };
     fetchCompanyById();
-  }, []);
+  }, [dispatch, router.pathname]);
 
   const handleSubmit = async () => {
     try {

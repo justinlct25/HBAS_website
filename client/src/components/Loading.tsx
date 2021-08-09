@@ -37,9 +37,10 @@ function Loading() {
         Loading
       </div>
       <div className="dotContainer">
-        {dots.map((dot) => {
+        {dots.map((dot, idx) => {
           return (
             <div
+              key={`dot-1-${idx}`}
               className="eachDot"
               style={{
                 transform: `
@@ -49,9 +50,10 @@ function Loading() {
             />
           );
         })}
-        {dots.map((dot) => {
+        {dots.map((dot, idx) => {
           return (
             <div
+              key={`dot-2-${idx}`}
               className="eachDot"
               style={{
                 transform: `
@@ -62,9 +64,10 @@ function Loading() {
             />
           );
         })}
-        {dots.map((dot) => {
+        {dots.map((dot, idx) => {
           return (
             <div
+              key={`dot-3-${idx}`}
               className="eachDot"
               style={{
                 transform: `

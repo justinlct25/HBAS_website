@@ -45,7 +45,7 @@ function PulseMessagePage() {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [dispatch, activePage]);
 
   const batteryCalculation = (bat: string) => {
     //4.1v

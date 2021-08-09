@@ -87,7 +87,7 @@ function NavBar() {
                       ) : (
                         notification.message.map((message, idx) => {
                           return (
-                            <div key={idx}>
+                            <div key={`message-${idx}`}>
                               <div>{message.text}</div>
                               <div>{message.createdAt}</div>
                             </div>

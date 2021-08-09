@@ -19,7 +19,7 @@ export function getCompaniesDataListThunk(activePage: number) {
       url.searchParams.set("rows", String(10));
 
       const res = await axios.get(url.toString());
-      const data = await res.data;
+      const data = res.data;
       dispatch(
         setCompaniesDataList(
           data.data,

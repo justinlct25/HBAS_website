@@ -8,7 +8,7 @@ export function getProfileListThunk(id: number) {
     try {
       dispatch(resetProfileList());
       const res = await axios.get(`/vehicles/company-id/${id}`);
-      const result = await res.data;
+      const result = res.data;
       dispatch(setProfileList(result.data));
     } catch (error) {
       dispatch(handleAxiosError(error));

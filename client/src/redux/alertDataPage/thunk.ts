@@ -29,7 +29,7 @@ export function getAlertDataListThunk(
         if (!!searchString) url.searchParams.set("search", searchString);
 
         const res = await axios.get(url.toString());
-        const result = await res.data;
+        const result = res.data;
         dispatch(
           setAlertDataList(
             result.data,
