@@ -77,7 +77,6 @@ const VehicleLogs = () => {
         });
         if (res.status === 200) {
           const result = await res.json();
-          console.log(result.data);
           setIncidentPoints(result.data);
         }
       } catch (e) {
