@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ConnectedRouter } from "connected-react-router";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
@@ -15,7 +16,9 @@ import PulseMessagePage from "./pages/PulseMessagePage";
 import Statistics from "./pages/Statistics";
 // import Statistics from "./pages/Statistics.jsx";
 import TestMap from "./pages/TestMap";
-import { history } from "./redux/store";
+import { checkLogin } from "./redux/login/thunk";
+import { history, IRootState } from "./redux/store";
+import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -27,6 +30,15 @@ function App() {
     "application/json; charset=utf-8";
   axios.defaults.headers.post["Content-Type"] =
     "application/json; charset=utf-8";
+
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn === null) {
+      dispatch(checkLogin());
+    }
+  }, [dispatch, isLoggedIn]);
 
   return (
     <div className="App">
@@ -42,27 +54,55 @@ function App() {
             <Redirect to="/login" />
           </Route>
           <Route path="/login" exact={true} component={LoginPage} />
-          <Route
-            path="/alert-data-page"
-            exact={true}
-            component={AlertDataPage}
-          />
-          <Route
-            path="/pulse-message"
-            exact={true}
-            component={PulseMessagePage}
-          />
-          <Route path="/incident/:id" exact={true} component={IncidentPage} />
-          <Route path="/profile/:id" exact={true} component={ProfilePage} />
-          <Route path="/manage-user" exact={true} component={ManageUser} />
-          <Route path="/manage-device" exact={true} component={ManageDevice} />
-          <Route path="/statistics" exact={true} component={Statistics} />
-          <Route
-            path="/vehicle-logs/:id"
-            exact={true}
-            component={VehicleLogs}
-          />
-          <Route path="/test-map" exact={true} component={TestMap} />
+          {isLoggedIn && (
+            <>
+              <AdminPrivateRoute
+                path="/alert-data-page"
+                exact={true}
+                component={AlertDataPage}
+              />
+              <AdminPrivateRoute
+                path="/pulse-message"
+                exact={true}
+                component={PulseMessagePage}
+              />
+              <AdminPrivateRoute
+                path="/incident/:id"
+                exact={true}
+                component={IncidentPage}
+              />
+              <AdminPrivateRoute
+                path="/profile/:id"
+                exact={true}
+                component={ProfilePage}
+              />
+              <AdminPrivateRoute
+                path="/manage-user"
+                exact={true}
+                component={ManageUser}
+              />
+              <AdminPrivateRoute
+                path="/manage-device"
+                exact={true}
+                component={ManageDevice}
+              />
+              <AdminPrivateRoute
+                path="/statistics"
+                exact={true}
+                component={Statistics}
+              />
+              <AdminPrivateRoute
+                path="/vehicle-logs/:id"
+                exact={true}
+                component={VehicleLogs}
+              />
+              <AdminPrivateRoute
+                path="/test-map"
+                exact={true}
+                component={TestMap}
+              />
+            </>
+          )}
         </Switch>
       </ConnectedRouter>
     </div>

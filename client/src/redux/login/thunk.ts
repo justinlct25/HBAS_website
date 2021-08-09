@@ -53,6 +53,29 @@ export function logout() {
   };
 }
 
+export function checkLogin() {
+  return async (dispatch: ThunkDispatch) => {
+    const token = localStorage.getItem("token");
+    try {
+      if (token === null) {
+        dispatch(logoutSuccess());
+        dispatch(push("/login"));
+        return;
+      }
+      const res = await axios.get("/login/current-user");
+      if (res.data.user) {
+        dispatch(loginSuccess(res.data.user, token));
+        dispatch(push("/alert-data-page"));
+      } else {
+        dispatch(logoutSuccess());
+        dispatch(push("/login"));
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
+  };
+}
+
 export const handleFetchErrors = (status: number, message: string) => {
   return async (dispatch: ThunkDispatch) => {
     if (status === httpStatusCodes.UNAUTHORIZED) {

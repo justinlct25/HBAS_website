@@ -28,10 +28,13 @@ function AssignDeviceByVehicleModal() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post(`/devices/link-device-vehicle`, {
-        deviceId: assignDeviceModal.deviceId,
-        vehicleId: assignDeviceModal.selectedItem.vehicleId,
-      });
+      await axios.post<{ message: string; id: number }>(
+        `/devices/link-device-vehicle`,
+        {
+          deviceId: assignDeviceModal.deviceId,
+          vehicleId: assignDeviceModal.selectedItem.vehicleId,
+        }
+      );
     } catch (e) {
       console.error(e.message);
     } finally {
