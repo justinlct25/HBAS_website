@@ -14,18 +14,18 @@ export const resetState = () => {
   return async (dispatch: ThunkDispatch) => {};
 };
 
-export function login(email: string, password: string) {
+export function login(username: string, password: string) {
   return async (dispatch: ThunkDispatch) => {
     try {
       const res = await axios.post(`/login`, {
-        email,
+        username,
         password,
       });
 
       dispatch(clearError());
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-        dispatch(loginSuccess(email, res.data.token));
+        dispatch(loginSuccess(username, res.data.token));
         dispatch(push("/alert-data-page"));
       } else {
         dispatch(loginFailed());

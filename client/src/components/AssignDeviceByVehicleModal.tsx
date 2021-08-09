@@ -1,7 +1,7 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
-import { headers } from "../helpers/headers";
 import { ModalType } from "../pages/ManageDevice";
 import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
 import { IRootState } from "../redux/store";
@@ -28,17 +28,10 @@ function AssignDeviceByVehicleModal() {
 
   const handleSubmit = async () => {
     try {
-      await fetch(
-        `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/devices/link-device-vehicle`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            deviceId: assignDeviceModal.deviceId,
-            vehicleId: assignDeviceModal.selectedItem.vehicleId,
-          }),
-        }
-      );
+      await axios.post(`/devices/link-device-vehicle`, {
+        deviceId: assignDeviceModal.deviceId,
+        vehicleId: assignDeviceModal.selectedItem.vehicleId,
+      });
     } catch (e) {
       console.error(e.message);
     } finally {

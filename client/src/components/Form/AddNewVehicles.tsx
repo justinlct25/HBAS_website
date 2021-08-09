@@ -1,12 +1,11 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddIcon, CloseIcon, MinusIcon } from "../../components/IconsOnly";
 import "../../css/TablePage.css";
-import { headers } from "../../helpers/headers";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
+import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 function AddNewVehicles() {
   const [totalVehicle, setTotalVehicle] = useState<
@@ -55,18 +54,11 @@ function AddNewVehicles() {
 
   const handleSubmit = async () => {
     try {
-      await fetch(
-        `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}/vehicles/company-id/${companyId}`,
-        {
-          method: "POST",
-          headers,
-          body: JSON.stringify({
-            vehicles: totalVehicle,
-          }),
-        }
-      );
-    } catch (e) {
-      console.error(e.message);
+      await axios.post(`/vehicles/company-id/${companyId}`, {
+        vehicles: totalVehicle,
+      });
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     } finally {
       handleReset();
     }
@@ -103,6 +95,7 @@ function AddNewVehicles() {
                 {totalVehicle.map((item, idx) => {
                   return (
                     <div
+                      key={`vehicle-${item.carPlate}`}
                       style={{
                         width: "100%",
                         margin: "24px 0",

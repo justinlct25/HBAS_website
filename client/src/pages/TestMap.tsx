@@ -1,8 +1,10 @@
+import axios from "axios";
 import React, { useState } from "react";
 import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
+import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
-import { headers } from "../helpers/headers";
 import styles from "../css/popUp.module.scss";
+import { handleAxiosError } from "../redux/login/thunk";
 
 type lastSeenLocations = Array<{
   battery: string;
@@ -21,20 +23,16 @@ const Map = ReactMapboxGL({
 });
 
 const TestMap = () => {
+  const dispatch = useDispatch();
   const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
   const fetchAllLastSeen = async () => {
     try {
-      const res = await fetch(
-        `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/latest-locations`,
-        {
-          method: "GET",
-          headers,
-        }
-      );
-      const result = await res.json();
-      setIncidentPoints(result.data);
+      const res = await axios.get(`/alert-data/latest-locations`);
+      const result = res.data;
+      console.log(result);
+      // setIncidentPoints(result.data);
       //mock One-dot
       // setIncidentPoints([
       //   {
@@ -49,8 +47,8 @@ const TestMap = () => {
       //     msgType: "1",
       //   },
       // ]);
-    } catch (e) {
-      console.error(e.message);
+    } catch (error) {
+      dispatch(handleAxiosError(error));
     }
   };
 
@@ -72,7 +70,7 @@ const TestMap = () => {
         >
           {incidentPoints.map((point, idx) => (
             <Feature
-              key={idx}
+              key={point.deviceId + idx}
               coordinates={[point.geolocation.y, point.geolocation.x]}
               onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
               onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}

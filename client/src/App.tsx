@@ -1,3 +1,4 @@
+import axios from "axios";
 import { ConnectedRouter } from "connected-react-router";
 import React from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -15,7 +16,6 @@ import Statistics from "./pages/Statistics";
 // import Statistics from "./pages/Statistics.jsx";
 import TestMap from "./pages/TestMap";
 import { history } from "./redux/store";
-import axios from "axios";
 
 function App() {
   const token = localStorage.getItem("token");

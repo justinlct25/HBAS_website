@@ -1,9 +1,10 @@
+import axios from "axios";
 import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { headers } from "../helpers/headers";
 import { useRouter } from "../helpers/useRouter";
+import { handleAxiosError } from "../redux/login/thunk";
 import { BackButton } from "./IconsOnly";
 
 type lastSeenLocations = Array<{
@@ -68,23 +69,17 @@ const VehicleLogs = () => {
       try {
         const url = new URL(
           `${REACT_APP_API_VERSION}/alert-data/history/${deviceId}`,
-          `${REACT_APP_API_SERVER}`
+          REACT_APP_API_SERVER
         );
-
-        const res = await fetch(url.toString(), {
-          method: "GET",
-          headers,
-        });
-        if (res.status === 200) {
-          const result = await res.json();
-          setIncidentPoints(result.data);
-        }
-      } catch (e) {
-        console.error(e.message);
+        const res = await axios.get(url.toString());
+        const result = res.data;
+        setIncidentPoints(result.data);
+      } catch (error) {
+        dispatch(handleAxiosError(error));
       }
     };
     fetchLocationHistory();
-  }, [dispatch]);
+  }, [dispatch, router.pathname]);
 
   return (
     <div className="flex-center pageContainer">
@@ -129,7 +124,7 @@ const VehicleLogs = () => {
                 <IncidentPoint
                   onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
                   onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-                  key={idx}
+                  key={`incident-${item.id}`}
                   lat={item.geolocation.x}
                   lng={item.geolocation.y}
                   backgroundColor={item.msgType === "A" ? "#F00C" : "#00F9"}

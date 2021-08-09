@@ -30,7 +30,7 @@ function AlertDataPage() {
 
   useEffect(() => {
     dispatch(getAlertDataListThunk(activePage, false));
-  }, [dispatch]);
+  }, [activePage, dispatch]);
 
   useEffect(() => {
     const socket = io(`${REACT_APP_API_SERVER}`);
@@ -42,7 +42,7 @@ function AlertDataPage() {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [dispatch, activePage]);
 
   return (
     <div className={`${styles["flex-center"]} ${styles.pageContainer}`}>

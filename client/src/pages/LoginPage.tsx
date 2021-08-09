@@ -1,25 +1,15 @@
-import { push } from "connected-react-router";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { login } from "../redux/login/thunk";
 
 function LoginPage() {
   const dispatch = useDispatch();
-  const validLogin = {
-    username: "admin1",
-    password: "password",
+
+  const [loginInput, setLoginInput] = useState({ username: "", password: "" });
+  const handleSubmit = () => {
+    dispatch(login(loginInput.username, loginInput.password));
   };
-  const [login, setLogin] = useState({ username: "", password: "" });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const handleLogin = () => {
-    setIsSubmitted(true);
-    if (
-      login.password === validLogin.password &&
-      login.username === validLogin.username
-    ) {
-      dispatch(push("/alert-data-page"));
-    }
-  };
+
   return (
     <div
       className="flex-center"
@@ -41,15 +31,17 @@ function LoginPage() {
               width: "500px",
               marginLeft: "8px",
             }}
-            value={login.username}
+            value={loginInput.username}
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                handleLogin();
+                handleSubmit();
               }
             }}
             onChange={(e) => {
-              setIsSubmitted(false);
-              setLogin({ username: e.target.value, password: login.password });
+              setLoginInput({
+                username: e.target.value,
+                password: loginInput.password,
+              });
             }}
           />
         </div>
@@ -61,30 +53,26 @@ function LoginPage() {
               width: "500px",
               marginLeft: "8px",
             }}
-            value={login.password}
+            value={loginInput.password}
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                handleLogin();
+                handleSubmit();
               }
             }}
             onChange={(e) => {
-              setIsSubmitted(false);
-              setLogin({ username: login.username, password: e.target.value });
+              setLoginInput({
+                username: loginInput.username,
+                password: e.target.value,
+              });
             }}
           />
         </div>
-        {(isSubmitted ||
-          login.password === validLogin.password ||
-          login.username === validLogin.username) && (
-          <div style={{ marginTop: "24px", color: "red" }}>
-            Invalid Username or Password
-          </div>
-        )}
+
         <div
           className="flex-center formButtonContainer"
           style={{ width: "100%" }}
         >
-          <div className="button" onClick={handleLogin}>
+          <div className="button" onClick={handleSubmit}>
             Login
           </div>
           {/* <div>

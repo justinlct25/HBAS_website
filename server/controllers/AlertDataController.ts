@@ -84,6 +84,7 @@ export class AlertDataController {
   };
 
   getData = async (req: Request, res: Response) => {
+    const dataId = req.query.id;
     const msgType = req.query.msg;
     const perPage = req.query.rows;
     const currentPage = req.query.page;
@@ -93,6 +94,7 @@ export class AlertDataController {
 
     // get data
     const data = await this.alertDataService.getData(
+      !!dataId ? parseInt(String(dataId)) : null,
       !!msgType ? (msgType as msgType) : null,
       !!perPage ? parseInt(String(perPage)) : 20,
       !!currentPage ? parseInt(String(currentPage)) : 1,
