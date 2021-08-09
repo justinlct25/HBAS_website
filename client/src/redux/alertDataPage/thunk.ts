@@ -35,7 +35,6 @@ export function getAlertDataListThunk(
             result.data,
             activePage,
             result.pagination.lastPage,
-            result.perPage
           )
         );
       } catch (error) {

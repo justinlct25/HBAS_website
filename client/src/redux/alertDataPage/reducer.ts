@@ -12,7 +12,6 @@ export const IAlertDataPageReducer = (
         alertDataList: action.alertDataList,
         activePage: action.activePage,
         totalPage: action.totalPage,
-        limit: action.limit,
       };
     case "@@AlertDataPage/setAlertData":
       return {

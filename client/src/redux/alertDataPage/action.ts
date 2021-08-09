@@ -4,15 +4,13 @@ import { IAlertDataPage } from "./state";
 export function setAlertDataList(
   alertDataList: Array<IAlertDataPage>,
   activePage: number,
-  totalPage: number,
-  limit: number
+  totalPage: number
 ) {
   return {
     type: "@@AlertDataPage/SET_AlertDataList" as const,
     alertDataList,
     activePage,
     totalPage,
-    limit,
   };
 }
 
