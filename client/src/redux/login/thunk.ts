@@ -3,7 +3,7 @@ import { push } from "connected-react-router";
 import httpStatusCodes from "http-status-codes";
 import {
   REACT_APP_API_SERVER,
-  REACT_APP_API_VERSION
+  REACT_APP_API_VERSION,
 } from "../../helpers/processEnv";
 import { IRootState, ThunkDispatch } from "../store";
 import {
@@ -11,7 +11,7 @@ import {
   loginError,
   loginFailed,
   loginSuccess,
-  logoutSuccess
+  logoutSuccess,
 } from "./actions";
 
 export const resetState = () => {
@@ -74,7 +74,7 @@ export function checkLogin() {
   return async (dispatch: ThunkDispatch) => {
     const token = localStorage.getItem("token");
     try {
-      if (token === null) {
+      if (!token) {
         dispatch(logoutSuccess());
         dispatch(push("/login"));
         return;
@@ -82,12 +82,10 @@ export function checkLogin() {
       const res = await axios.get("/login/current-user");
       if (res.data.username) {
         dispatch(loginSuccess(res.data.username, token));
-      } else {
-        dispatch(logoutSuccess());
-        dispatch(push("/login"));
       }
     } catch (e) {
-      console.error(e.message);
+      dispatch(logoutSuccess());
+      dispatch(push("/login"));
     }
   };
 }

@@ -24,19 +24,15 @@ import { IRootState } from "./redux/store";
 import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 
 function App() {
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-    // Axios setups
-    axios.defaults.baseURL = `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}`;
-    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    axios.defaults.headers.get["Content-Type"] =
-      "application/json; charset=utf-8";
-    axios.defaults.headers.post["Content-Type"] =
-      "application/json; charset=utf-8";
-
-    console.log({ token });
-  }, []);
+  // Axios setups
+  axios.defaults.baseURL = `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}`;
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  axios.defaults.headers.get["Content-Type"] =
+    "application/json; charset=utf-8";
+  axios.defaults.headers.post["Content-Type"] =
+    "application/json; charset=utf-8";
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);

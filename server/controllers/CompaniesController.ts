@@ -23,16 +23,14 @@ export class CompaniesController {
         ? (d.vehiclesCount = 0)
         : (d.vehiclesCount = parseInt(String(d.vehiclesCount)));
     });
-    return res
-      .status(!data.data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
-      .json(data);
+    return res.status(httpStatusCodes.OK).json(data);
   };
 
   // get one company details
   getCompanyDetails = async (req: Request, res: Response) => {
     const { companyId } = req.params;
     const data = await this.companiesService.getCompanyDetails(parseInt(companyId));
-    return res.status(!data ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK).json({ data });
+    return res.status(httpStatusCodes.OK).json({ data });
   };
 
   companyChecking = async (requiredFields: (string | null | undefined)[], companyId?: number) => {
