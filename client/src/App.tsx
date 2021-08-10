@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ConnectedRouter } from "connected-react-router";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -17,7 +16,7 @@ import Statistics from "./pages/Statistics";
 // import Statistics from "./pages/Statistics.jsx";
 import TestMap from "./pages/TestMap";
 import { checkLogin } from "./redux/login/thunk";
-import { history, IRootState } from "./redux/store";
+import { IRootState } from "./redux/store";
 import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 
 function App() {
@@ -42,69 +41,63 @@ function App() {
 
   return (
     <div className="App">
-      <ConnectedRouter history={history}>
-        <div className="fixOnPage">
-          <NavBar />
-        </div>
-        <Switch>
-          {/* <Route path="/" exact={true} component={LandingPage} /> */}
-          {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
+      <div className="fixOnPage">
+        <NavBar />
+      </div>
+      <Switch>
+        {/* <Route path="/" exact={true} component={LandingPage} /> */}
+        {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
 
-          <Route exact path="/">
-            <Redirect to="/login" />
-          </Route>
-          <Route path="/login" exact={true} component={LoginPage} />
-          {isLoggedIn && (
-            <>
-              <AdminPrivateRoute
-                path="/alert-data-page"
-                exact={true}
-                component={AlertDataPage}
-              />
-              <AdminPrivateRoute
-                path="/pulse-message"
-                exact={true}
-                component={PulseMessagePage}
-              />
-              <AdminPrivateRoute
-                path="/incident/:id"
-                exact={true}
-                component={IncidentPage}
-              />
-              <AdminPrivateRoute
-                path="/profile/:id"
-                exact={true}
-                component={ProfilePage}
-              />
-              <AdminPrivateRoute
-                path="/manage-user"
-                exact={true}
-                component={ManageUser}
-              />
-              <AdminPrivateRoute
-                path="/manage-device"
-                exact={true}
-                component={ManageDevice}
-              />
-              <AdminPrivateRoute
-                path="/statistics"
-                exact={true}
-                component={Statistics}
-              />
-              <AdminPrivateRoute
-                path="/vehicle-logs/:id"
-                exact={true}
-                component={VehicleLogs}
-              />
-              <AdminPrivateRoute
-                path="/test-map"
-                exact={true}
-                component={TestMap}
-              />
-            </>
-          )}
-        </Switch>
-      </ConnectedRouter>
+        <Route exact path="/">
+          <Redirect to="/alert-data-page" />
+        </Route>
+        <Route path="/login" exact={true} component={LoginPage} />
+        {isLoggedIn && (
+          <>
+            <AdminPrivateRoute
+              path="/alert-data-page"
+              exact
+              component={AlertDataPage}
+            />
+            <AdminPrivateRoute
+              path="/pulse-message"
+              exact
+              component={PulseMessagePage}
+            />
+            <AdminPrivateRoute
+              path="/incident/:id"
+              exact
+              component={IncidentPage}
+            />
+            <AdminPrivateRoute
+              path="/profile/:id"
+              exact
+              component={ProfilePage}
+            />
+            <AdminPrivateRoute
+              path="/manage-user"
+              exact
+              component={ManageUser}
+            />
+            <AdminPrivateRoute
+              path="/manage-device"
+              exact
+              component={ManageDevice}
+            />
+            <AdminPrivateRoute
+              path="/statistics"
+              exact
+              component={Statistics}
+            />
+            <AdminPrivateRoute
+              path="/vehicle-logs/:id"
+              exact
+              component={VehicleLogs}
+            />
+            <AdminPrivateRoute path="/test-map" exact component={TestMap} />
+          </>
+        )}
+      </Switch>
     </div>
   );
 }

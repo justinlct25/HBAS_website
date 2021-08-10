@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { push } from "connected-react-router";
 import httpStatusCodes from "http-status-codes";
-import { IRootState, ThunkDispatch } from "../store";
+import { history, IRootState, ThunkDispatch } from "../store";
 import {
   clearError,
   loginError,
@@ -63,9 +63,8 @@ export function checkLogin() {
         return;
       }
       const res = await axios.get("/login/current-user");
-      if (res.data.user) {
-        dispatch(loginSuccess(res.data.user, token));
-        dispatch(push("/alert-data-page"));
+      if (res.data.username) {
+        dispatch(loginSuccess(res.data.username, token));
       } else {
         dispatch(logoutSuccess());
         dispatch(push("/login"));
