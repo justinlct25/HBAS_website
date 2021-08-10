@@ -66,10 +66,10 @@ export class VehiclesController {
 
   editVehicle = async (req: Request, res: Response) => {
     const { vehicleId } = req.params;
-    const { carPlate, vehicleModel, vehicleType }: INewVehicle = req.body;
+    const { carPlate, vehicleModel, vehicleType, manufactureYear }: INewVehicle = req.body;
 
     const checkingRes = await this.vehicleChecking(
-      [{ carPlate, vehicleModel, vehicleType }],
+      [{ carPlate, vehicleModel, vehicleType, manufactureYear }],
       parseInt(vehicleId)
     );
 
@@ -84,7 +84,8 @@ export class VehiclesController {
       parseInt(vehicleId),
       carPlate,
       vehicleModel,
-      vehicleType
+      vehicleType,
+      manufactureYear
     );
 
     // if update failed
