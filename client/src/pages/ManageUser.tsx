@@ -1,5 +1,5 @@
 import { push } from "connected-react-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddNewForm from "../components/AddNewForm";
 import { AddIcon, SearchIcon } from "../components/IconsOnly";
@@ -64,7 +64,7 @@ function ManageUser() {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   //Need Search function
-                  dispatch(getCompaniesDataListThunk(1));
+                  dispatch(getCompaniesDataListThunk(1, searchInput));
                 }
               }}
             />
@@ -72,7 +72,7 @@ function ManageUser() {
               style={{ cursor: "pointer", padding: "8px" }}
               onClick={() =>
                 //Need Search function
-                dispatch(getCompaniesDataListThunk(1))
+                dispatch(getCompaniesDataListThunk(1, searchInput))
               }
             >
               <SearchIcon />
@@ -140,7 +140,7 @@ function ManageUser() {
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getCompaniesDataListThunk(activePage - 1));
+                  dispatch(getCompaniesDataListThunk(activePage - 1, searchInput));
                 }
           }
         >
@@ -168,7 +168,7 @@ function ManageUser() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getCompaniesDataListThunk(activePage + 1));
+                  dispatch(getCompaniesDataListThunk(activePage + 1, searchInput));
                 }
               : () => {}
           }

@@ -30,23 +30,6 @@ function ManageDevice() {
     dispatch(getDeviceDataListThunk(activePage));
   }, [dispatch, popUpIsActive]);
 
-  // const limit = devicesDataList.limit;
-
-  // useEffect(() => {
-  //   const socket = io(`${serverUrl}`);
-
-  //   //????????????
-  //   socket.on("get-new-devices", () => {
-  //     dispatch(
-  //       getDeviceDataListThunk(activePage, false, placeHolderText, searchInput)
-  //     );
-  //   });
-
-  //   return () => {
-  //     socket.disconnect();
-  //   };
-  // });
-
   return (
     <>
       <div className="flex-center pageContainer">
@@ -62,14 +45,14 @@ function ManageDevice() {
                 }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    dispatch(getDeviceDataListThunk(1));
+                    dispatch(getDeviceDataListThunk(1, searchInput));
                   }
                 }}
               />
               <div
                 style={{ cursor: "pointer", padding: "8px" }}
                 onClick={() => {
-                  dispatch(getDeviceDataListThunk(1));
+                  dispatch(getDeviceDataListThunk(1, searchInput));
                 }}
               >
                 <SearchIcon />
@@ -162,7 +145,7 @@ function ManageDevice() {
               activePage === 1
                 ? () => {}
                 : () => {
-                    dispatch(getDeviceDataListThunk(activePage - 1));
+                    dispatch(getDeviceDataListThunk(activePage - 1, searchInput));
                   }
             }
           >
@@ -191,7 +174,7 @@ function ManageDevice() {
                     if (activePage >= totalPage) {
                       return;
                     }
-                    dispatch(getDeviceDataListThunk(activePage + 1));
+                    dispatch(getDeviceDataListThunk(activePage + 1, searchInput));
                   }
                 : () => {}
             }

@@ -194,7 +194,7 @@ function PulseMessagePage() {
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getAlertDataListThunk(activePage - 1));
+                  dispatch(getAlertDataListThunk(activePage - 1, searchInput));
                 }
           }
         >
@@ -223,7 +223,7 @@ function PulseMessagePage() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getAlertDataListThunk(activePage + 1));
+                  dispatch(getAlertDataListThunk(activePage + 1, searchInput));
                 }
               : () => {}
           }
