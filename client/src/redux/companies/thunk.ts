@@ -1,12 +1,12 @@
 import axios from "axios";
 import {
-  REACT_APP_API_VERSION,
-  REACT_APP_API_SERVER,
+  REACT_APP_API_SERVER, REACT_APP_API_VERSION
 } from "../../helpers/processEnv";
 import { ICompanyInfo, IPagination } from "../../models/resModels";
+import { setIsLoadingAction } from "../loading/action";
 import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
-import { resetCompaniesDataList, setCompaniesDataList } from "./action";
+import { setCompaniesDataList } from "./action";
 
 export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: ThunkDispatch) => {
