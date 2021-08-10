@@ -1,14 +1,18 @@
 export interface IIncidentPageData {
+  incidentId?: number;
+  vehicleId?: number;
+  deviceId?: number;
   date: string;
-  time: string;
   longitude: number;
   latitude: number;
-  deviceId: string;
-  deviceName: string;
-  companyName: string;
-  contactPerson: string;
-  phoneNumber: string;
-  carPlate: string;
+  deviceEui?: string;
+  deviceName?: string;
+  companyName?: string;
+  contactPerson?: string;
+  phoneNumber?: string;
+  carPlate?: string;
+  address?: string;
+  msgType?: string;
 }
 
 export interface IIncidentPageState {

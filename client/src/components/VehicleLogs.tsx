@@ -3,6 +3,10 @@ import GoogleMapReact from "google-map-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import {
+  REACT_APP_API_SERVER,
+  REACT_APP_API_VERSION,
+} from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
 import { handleAxiosError } from "../redux/login/thunk";
 import { BackButton } from "./IconsOnly";
@@ -51,8 +55,6 @@ const IncidentPoint = (props: IncidentPointProps) => {
     </div>
   );
 };
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 const VehicleLogs = () => {
   const router = useRouter();

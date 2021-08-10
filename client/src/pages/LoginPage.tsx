@@ -6,10 +6,10 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const [loginInput, setLoginInput] = useState({ username: "", password: "" });
+
   const handleSubmit = () => {
     dispatch(login(loginInput.username, loginInput.password));
   };
-
   return (
     <div
       className="flex-center"

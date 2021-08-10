@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
+import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
@@ -17,7 +18,6 @@ const TABLE_WIDTH = "95%";
 const BATTERY_MAX = 4.2;
 // const BATTERY_MIN = 3.75; //Leifung!!!!!!!!
 const BATTERY_MIN = 3.6;
-const { REACT_APP_API_SERVER } = process.env;
 function PulseMessagePage() {
   const [searchInput, setSearchInput] = useState("");
   const alertDataPage = useSelector((state: IRootState) => state.alertDataPage);
@@ -147,10 +147,9 @@ function PulseMessagePage() {
                     dispatch(
                       await setIncidentPageData({
                         date: item.date,
-                        time: item.date,
                         longitude: item.geolocation.y,
                         latitude: item.geolocation.x,
-                        deviceId: item.deviceEui,
+                        deviceEui: item.deviceEui,
                         deviceName: item.deviceName,
                         companyName: item.companyName,
                         contactPerson: item.companyContactPerson,

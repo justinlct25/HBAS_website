@@ -5,6 +5,10 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import VehicleLogs from "./components/VehicleLogs";
+import {
+  REACT_APP_API_SERVER,
+  REACT_APP_API_VERSION,
+} from "./helpers/processEnv";
 import AlertDataPage from "./pages/AlertDataPage";
 import IncidentPage from "./pages/IncidentPage";
 import LoginPage from "./pages/LoginPage";
@@ -20,15 +24,19 @@ import { IRootState } from "./redux/store";
 import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 
 function App() {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  // Axios setups
-  axios.defaults.baseURL = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}`;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  axios.defaults.headers.get["Content-Type"] =
-    "application/json; charset=utf-8";
-  axios.defaults.headers.post["Content-Type"] =
-    "application/json; charset=utf-8";
+    // Axios setups
+    axios.defaults.baseURL = `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}`;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.get["Content-Type"] =
+      "application/json; charset=utf-8";
+    axios.defaults.headers.post["Content-Type"] =
+      "application/json; charset=utf-8";
+
+    console.log({ token });
+  }, []);
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);
@@ -45,9 +53,6 @@ function App() {
         <NavBar />
       </div>
       <Switch>
-        {/* <Route path="/" exact={true} component={LandingPage} /> */}
-        {/* <Route path="/alertData" exact={true} component={AlertDataPage} /> */}
-
         <Route exact path="/">
           <Redirect to="/alert-data-page" />
         </Route>

@@ -1,9 +1,11 @@
 import axios from "axios";
+import {
+  REACT_APP_API_VERSION,
+  REACT_APP_API_SERVER,
+} from "../../helpers/processEnv";
 import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
 import { resetCompaniesDataList, setCompaniesDataList } from "./action";
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: ThunkDispatch) => {
