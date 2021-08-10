@@ -1,5 +1,13 @@
-import { IAlertDataPageState, initAlertDataPageState } from "./state";
+import { IAlertDataPageState } from "./state";
 import { IAlertDataPageActions } from "./action";
+
+export const initAlertDataPageState: IAlertDataPageState = {
+  alertDataList: [],
+
+  activePage: 1,
+  totalPage: 10,
+  limit: 7,
+};
 
 export const IAlertDataPageReducer = (
   state: IAlertDataPageState = initAlertDataPageState,
@@ -13,11 +21,7 @@ export const IAlertDataPageReducer = (
         activePage: action.activePage,
         totalPage: action.totalPage,
       };
-    case "@@AlertDataPage/setAlertData":
-      return {
-        ...state,
-        alertDataList: action.alertData,
-      };
+
     case "@@AlertDataPage/RESET":
       return {
         ...state,

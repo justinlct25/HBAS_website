@@ -1,11 +1,16 @@
 import axios from "axios";
 import { ConnectedRouter } from "connected-react-router";
-import React, { useEffect } from "react";
+import React from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import VehicleLogs from "./components/VehicleLogs";
+import {
+  REACT_APP_API_SERVER,
+  REACT_APP_API_VERSION,
+} from "./helpers/processEnv";
 import AlertDataPage from "./pages/AlertDataPage";
 import IncidentPage from "./pages/IncidentPage";
 import LoginPage from "./pages/LoginPage";
@@ -21,15 +26,19 @@ import { history, IRootState } from "./redux/store";
 import AdminPrivateRoute from "./utils/AdminPrivateRoute";
 
 function App() {
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  // Axios setups
-  axios.defaults.baseURL = `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}`;
-  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  axios.defaults.headers.get["Content-Type"] =
-    "application/json; charset=utf-8";
-  axios.defaults.headers.post["Content-Type"] =
-    "application/json; charset=utf-8";
+    // Axios setups
+    axios.defaults.baseURL = `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}`;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    axios.defaults.headers.get["Content-Type"] =
+      "application/json; charset=utf-8";
+    axios.defaults.headers.post["Content-Type"] =
+      "application/json; charset=utf-8";
+
+    console.log({ token });
+  }, []);
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);

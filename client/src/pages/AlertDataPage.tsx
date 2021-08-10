@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { SearchIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
+import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
@@ -13,7 +14,6 @@ import { incidentRecordsTableHeaders } from "../table/tableHeader";
 const tableHeaders = incidentRecordsTableHeaders;
 const itemPerPage = 10;
 const TABLE_WIDTH = "92%";
-const { REACT_APP_API_SERVER } = process.env;
 
 function AlertDataPage() {
   const [searchInput, setSearchInput] = useState("");
@@ -111,20 +111,22 @@ function AlertDataPage() {
                   key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
-                    dispatch(
-                      await setIncidentPageData({
-                        date: item.date,
-                        time: item.date,
-                        longitude: item.geolocation.y,
-                        latitude: item.geolocation.x,
-                        deviceId: item.deviceEui,
-                        deviceName: item.deviceName,
-                        companyName: item.companyName,
-                        contactPerson: item.companyContactPerson,
-                        phoneNumber: item.companyTel,
-                        carPlate: item.carPlate,
-                      })
-                    );
+                    // dispatch(
+                    //   await setIncidentPageData({
+                    //     incidentId: item.id,
+                    //     deviceId: item.deviceId,
+                    //     vehicleId: item.vehicleId,
+                    //     date: item.date,
+                    //     longitude: item.geolocation.y,
+                    //     latitude: item.geolocation.x,
+                    //     deviceEui: item.deviceEui,
+                    //     deviceName: item.deviceName,
+                    //     companyName: item.companyName,
+                    //     contactPerson: item.companyContactPerson,
+                    //     phoneNumber: item.companyTel,
+                    //     carPlate: item.carPlate,
+                    //   })
+                    // );
 
                     dispatch(push(`/incident/${item.id}`));
                   }}

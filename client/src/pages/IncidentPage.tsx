@@ -1,24 +1,116 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import ReactMapboxGL, { Feature, Layer } from "react-mapbox-gl";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
+import {
+  REACT_APP_API_SERVER,
+  REACT_APP_API_VERSION,
+} from "../helpers/processEnv";
+import { useRouter } from "../helpers/useRouter";
+import { setIncidentPageData } from "../redux/incidentPage/action";
+import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
 
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
+type locationHistoryType = {
+  address: string;
+  battery: string;
+  date: string;
+  deviceId: number;
+  geolocation: { x: number; y: number };
+  id: number;
+  msgType: string;
+};
+
 function IncidentPage() {
+  const router = useRouter();
   const history = useHistory();
+  const dispatch = useDispatch();
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
-  const data = useSelector(
+  const [locationHistory, setLocationHistory] = useState([]);
+
+  const [mapLoaded, setMapLoaded] = useState(false);
+
+  const incidentPageData = useSelector(
     (state: IRootState) => state.incidentPage.incidentPage
   );
 
-  const [mapLoaded, setMapLoaded] = useState(false);
+  useEffect(() => {
+    const splitRoute = router.pathname.split("/");
+    const incidentId = splitRoute[splitRoute.length - 1];
+
+    const fetchIncident = async () => {
+      try {
+        const url = new URL(
+          `${REACT_APP_API_VERSION}/alert-data`,
+          REACT_APP_API_SERVER
+        );
+        url.searchParams.set("id", `${incidentId}`);
+        const res = await axios.get(url.toString());
+        const result = res.data.data[0];
+        console.log(result);
+        dispatch(
+          setIncidentPageData({
+            incidentId: result.id,
+            vehicleId: result.vehicleId,
+            deviceId: result.deviceId,
+            deviceEui: result.deviceEui,
+            date: result.date,
+            longitude: result.geolocation.y,
+            latitude: result.geolocation.x,
+            deviceName: result.deviceName,
+            companyName: result.companyName,
+            contactPerson: result.companyContactPerson,
+            phoneNumber: result.companyTel,
+            carPlate: result.carPlate,
+          })
+        );
+      } catch (error) {
+        dispatch(handleAxiosError(error));
+      }
+    };
+    fetchIncident();
+  }, []);
+
+  useEffect(() => {
+    console.log(incidentPageData.date.substr(0, 10));
+    const fetchAllPreviousPulse = async () => {
+      try {
+        const url = new URL(
+          `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
+          REACT_APP_API_SERVER
+        );
+        url.searchParams.set("date", incidentPageData.date.substr(0, 10));
+        const res = await axios.get(url.toString());
+        const result = res.data;
+        // const url = new URL(
+        //   `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
+        //   REACT_APP_API_SERVER
+        // );
+        // const res = await axios.get(url.toString());
+        // const result = res.data.data[0];
+        setLocationHistory(
+          result.map((i: locationHistoryType) => {
+            return { date: i.date, geolocation: i.geolocation };
+          })
+        );
+      } catch (error) {
+        dispatch(handleAxiosError(error));
+      }
+    };
+    fetchAllPreviousPulse();
+  }, [incidentPageData.deviceId]);
+
+  const data = useSelector(
+    (state: IRootState) => state.incidentPage.incidentPage
+  );
 
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
@@ -155,7 +247,7 @@ function IncidentPage() {
                   </div>
                   <div className="flex-center">
                     <div className="incidentReportText">Device ID:</div>
-                    <div className="incidentReportText">{data.deviceId}</div>
+                    <div className="incidentReportText">{data.deviceEui}</div>
                   </div>
                   <div className="flex-center">
                     <div className="incidentReportText">Device Name:</div>

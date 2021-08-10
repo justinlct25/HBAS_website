@@ -27,10 +27,3 @@ export interface IAlertDataPageState {
   totalPage: number;
   limit: number;
 }
-
-export const initAlertDataPageState: IAlertDataPageState = {
-  alertDataList: [],
-  activePage: 1,
-  totalPage: 10,
-  limit: 7,
-};

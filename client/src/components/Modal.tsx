@@ -2,6 +2,10 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
+import {
+  REACT_APP_API_VERSION,
+  REACT_APP_API_SERVER,
+} from "../helpers/processEnv";
 import { IDevicesForLinking } from "../models/resModels";
 import { ModalType } from "../pages/ManageDevice";
 import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
@@ -44,8 +48,6 @@ interface deviceInfo {
   deviceName: string;
   deviceEui: string;
 }
-
-const { REACT_APP_API_SERVER, REACT_APP_API_VERSION } = process.env;
 
 export const Modal = (props: ModalProps) => {
   const { isOpen, modalType, setSelectModalOpen } = props;
