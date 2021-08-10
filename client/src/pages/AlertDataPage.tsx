@@ -7,6 +7,7 @@ import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
+import { setIncidentPageData, setIsGPSNotFound } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
@@ -26,7 +27,8 @@ function AlertDataPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage));
+    dispatch(getAlertDataListThunk(activePage, false));
+    dispatch(setIsGPSNotFound(false));
   }, [dispatch]);
 
   useEffect(() => {
@@ -64,7 +66,7 @@ function AlertDataPage() {
             />
             <div
               style={{ cursor: "pointer", padding: "8px" }}
-              onClick={() => dispatch(getAlertDataListThunk(1, searchInput))}
+              onClick={() => dispatch(getAlertDataListThunk(1, true, searchInput))}
             >
               <SearchIcon />
             </div>
@@ -106,23 +108,6 @@ function AlertDataPage() {
                   key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
-                    // dispatch(
-                    //   await setIncidentPageData({
-                    //     incidentId: item.id,
-                    //     deviceId: item.deviceId,
-                    //     vehicleId: item.vehicleId,
-                    //     date: item.date,
-                    //     longitude: item.geolocation.y,
-                    //     latitude: item.geolocation.x,
-                    //     deviceEui: item.deviceEui,
-                    //     deviceName: item.deviceName,
-                    //     companyName: item.companyName,
-                    //     contactPerson: item.companyContactPerson,
-                    //     phoneNumber: item.companyTel,
-                    //     carPlate: item.carPlate,
-                    //   })
-                    // );
-
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >

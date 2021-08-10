@@ -17,4 +17,5 @@ export interface IIncidentPageData {
 
 export interface IIncidentPageState {
   incidentPage: IIncidentPageData;
+  isGPSNotFound: boolean;
 }
