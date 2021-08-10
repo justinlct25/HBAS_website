@@ -1,15 +1,25 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { push } from "connected-react-router";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/login/thunk";
+import { IRootState } from "../redux/store";
 
 function LoginPage() {
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);
 
   const [loginInput, setLoginInput] = useState({ username: "", password: "" });
 
   const handleSubmit = () => {
     dispatch(login(loginInput.username, loginInput.password));
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      dispatch(push("/alert-data-page"));
+    }
+  }, [dispatch, isLoggedIn]);
+
   return (
     <div
       className="flex-center"
