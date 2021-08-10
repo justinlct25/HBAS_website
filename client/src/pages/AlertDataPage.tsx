@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { setIncidentPageData, setIsGPSNotFound } from "../redux/incidentPage/action";
+import { setIsGPSNotFound } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
@@ -27,7 +27,7 @@ function AlertDataPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(activePage, false));
+    dispatch(getAlertDataListThunk(activePage));
     dispatch(setIsGPSNotFound(false));
   }, [dispatch]);
 
@@ -66,7 +66,7 @@ function AlertDataPage() {
             />
             <div
               style={{ cursor: "pointer", padding: "8px" }}
-              onClick={() => dispatch(getAlertDataListThunk(1, true, searchInput))}
+              onClick={() => dispatch(getAlertDataListThunk(1, searchInput))}
             >
               <SearchIcon />
             </div>
