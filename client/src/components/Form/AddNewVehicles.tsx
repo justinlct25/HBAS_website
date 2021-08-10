@@ -1,7 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddIcon, CloseIcon, MinusIcon } from "../../components/IconsOnly";
 import "../../css/TablePage.css";
@@ -45,18 +43,15 @@ function AddNewVehicles() {
   };
 
   const handleReset = () => {
-    setTotalVehicle([]);
+    setTotalVehicle([{ carPlate: "", vehicleType: "", vehicleModel: "" }]);
     dispatch(resetAddNewFormAction());
   };
 
   const handleSubmit = async () => {
     try {
-      await axios.post<{ message: string; ids: number[] }>(
-        `/vehicles/company-id/${companyId}`,
-        {
-          vehicles: totalVehicle,
-        }
-      );
+      await axios.post<{ message: string; ids: number[] }>(`/vehicles/company-id/${companyId}`, {
+        vehicles: totalVehicle,
+      });
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {

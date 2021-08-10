@@ -18,6 +18,7 @@ export const initialState: IIncidentPageState = {
     carPlate: "",
     msgType: "",
   },
+  isGPSNotFound: false,
 };
 
 export const IIncidentPageReducer = (
@@ -37,16 +38,27 @@ export const IIncidentPageReducer = (
           latitude: action.data.latitude ?? state.incidentPage.latitude,
           deviceId: action.data.deviceId ?? state.incidentPage.deviceId,
           deviceName: action.data.deviceName ?? state.incidentPage.deviceName,
-          companyName:
-            action.data.companyName ?? state.incidentPage.companyName,
-          contactPerson:
-            action.data.contactPerson ?? state.incidentPage.contactPerson,
-          phoneNumber:
-            action.data.phoneNumber ?? state.incidentPage.phoneNumber,
+          companyName: action.data.companyName ?? state.incidentPage.companyName,
+          contactPerson: action.data.contactPerson ?? state.incidentPage.contactPerson,
+          phoneNumber: action.data.phoneNumber ?? state.incidentPage.phoneNumber,
           carPlate: action.data.carPlate ?? state.incidentPage.carPlate,
           address: action.data.address ?? state.incidentPage.address,
           msgType: action.data.msgType ?? state.incidentPage.msgType,
         },
+      };
+    case "@@incidentPage/setGeolocation":
+      return {
+        ...state,
+        incidentPage: {
+          ...state.incidentPage,
+          longitude: action.data.longitude,
+          latitude: action.data.latitude,
+        },
+      };
+    case "@@incidentPage/setIsGPSNotFound":
+      return {
+        ...state,
+        isGPSNotFound: action.isNotFound,
       };
     default:
       return state;

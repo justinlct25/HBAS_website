@@ -9,7 +9,11 @@ import "../css/TablePage.css";
 import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
 import { IAlertData, IDataHistory, IPagination } from "../models/resModels";
-import { setIncidentPageData } from "../redux/incidentPage/action";
+import {
+  setGeolocation,
+  setIncidentPageData,
+  setIsGPSNotFound,
+} from "../redux/incidentPage/action";
 import { setIsLoadingAction } from "../redux/loading/action";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
@@ -18,22 +22,13 @@ const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
-type locationHistoryType = {
-  address: string;
-  battery: string;
-  date: string;
-  deviceId: number;
-  geolocation: { x: number; y: number };
-  id: number;
-  msgType: string;
-};
-
 function IncidentPage() {
   const router = useRouter();
   const history = useHistory();
   const dispatch = useDispatch();
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
+  // const [isGPSNotFound, setIsGPSNotFound] = useState(false);
   const [locationHistory, setLocationHistory] = useState<
     {
       date: string;
@@ -47,6 +42,7 @@ function IncidentPage() {
   const [mapLoaded, setMapLoaded] = useState(false);
 
   const incidentPageData = useSelector((state: IRootState) => state.incidentPage.incidentPage);
+  const isGPSNotFound = useSelector((state: IRootState) => state.incidentPage.isGPSNotFound);
 
   const isLoading = useSelector((state: IRootState) => state.loading.loading.isLoading);
 
@@ -64,7 +60,11 @@ function IncidentPage() {
           pagination: IPagination;
         }>(url.toString());
         const result = res.data.data[0];
-
+        if (result.address === "GPS not found") {
+          dispatch(setIsGPSNotFound(true));
+        } else {
+          dispatch(setIsGPSNotFound(false));
+        }
         dispatch(
           setIncidentPageData({
             incidentId: result.id,
@@ -72,8 +72,8 @@ function IncidentPage() {
             deviceId: result.deviceId,
             deviceEui: result.deviceEui,
             date: result.date,
-            longitude: result.geolocation.y,
-            latitude: result.geolocation.x,
+            longitude: isGPSNotFound ? -1 : result.geolocation.y,
+            latitude: isGPSNotFound ? -1 : result.geolocation.x,
             deviceName: result.deviceName,
             companyName: result.companyName,
             contactPerson: result.companyContactPerson,
@@ -96,22 +96,18 @@ function IncidentPage() {
           `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
           REACT_APP_API_SERVER
         );
-        url.searchParams.set(
-          "date",
-          new Date(incidentPageData.date).toLocaleDateString("en-CA")
-        );
+        url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
-        // const url = new URL(
-        //   `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
-        //   REACT_APP_API_SERVER
-        // );
-        // const res = await axios.get(url.toString());
-        // const result = res.data.data[0];
-        setLocationHistory(
-          result.map((i) => ({ date: i.date, geolocation: i.geolocation }))
-        );
-        console.log(locationHistory);
+        setLocationHistory(result.map((i) => ({ date: i.date, geolocation: i.geolocation })));
+        if (isGPSNotFound) {
+          dispatch(
+            setGeolocation({
+              longitude: locationHistory[0].geolocation.y,
+              latitude: locationHistory[0].geolocation.x,
+            })
+          );
+        }
       } catch (error) {
         dispatch(handleAxiosError(error));
       } finally {
@@ -183,12 +179,36 @@ function IncidentPage() {
                 : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
             }
             zoom={[14]}
-            center={[data.longitude, data.latitude]}
+            center={
+              isGPSNotFound
+                ? [locationHistory[0].geolocation.y, locationHistory[0].geolocation.x]
+                : [data.longitude, data.latitude]
+            }
             containerStyle={{ height: "100%", width: "100%" }}
             onStyleLoad={() => setMapLoaded(true)}
           >
-            <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
-              {mapLoaded ? <Feature coordinates={[data.longitude, data.latitude]} /> : <></>}
+            <Layer type="circle" paint={{ "circle-color": "#FF4545", "circle-radius": 12 }}>
+              {mapLoaded && !isGPSNotFound ? (
+                <Feature coordinates={[data.longitude, data.latitude]} />
+              ) : (
+                <></>
+              )}
+            </Layer>
+
+            <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 8 }}>
+              {isGPSNotFound && mapLoaded ? (
+                locationHistory
+                  .filter(
+                    (i) => i.geolocation.y !== data.longitude && i.geolocation.x !== data.latitude
+                  )
+                  .map((item, idx) => {
+                    return (
+                      <Feature key={idx} coordinates={[item.geolocation.y, item.geolocation.x]} />
+                    );
+                  })
+              ) : (
+                <></>
+              )}
             </Layer>
           </Map>
           <div

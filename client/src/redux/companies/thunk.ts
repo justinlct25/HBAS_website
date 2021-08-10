@@ -1,19 +1,15 @@
 import axios from "axios";
-import {
-  REACT_APP_API_VERSION,
-  REACT_APP_API_SERVER,
-} from "../../helpers/processEnv";
+import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../../helpers/processEnv";
 import { ICompanyInfo, IPagination } from "../../models/resModels";
+import { setIsLoadingAction } from "../loading/action";
 import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
-import { resetCompaniesDataList, setCompaniesDataList } from "./action";
+import { setCompaniesDataList } from "./action";
 
 export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: ThunkDispatch) => {
     dispatch(setIsLoadingAction(true));
     try {
-      // dispatch(resetCompaniesDataList());
-
       // construct api url with (or without) search params
       const url = new URL(`${REACT_APP_API_VERSION}/companies`, REACT_APP_API_SERVER);
       url.searchParams.set("page", String(activePage));
@@ -24,10 +20,8 @@ export function getCompaniesDataListThunk(activePage: number) {
         pagination: IPagination;
       }>(url.toString());
       const data = res.data;
-      
-      dispatch(
-        setCompaniesDataList(data.data, activePage, data.pagination.lastPage)
-      );
+
+      dispatch(setCompaniesDataList(data.data, activePage, data.pagination.lastPage));
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {
@@ -51,14 +45,11 @@ export function postCompaniesDataThunk(
   return async (dispatch: ThunkDispatch) => {
     try {
       const { companyName, tel, contactPerson } = companyDetail;
-      const res = await axios.post<{ message: string; id: number }>(
-        `/companies`,
-        {
-          companyName,
-          tel,
-          contactPerson,
-        }
-      );
+      const res = await axios.post<{ message: string; id: number }>(`/companies`, {
+        companyName,
+        tel,
+        contactPerson,
+      });
       const companyRes = res.data;
 
       if (vehicles.length > 0) {
