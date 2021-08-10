@@ -10,14 +10,12 @@ import { resetCompaniesDataList, setCompaniesDataList } from "./action";
 
 export function getCompaniesDataListThunk(activePage: number) {
   return async (dispatch: ThunkDispatch) => {
+    dispatch(setIsLoadingAction(true));
     try {
-      dispatch(resetCompaniesDataList());
+      // dispatch(resetCompaniesDataList());
 
       // construct api url with (or without) search params
-      const url = new URL(
-        `${REACT_APP_API_VERSION}/companies`,
-        REACT_APP_API_SERVER
-      );
+      const url = new URL(`${REACT_APP_API_VERSION}/companies`, REACT_APP_API_SERVER);
       url.searchParams.set("page", String(activePage));
       url.searchParams.set("rows", String(10));
 
@@ -32,6 +30,8 @@ export function getCompaniesDataListThunk(activePage: number) {
       );
     } catch (error) {
       dispatch(handleAxiosError(error));
+    } finally {
+      dispatch(setIsLoadingAction(false));
     }
   };
 }

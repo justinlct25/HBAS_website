@@ -17,12 +17,8 @@ const TABLE_WIDTH = "80%";
 function ManageUser() {
   const [searchInput, setSearchInput] = useState("");
 
-  const companiesDataList = useSelector(
-    (state: IRootState) => state.companiesDataList
-  );
-  const isOpen = useSelector(
-    (state: IRootState) => state.addNewForm.addNewForm.isOpen
-  );
+  const companiesDataList = useSelector((state: IRootState) => state.companiesDataList);
+  const isOpen = useSelector((state: IRootState) => state.addNewForm.addNewForm.isOpen);
 
   const companiesList = companiesDataList.companiesDataList;
   const activePage = companiesDataList.activePage;

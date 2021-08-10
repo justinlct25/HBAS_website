@@ -4,14 +4,13 @@ import ReactMapboxGL, { Feature, Layer } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
+import Loading from "../components/Loading";
 import "../css/TablePage.css";
-import {
-  REACT_APP_API_SERVER,
-  REACT_APP_API_VERSION,
-} from "../helpers/processEnv";
+import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
 import { IAlertData, IDataHistory, IPagination } from "../models/resModels";
 import { setIncidentPageData } from "../redux/incidentPage/action";
+import { setIsLoadingAction } from "../redux/loading/action";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
 
@@ -47,20 +46,18 @@ function IncidentPage() {
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
-  const incidentPageData = useSelector(
-    (state: IRootState) => state.incidentPage.incidentPage
-  );
+  const incidentPageData = useSelector((state: IRootState) => state.incidentPage.incidentPage);
+
+  const isLoading = useSelector((state: IRootState) => state.loading.loading.isLoading);
 
   useEffect(() => {
+    dispatch(setIsLoadingAction(true));
     const splitRoute = router.pathname.split("/");
     const incidentId = splitRoute[splitRoute.length - 1];
 
     const fetchIncident = async () => {
       try {
-        const url = new URL(
-          `${REACT_APP_API_VERSION}/alert-data`,
-          REACT_APP_API_SERVER
-        );
+        const url = new URL(`${REACT_APP_API_VERSION}/alert-data`, REACT_APP_API_SERVER);
         url.searchParams.set("id", `${incidentId}`);
         const res = await axios.get<{
           data: IAlertData[];
@@ -114,16 +111,17 @@ function IncidentPage() {
         setLocationHistory(
           result.map((i) => ({ date: i.date, geolocation: i.geolocation }))
         );
+        console.log(locationHistory);
       } catch (error) {
         dispatch(handleAxiosError(error));
+      } finally {
+        dispatch(setIsLoadingAction(false));
       }
     };
     fetchAllPreviousPulse();
   }, [incidentPageData.deviceId, dispatch]);
 
-  const data = useSelector(
-    (state: IRootState) => state.incidentPage.incidentPage
-  );
+  const data = useSelector((state: IRootState) => state.incidentPage.incidentPage);
 
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
@@ -135,15 +133,8 @@ function IncidentPage() {
 
   return (
     <div className="flex-center pageContainer">
-      <div
-        className="flex-center topRowContainer"
-        style={{ justifyContent: "flex-start" }}
-      >
-        <div
-          className="flex-center"
-          style={{ cursor: "pointer" }}
-          onClick={() => history.goBack()}
-        >
+      <div className="flex-center topRowContainer" style={{ justifyContent: "flex-start" }}>
+        <div className="flex-center" style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
           <div className="flex-center">
             <BackButton />
             <div style={{ margin: "8px", fontSize: "24px" }}>BACK</div>
@@ -196,22 +187,13 @@ function IncidentPage() {
             containerStyle={{ height: "100%", width: "100%" }}
             onStyleLoad={() => setMapLoaded(true)}
           >
-            <Layer
-              type="circle"
-              paint={{ "circle-color": "#00F900", "circle-radius": 10 }}
-            >
-              {mapLoaded ? (
-                <Feature coordinates={[data.longitude, data.latitude]} />
-              ) : (
-                <></>
-              )}
+            <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
+              {mapLoaded ? <Feature coordinates={[data.longitude, data.latitude]} /> : <></>}
             </Layer>
           </Map>
           <div
             className={
-              isReportOpen
-                ? "flex-center caretButton"
-                : "flex-center caretButton hiddenReport"
+              isReportOpen ? "flex-center caretButton" : "flex-center caretButton hiddenReport"
             }
             style={{
               width: isReportOpen ? "480px" : "3%",
@@ -230,63 +212,65 @@ function IncidentPage() {
                 <CaretIcon />
               </div>
             </div>
-            <div
-              className="flex-center"
-              style={{
-                minWidth: "400px",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                opacity: isReportOpen ? 1 : 0,
-                transition: "all 0.4s 0.2s",
-              }}
-            >
-              {isReportOpen && (
-                <>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Date:</div>
-                    <div className="incidentReportText">{dateString}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Time:</div>
-                    <div className="incidentReportText">{timeString}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Longitude:</div>
-                    <div className="incidentReportText">{data.longitude}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Latitude:</div>
-                    <div className="incidentReportText">{data.latitude}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Device ID:</div>
-                    <div className="incidentReportText">{data.deviceEui}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Device Name:</div>
-                    <div className="incidentReportText">{data.deviceName}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Company name:</div>
-                    <div className="incidentReportText">{data.companyName}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Contact person:</div>
-                    <div className="incidentReportText">
-                      {data.contactPerson}
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <div
+                className="flex-center"
+                style={{
+                  minWidth: "400px",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  opacity: isReportOpen ? 1 : 0,
+                  transition: "all 0.4s 0.2s",
+                }}
+              >
+                {isReportOpen && (
+                  <>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Date:</div>
+                      <div className="incidentReportText">{dateString}</div>
                     </div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Phone number:</div>
-                    <div className="incidentReportText">{data.phoneNumber}</div>
-                  </div>
-                  <div className="flex-center">
-                    <div className="incidentReportText">Car plate:</div>
-                    <div className="incidentReportText">{data.carPlate}</div>
-                  </div>
-                </>
-              )}
-            </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Time:</div>
+                      <div className="incidentReportText">{timeString}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Longitude:</div>
+                      <div className="incidentReportText">{data.longitude}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Latitude:</div>
+                      <div className="incidentReportText">{data.latitude}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Device ID:</div>
+                      <div className="incidentReportText">{data.deviceEui}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Device Name:</div>
+                      <div className="incidentReportText">{data.deviceName}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Company name:</div>
+                      <div className="incidentReportText">{data.companyName}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Contact person:</div>
+                      <div className="incidentReportText">{data.contactPerson}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Phone number:</div>
+                      <div className="incidentReportText">{data.phoneNumber}</div>
+                    </div>
+                    <div className="flex-center">
+                      <div className="incidentReportText">Car plate:</div>
+                      <div className="incidentReportText">{data.carPlate}</div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddIcon, CloseIcon, MinusIcon } from "../../components/IconsOnly";
 import "../../css/TablePage.css";
@@ -23,9 +25,7 @@ function AddNewVehicles() {
   ]);
 
   const dispatch = useDispatch();
-  const addNewForm = useSelector(
-    (state: IRootState) => state.addNewForm.addNewForm
-  );
+  const addNewForm = useSelector((state: IRootState) => state.addNewForm.addNewForm);
 
   const isOpen = addNewForm.isOpen;
   const modalType = addNewForm.modalType;
@@ -41,10 +41,7 @@ function AddNewVehicles() {
     setTotalVehicle(newArr);
   };
   const handleAddVehicle = () => {
-    setTotalVehicle([
-      { carPlate: "", vehicleType: "", vehicleModel: "" },
-      ...totalVehicle,
-    ]);
+    setTotalVehicle([{ carPlate: "", vehicleType: "", vehicleModel: "" }, ...totalVehicle]);
   };
 
   const handleReset = () => {
@@ -65,6 +62,15 @@ function AddNewVehicles() {
     } finally {
       handleReset();
     }
+  };
+
+  const handleEditContent = (target: string, idx: number, input: string) => {
+    const newArr = totalVehicle.slice();
+    newArr[idx] = {
+      ...totalVehicle[idx],
+      [target]: input,
+    };
+    setTotalVehicle(newArr);
   };
 
   const overLength = totalVehicle.some((i) => i.carPlate.length >= 8);
@@ -98,7 +104,7 @@ function AddNewVehicles() {
                 {totalVehicle.map((item, idx) => {
                   return (
                     <div
-                      key={`vehicle-${item.carPlate}`}
+                      key={`vehicle-${idx}`}
                       style={{
                         width: "100%",
                         margin: "24px 0",
@@ -113,12 +119,7 @@ function AddNewVehicles() {
                             className="formInput"
                             value={totalVehicle[idx].carPlate}
                             onChange={(e) => {
-                              const newArr = totalVehicle.slice();
-                              newArr[idx] = {
-                                ...totalVehicle[idx],
-                                carPlate: e.target.value,
-                              };
-                              setTotalVehicle(newArr);
+                              handleEditContent("carPlate", idx, e.target.value);
                             }}
                           />
                           {totalVehicle[idx].carPlate.length >= 8 && (
@@ -135,12 +136,7 @@ function AddNewVehicles() {
                             className="formInput"
                             value={totalVehicle[idx].vehicleType}
                             onChange={(e) => {
-                              const newArr = totalVehicle.slice();
-                              newArr[idx] = {
-                                ...totalVehicle[idx],
-                                vehicleType: e.target.value,
-                              };
-                              setTotalVehicle(newArr);
+                              handleEditContent("vehicleType", idx, e.target.value);
                             }}
                           />
                         </div>
@@ -152,12 +148,7 @@ function AddNewVehicles() {
                             className="formInput"
                             value={totalVehicle[idx].vehicleModel}
                             onChange={(e) => {
-                              const newArr = totalVehicle.slice();
-                              newArr[idx] = {
-                                ...totalVehicle[idx],
-                                vehicleModel: e.target.value,
-                              };
-                              setTotalVehicle(newArr);
+                              handleEditContent("vehicleModel", idx, e.target.value);
                             }}
                           />
                         </div>

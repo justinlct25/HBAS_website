@@ -18,9 +18,7 @@ export type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
   const [searchInput, setSearchInput] = useState("");
-  const devicesDataList = useSelector(
-    (state: IRootState) => state.devicesDataList
-  );
+  const devicesDataList = useSelector((state: IRootState) => state.devicesDataList);
 
   const popUpIsActive = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal.popUpIsActive
@@ -155,10 +153,7 @@ function ManageDevice() {
         </div>
         <AssignDeviceModal />
 
-        <div
-          className="flex-center"
-          style={{ width: "100%", maxHeight: "12vh" }}
-        >
+        <div className="flex-center" style={{ width: "100%", maxHeight: "12vh" }}>
           <div
             style={{
               margin: "16px",
