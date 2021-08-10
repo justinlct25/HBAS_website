@@ -16,9 +16,7 @@ export class DevicesController {
       !!currentPage ? parseInt(String(currentPage)) : 1,
       !!searchString ? `%${String(searchString)}%` : null
     );
-    return res
-      .status(!data.data.length ? httpStatusCodes.NO_CONTENT : httpStatusCodes.OK)
-      .json(data);
+    return res.status(httpStatusCodes.OK).json(data);
   };
 
   getDevicesForLinking = async (req: Request, res: Response) => {
@@ -26,13 +24,7 @@ export class DevicesController {
     const data = await this.devicesService.getDevicesForLinking(
       !!deviceId ? parseInt(String(deviceId)) : null
     );
-    return res
-      .status(
-        !data.linkedDevices.length && !data.newDevices.length
-          ? httpStatusCodes.NO_CONTENT
-          : httpStatusCodes.OK
-      )
-      .json({ data });
+    return res.status(httpStatusCodes.OK).json({ data });
   };
 
   linkDeviceAndVehicle = async (req: Request, res: Response) => {
