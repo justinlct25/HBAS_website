@@ -18,16 +18,6 @@ const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
-type locationHistoryType = {
-  address: string;
-  battery: string;
-  date: string;
-  deviceId: number;
-  geolocation: { x: number; y: number };
-  id: number;
-  msgType: string;
-};
-
 function IncidentPage() {
   const router = useRouter();
   const history = useHistory();
@@ -96,10 +86,7 @@ function IncidentPage() {
           `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
           REACT_APP_API_SERVER
         );
-        url.searchParams.set(
-          "date",
-          new Date(incidentPageData.date).toLocaleDateString("en-CA")
-        );
+        url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
         // const url = new URL(
@@ -108,9 +95,7 @@ function IncidentPage() {
         // );
         // const res = await axios.get(url.toString());
         // const result = res.data.data[0];
-        setLocationHistory(
-          result.map((i) => ({ date: i.date, geolocation: i.geolocation }))
-        );
+        setLocationHistory(result.map((i) => ({ date: i.date, geolocation: i.geolocation })));
         console.log(locationHistory);
       } catch (error) {
         dispatch(handleAxiosError(error));
@@ -244,7 +229,7 @@ function IncidentPage() {
                       <div className="incidentReportText">{data.latitude}</div>
                     </div>
                     <div className="flex-center">
-                      <div className="incidentReportText">Device ID:</div>
+                      <div className="incidentReportText">Device EUI:</div>
                       <div className="incidentReportText">{data.deviceEui}</div>
                     </div>
                     <div className="flex-center">
@@ -253,19 +238,19 @@ function IncidentPage() {
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Company name:</div>
-                      <div className="incidentReportText">{data.companyName}</div>
+                      <div className="incidentReportText">{data.companyName || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Contact person:</div>
-                      <div className="incidentReportText">{data.contactPerson}</div>
+                      <div className="incidentReportText">{data.contactPerson || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Phone number:</div>
-                      <div className="incidentReportText">{data.phoneNumber}</div>
+                      <div className="incidentReportText">{data.phoneNumber || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Car plate:</div>
-                      <div className="incidentReportText">{data.carPlate}</div>
+                      <div className="incidentReportText">{data.carPlate || "-"}</div>
                     </div>
                   </>
                 )}

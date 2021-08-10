@@ -133,7 +133,7 @@ function ManageUser() {
           style={{
             margin: "16px",
             fontSize: "30px",
-            cursor: "pointer",
+            cursor: activePage === 1 ? "default" : "pointer",
             color: activePage === 1 ? "#CCC" : "#555",
           }}
           onClick={
@@ -159,7 +159,7 @@ function ManageUser() {
           style={{
             margin: "16px",
             fontSize: "30px",
-            cursor: "pointer",
+            cursor: activePage !== totalPage ? "pointer" : "default",
             color: activePage !== totalPage ? "#555" : "#CCC",
           }}
           onClick={
