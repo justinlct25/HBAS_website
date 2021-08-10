@@ -264,7 +264,7 @@ function IncidentPage() {
                       <div className="incidentReportText">{data.latitude}</div>
                     </div>
                     <div className="flex-center">
-                      <div className="incidentReportText">Device ID:</div>
+                      <div className="incidentReportText">Device EUI:</div>
                       <div className="incidentReportText">{data.deviceEui}</div>
                     </div>
                     <div className="flex-center">
@@ -273,19 +273,19 @@ function IncidentPage() {
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Company name:</div>
-                      <div className="incidentReportText">{data.companyName}</div>
+                      <div className="incidentReportText">{data.companyName || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Contact person:</div>
-                      <div className="incidentReportText">{data.contactPerson}</div>
+                      <div className="incidentReportText">{data.contactPerson || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Phone number:</div>
-                      <div className="incidentReportText">{data.phoneNumber}</div>
+                      <div className="incidentReportText">{data.phoneNumber || "-"}</div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Car plate:</div>
-                      <div className="incidentReportText">{data.carPlate}</div>
+                      <div className="incidentReportText">{data.carPlate || "-"}</div>
                     </div>
                   </>
                 )}

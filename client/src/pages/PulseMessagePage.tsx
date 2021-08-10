@@ -26,20 +26,18 @@ function PulseMessagePage() {
   const activePage = alertDataPage.activePage;
   const totalPage = alertDataPage.totalPage;
 
-  const isLoading = useSelector(
-    (state: IRootState) => state.loading.loading.isLoading
-  );
+  const isLoading = useSelector((state: IRootState) => state.loading.loading.isLoading);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(1, true));
+    dispatch(getAlertDataListThunk(1));
   }, [dispatch]);
 
   useEffect(() => {
     const socket = io(`${REACT_APP_API_SERVER}`);
 
     socket.on("new-data-type-B", () => {
-      dispatch(getAlertDataListThunk(activePage, false));
+      dispatch(getAlertDataListThunk(activePage));
     });
 
     return () => {
@@ -50,8 +48,7 @@ function PulseMessagePage() {
   const batteryCalculation = (bat: string) => {
     //4.1v
     const battery = parseFloat(bat);
-    let percentage =
-      ((battery - BATTERY_MIN) / (BATTERY_MAX - BATTERY_MIN)) * 100;
+    let percentage = ((battery - BATTERY_MIN) / (BATTERY_MAX - BATTERY_MIN)) * 100;
     if (percentage > 100) {
       percentage = 100;
     }
@@ -91,7 +88,7 @@ function PulseMessagePage() {
               value={searchInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  dispatch(getAlertDataListThunk(1, true, searchInput));
+                  dispatch(getAlertDataListThunk(1, searchInput));
                 }
               }}
               onChange={(e) => {
@@ -100,9 +97,7 @@ function PulseMessagePage() {
             />
             <div
               style={{ cursor: "pointer", padding: "8px" }}
-              onClick={() =>
-                dispatch(getAlertDataListThunk(1, true, searchInput))
-              }
+              onClick={() => dispatch(getAlertDataListThunk(1, searchInput))}
             >
               <SearchIcon />
             </div>
@@ -119,7 +114,7 @@ function PulseMessagePage() {
       >
         <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
           {tableHeaders.map((item, idx) => {
-            if (item === "Device ID") {
+            if (item === "Device EUI") {
               return (
                 <div key={item + idx} className="flex-center thMainItem">
                   {item}
@@ -162,23 +157,22 @@ function PulseMessagePage() {
                   }}
                 >
                   <div className="flex-center tdMainItem">{item.deviceEui}</div>
-                  <div className="flex-center tdItem">{item.carPlate}</div>
-                  <div className="flex-center tdItem">{item.companyName}</div>
-                  <div className="flex-center tdItem">{item.companyTel}</div>
-                  <div className="flex-center tdItem">{item.address}</div>
+                  <div className="flex-center tdItem">{item.carPlate || "-"}</div>
+                  <div className="flex-center tdItem">{item.companyName || "-"}</div>
+                  <div className="flex-center tdItem">{item.companyTel || "-"}</div>
+                  <div className="flex-center tdItem">{item.address || "-"}</div>
                   <div
                     className="flex-center tdItem"
                     style={{
-                      color:
-                        batteryCalculation(item.battery) < 18 ? "#F00" : "#555",
+                      color: batteryCalculation(item.battery) < 18 ? "#F00" : "#555",
                     }}
                   >
                     {batteryCalculation(item.battery).toFixed(2) + "%"}
                   </div>
                   <div className="flex-center tdItem">
-                    {`${new Date(item.date).toLocaleDateString(
-                      "en-CA"
-                    )} ${new Date(item.date).toLocaleTimeString([], {
+                    {`${new Date(item.date).toLocaleDateString("en-CA")} ${new Date(
+                      item.date
+                    ).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}`}
@@ -194,13 +188,13 @@ function PulseMessagePage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage === 1 ? "#CCC" : "#555",
-            cursor: "pointer",
+            cursor: activePage === 1 ? "default" : "pointer",
           }}
           onClick={
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getAlertDataListThunk(activePage - 1, false));
+                  dispatch(getAlertDataListThunk(activePage - 1));
                 }
           }
         >
@@ -221,7 +215,7 @@ function PulseMessagePage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage !== totalPage ? "#555" : "#CCC",
-            cursor: "pointer",
+            cursor: activePage !== totalPage ? "pointer" : "default",
           }}
           onClick={
             activePage !== totalPage
@@ -229,7 +223,7 @@ function PulseMessagePage() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getAlertDataListThunk(activePage + 1, false));
+                  dispatch(getAlertDataListThunk(activePage + 1));
                 }
               : () => {}
           }

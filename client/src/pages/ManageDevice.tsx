@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { SearchIcon } from "../components/IconsOnly";
-import {
-  setPopUpIsActiveAction,
-  setSelectedItemAction,
-} from "../redux/assignDeviceModal/action";
+import { setPopUpIsActiveAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
@@ -94,7 +91,7 @@ function ManageDevice() {
             style={{ width: TABLE_WIDTH, minHeight: "64px" }}
           >
             {tableHeaders.map((item, idx) => {
-              if (item === "Device ID") {
+              if (item === "Device EUI") {
                 return (
                   <div key={item + idx} className="flex-center thMainItem">
                     {item}
@@ -135,16 +132,16 @@ function ManageDevice() {
                       {item.deviceEui}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.carPlate}
+                      {item.carPlate || "-"}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.companyName}
+                      {item.companyName || "-"}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.tel}
+                      {item.tel || "-"}
                     </div>
                     <div key={idx} className="tdItem">
-                      {item.contactPerson}
+                      {item.contactPerson || "-"}
                     </div>
                   </div>
                 );
@@ -158,7 +155,7 @@ function ManageDevice() {
             style={{
               margin: "16px",
               fontSize: "30px",
-              cursor: "pointer",
+              cursor: activePage === 1 ? "default" : "pointer",
               color: activePage === 1 ? "#CCC" : "#555",
             }}
             onClick={
@@ -185,7 +182,7 @@ function ManageDevice() {
             style={{
               margin: "16px",
               fontSize: "30px",
-              cursor: "pointer",
+              cursor: activePage !== totalPage ? "pointer" : "default",
               color: activePage !== totalPage ? "#555" : "#CCC",
             }}
             onClick={

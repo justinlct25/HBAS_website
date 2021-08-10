@@ -1,22 +1,16 @@
 import axios from "axios";
-import {
-  REACT_APP_API_VERSION,
-  REACT_APP_API_SERVER,
-} from "../../helpers/processEnv";
+import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../../helpers/processEnv";
 import { IAlertData, IPagination } from "../../models/resModels";
 import { setIsLoadingAction } from "../loading/action";
 import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
-import { resetAlertDataList, setAlertDataList } from "./action";
+import { setAlertDataList } from "./action";
 
-export function getAlertDataListThunk(activePage: number, isInit: boolean, searchString?: string) {
+export function getAlertDataListThunk(activePage: number, searchString?: string) {
   return async (dispatch: ThunkDispatch) => {
     dispatch(setIsLoadingAction(true));
     setTimeout(async () => {
       try {
-        if (isInit) {
-          dispatch(resetAlertDataList());
-        }
         const url = new URL(`${REACT_APP_API_VERSION}/alert-data`, REACT_APP_API_SERVER);
         url.searchParams.set("msg", "A");
         url.searchParams.set("page", String(activePage));

@@ -12,32 +12,22 @@ import EditVehicle from "../components/Modal/EditVehicle";
 import { VehicleCards } from "../components/VehicleCards";
 import { useRouter } from "../helpers/useRouter";
 import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
-import {
-  resetPopUpAction,
-  setSelectedItemAction
-} from "../redux/assignDeviceModal/action";
-import {
-  setDeleteModalDataAction,
-  setDeleteModalOpenAction
-} from "../redux/deleteModal/action";
+import { resetPopUpAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
+import { setDeleteModalDataAction, setDeleteModalOpenAction } from "../redux/deleteModal/action";
 import { getProfileListThunk } from "../redux/profile/thunk";
 import { IRootState } from "../redux/store";
 
 function ProfilePage() {
   const router = useRouter();
   const history = useHistory();
-  const profileList = useSelector(
-    (state: IRootState) => state.profileList.profileList
-  );
+  const profileList = useSelector((state: IRootState) => state.profileList.profileList);
   const dispatch = useDispatch();
   const assignDeviceModal = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal
   );
   const selectedItem = assignDeviceModal.selectedItem;
   const popUpIsActive = assignDeviceModal.popUpIsActive;
-  const addNewFormIsOpen = useSelector(
-    (state: IRootState) => state.addNewForm.addNewForm.isOpen
-  );
+  const addNewFormIsOpen = useSelector((state: IRootState) => state.addNewForm.addNewForm.isOpen);
   const deleteModalIsOpen = useSelector(
     (state: IRootState) => state.deleteModal.deleteModal.isOpen
   );
@@ -45,14 +35,9 @@ function ProfilePage() {
   useEffect(() => {
     const splitRoute = router.pathname.split("/");
     const routeId = splitRoute[splitRoute.length - 1];
+    if (!!popUpIsActive || !!addNewFormIsOpen || !!deleteModalIsOpen) return;
     dispatch(getProfileListThunk(parseInt(routeId)));
-  }, [
-    dispatch,
-    popUpIsActive,
-    addNewFormIsOpen,
-    deleteModalIsOpen,
-    router.pathname,
-  ]);
+  }, [dispatch, popUpIsActive, addNewFormIsOpen, deleteModalIsOpen, router.pathname]);
 
   const handleReset = () => {
     dispatch(resetPopUpAction());
@@ -61,15 +46,8 @@ function ProfilePage() {
 
   return (
     <div className="flex-center pageContainer">
-      <div
-        className="flex-center topRowContainer"
-        style={{ justifyContent: "space-between" }}
-      >
-        <div
-          className="flex-center"
-          style={{ cursor: "pointer" }}
-          onClick={handleReset}
-        >
+      <div className="flex-center topRowContainer" style={{ justifyContent: "space-between" }}>
+        <div className="flex-center" style={{ cursor: "pointer" }} onClick={handleReset}>
           <div className="flex-center">
             <BackButton />
             <div style={{ margin: "8px", fontSize: "24px" }}>BACK</div>
@@ -113,59 +91,35 @@ function ProfilePage() {
               }}
             >
               <div className="flex-center">
-                <div
-                  className="formLeftColumn incidentReportText"
-                  style={{ width: "180px" }}
-                >
+                <div className="formLeftColumn incidentReportText" style={{ width: "180px" }}>
                   Company name:
                 </div>
-                <div
-                  className="formRightColumn incidentReportText"
-                  style={{ width: "unset" }}
-                >
+                <div className="formRightColumn incidentReportText" style={{ width: "unset" }}>
                   {selectedItem.companyName}
                 </div>
               </div>
               <div className="flex-center">
-                <div
-                  className="formLeftColumn incidentReportText"
-                  style={{ width: "180px" }}
-                >
+                <div className="formLeftColumn incidentReportText" style={{ width: "180px" }}>
                   Contact person:
                 </div>
-                <div
-                  className="formRightColumn incidentReportText"
-                  style={{ width: "unset" }}
-                >
+                <div className="formRightColumn incidentReportText" style={{ width: "unset" }}>
                   {selectedItem.contactPerson}
                 </div>
               </div>
               <div className="flex-center">
-                <div
-                  className="formLeftColumn incidentReportText"
-                  style={{ width: "180px" }}
-                >
+                <div className="formLeftColumn incidentReportText" style={{ width: "180px" }}>
                   Phone number:
                 </div>
-                <div
-                  className="formRightColumn incidentReportText"
-                  style={{ width: "unset" }}
-                >
+                <div className="formRightColumn incidentReportText" style={{ width: "unset" }}>
                   {selectedItem.tel}
                 </div>
               </div>
             </div>
           </div>
-          <div
-            className="flex-center"
-            style={{ width: "100%", marginTop: "2vh" }}
-          >
+          <div className="flex-center" style={{ width: "100%", marginTop: "2vh" }}>
             <div className="titleText">Vehicle Logs</div>
           </div>
-          <div
-            className="flex-center vehicleCardContainer"
-            style={{ width: "80%" }}
-          >
+          <div className="flex-center vehicleCardContainer" style={{ width: "80%" }}>
             {profileList.length > 0 &&
               profileList
                 .filter((i) => i.deviceId)
@@ -216,12 +170,7 @@ function ProfilePage() {
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
-                return (
-                  <AnimatedVehicleCards
-                    key={item.vehicleId + idx}
-                    item={item}
-                  />
-                );
+                return <AnimatedVehicleCards key={item.vehicleId + idx} item={item} />;
               })}
           </div>
         </div>

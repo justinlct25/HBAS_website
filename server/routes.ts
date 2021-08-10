@@ -10,6 +10,6 @@ export const routes = express.Router();
 
 routes.use('/login', loginRoutes);
 routes.use('/devices', isLoggedIn, devicesRoutes);
-routes.use('/alert-data', isLoggedIn, alertDataRoutes);
+routes.use('/alert-data', alertDataRoutes);
 routes.use('/companies', isLoggedIn, companiesRoutes);
 routes.use('/vehicles', isLoggedIn, vehiclesRoutes);

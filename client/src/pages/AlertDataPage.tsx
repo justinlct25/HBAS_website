@@ -35,7 +35,7 @@ function AlertDataPage() {
     const socket = io(`${REACT_APP_API_SERVER}`);
 
     socket.on("new-data-type-A", () => {
-      dispatch(getAlertDataListThunk(activePage, false));
+      dispatch(getAlertDataListThunk(activePage));
     });
 
     return () => {
@@ -57,7 +57,7 @@ function AlertDataPage() {
               value={searchInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  dispatch(getAlertDataListThunk(1, true, searchInput));
+                  dispatch(getAlertDataListThunk(1, searchInput));
                 }
               }}
               onChange={(e) => {
@@ -83,7 +83,7 @@ function AlertDataPage() {
       >
         <div className="flex-center tableHeader" style={{ width: TABLE_WIDTH }}>
           {tableHeaders.map((item, idx) => {
-            if (item === "Device ID") {
+            if (item === "Device EUI") {
               return (
                 <div key={item + idx} className="flex-center thMainItem">
                   {item}
@@ -112,10 +112,10 @@ function AlertDataPage() {
                   }}
                 >
                   <div className="flex-center tdMainItem">{item.deviceEui}</div>
-                  <div className="flex-center tdItem">{item.carPlate}</div>
-                  <div className="flex-center tdItem">{item.companyName}</div>
-                  <div className="flex-center tdItem">{item.companyTel}</div>
-                  <div className="flex-center tdItem">{item.address}</div>
+                  <div className="flex-center tdItem">{item.carPlate || "-"}</div>
+                  <div className="flex-center tdItem">{item.companyName || "-"}</div>
+                  <div className="flex-center tdItem">{item.companyTel || "-"}</div>
+                  <div className="flex-center tdItem">{item.address || "-"}</div>
                   <div className="flex-center tdItem">
                     {`${new Date(item.date).toLocaleDateString("en-CA")} ${new Date(
                       item.date
@@ -135,13 +135,13 @@ function AlertDataPage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage === 1 ? "#CCC" : "#555",
-            cursor: "pointer",
+            cursor: activePage === 1 ? "default" : "pointer",
           }}
           onClick={
             activePage === 1
               ? () => {}
               : () => {
-                  dispatch(getAlertDataListThunk(activePage - 1, false));
+                  dispatch(getAlertDataListThunk(activePage - 1, searchInput));
                 }
           }
         >
@@ -162,7 +162,7 @@ function AlertDataPage() {
             margin: "16px",
             fontSize: "30px",
             color: activePage !== totalPage ? "#555" : "#CCC",
-            cursor: "pointer",
+            cursor: activePage !== totalPage ? "pointer" : "default",
           }}
           onClick={
             activePage !== totalPage
@@ -170,7 +170,7 @@ function AlertDataPage() {
                   if (activePage >= totalPage) {
                     return;
                   }
-                  dispatch(getAlertDataListThunk(activePage + 1, false));
+                  dispatch(getAlertDataListThunk(activePage + 1, searchInput));
                 }
               : () => {}
           }
