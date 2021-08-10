@@ -1,29 +1,31 @@
 export interface IAlertDataPage {
-  address: string;
-  battery: string;
-  carPlate: string;
-  companyContactPerson: string;
-  companyId: number;
-  companyIsActive: boolean;
-  companyName: string;
-  companyTel: string;
-  date: string;
-  deviceEui: string;
-  deviceId: number;
-  deviceIsActive: boolean;
-  deviceName: string;
-  deviceVersion: string;
-  geolocation: { x: number; y: number };
   id: number;
+  date: string;
+  geolocation: {
+    x: number;
+    y: number;
+  };
+  address: string;
   msgType: string;
+  battery: string;
   receivedAt: string;
-  vehicleId: number;
-  vehicleIsActive: boolean;
+  deviceId: number;
+  deviceName: string;
+  deviceEui: string;
+  deviceVersion: string;
+  deviceIsActive: boolean;
+  vehicleId: number | null;
+  carPlate: string | null;
+  vehicleIsActive: boolean | null;
+  companyId: number | null;
+  companyName: string | null;
+  companyTel: string | null;
+  companyContactPerson: string | null;
+  companyIsActive: boolean | null;
 }
 
 export interface IAlertDataPageState {
   alertDataList: Array<IAlertDataPage>;
   activePage: number;
   totalPage: number;
-  limit: number;
 }

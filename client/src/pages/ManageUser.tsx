@@ -31,7 +31,7 @@ function ManageUser() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCompaniesDataListThunk(activePage));
-  }, [dispatch, isOpen, activePage]);
+  }, [dispatch, isOpen]);
 
   return (
     <div className="flex-center pageContainer">

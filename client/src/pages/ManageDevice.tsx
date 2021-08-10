@@ -4,7 +4,7 @@ import AssignDeviceModal from "../components/AssignDeviceModal";
 import { SearchIcon } from "../components/IconsOnly";
 import {
   setPopUpIsActiveAction,
-  setSelectedItemAction
+  setSelectedItemAction,
 } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
@@ -33,7 +33,7 @@ function ManageDevice() {
 
   useEffect(() => {
     dispatch(getDeviceDataListThunk(activePage));
-  }, [dispatch, popUpIsActive, activePage]);
+  }, [dispatch, popUpIsActive]);
 
   // const limit = devicesDataList.limit;
 

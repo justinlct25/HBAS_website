@@ -1,16 +1,16 @@
 export interface IIncidentPageData {
   incidentId?: number;
-  vehicleId?: number;
+  vehicleId?: number | null;
   deviceId?: number;
   date: string;
   longitude: number;
   latitude: number;
   deviceEui?: string;
   deviceName?: string;
-  companyName?: string;
-  contactPerson?: string;
-  phoneNumber?: string;
-  carPlate?: string;
+  companyName?: string | null;
+  contactPerson?: string | null;
+  phoneNumber?: string | null;
+  carPlate?: string | null;
   address?: string;
   msgType?: string;
 }

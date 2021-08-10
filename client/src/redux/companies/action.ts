@@ -4,15 +4,13 @@ import { ICompaniesData } from "./state";
 export function setCompaniesDataList(
   companiesDataList: Array<ICompaniesData>,
   activePage: number,
-  totalPage: number,
-  limit: number
+  totalPage: number
 ) {
   return {
     type: "@@ManageUser/SET_companiesDataList" as const,
     companiesDataList,
     activePage,
     totalPage,
-    limit,
   };
 }
 

@@ -3,10 +3,8 @@ import { IAlertDataPageActions } from "./action";
 
 export const initAlertDataPageState: IAlertDataPageState = {
   alertDataList: [],
-
   activePage: 1,
-  totalPage: 10,
-  limit: 7,
+  totalPage: 1,
 };
 
 export const IAlertDataPageReducer = (
@@ -28,7 +26,6 @@ export const IAlertDataPageReducer = (
         alertDataList: initAlertDataPageState.alertDataList,
         activePage: initAlertDataPageState.activePage,
         totalPage: initAlertDataPageState.totalPage,
-        limit: initAlertDataPageState.limit,
       };
     default:
       return state;

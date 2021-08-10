@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../css/TablePage.css";
 import { useRouter } from "../../helpers/useRouter";
+import { ICompanyInfo } from "../../models/resModels";
 import { resetAddNewFormAction } from "../../redux/addNewForm/action";
 import { setSelectedItemAction } from "../../redux/assignDeviceModal/action";
 import { handleAxiosError } from "../../redux/login/thunk";
@@ -27,7 +28,9 @@ function EditCompany() {
     const companyId = splitRoute[splitRoute.length - 1];
     const fetchCompanyById = async () => {
       try {
-        const res = await axios.get(`/companies/${companyId}`);
+        const res = await axios.get<{ data: ICompanyInfo }>(
+          `/companies/${companyId}`
+        );
         const result = res.data;
         dispatch(
           setSelectedItemAction({
@@ -46,11 +49,14 @@ function EditCompany() {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`/companies/${selectedItem.companyId}`, {
-        companyName: selectedItem.companyName,
-        tel: selectedItem.tel,
-        contactPerson: selectedItem.contactPerson,
-      });
+      await axios.put<{ message: string }>(
+        `/companies/${selectedItem.companyId}`,
+        {
+          companyName: selectedItem.companyName,
+          tel: selectedItem.tel,
+          contactPerson: selectedItem.contactPerson,
+        }
+      );
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {

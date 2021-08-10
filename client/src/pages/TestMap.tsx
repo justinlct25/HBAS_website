@@ -4,6 +4,7 @@ import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
 import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import styles from "../css/popUp.module.scss";
+import { ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 
 type lastSeenLocations = Array<{
@@ -29,7 +30,9 @@ const TestMap = () => {
 
   const fetchAllLastSeen = async () => {
     try {
-      const res = await axios.get(`/alert-data/latest-locations`);
+      const res = await axios.get<{ data: ILocationDetail[] }>(
+        `/alert-data/latest-locations`
+      );
       const result = res.data;
       console.log(result);
       // setIncidentPoints(result.data);

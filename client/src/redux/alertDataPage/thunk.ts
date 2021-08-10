@@ -3,6 +3,7 @@ import {
   REACT_APP_API_VERSION,
   REACT_APP_API_SERVER,
 } from "../../helpers/processEnv";
+import { IAlertData, IPagination } from "../../models/resModels";
 import { setIsLoadingAction } from "../loading/action";
 import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
@@ -28,8 +29,13 @@ export function getAlertDataListThunk(
         url.searchParams.set("page", String(activePage));
         url.searchParams.set("rows", String(10));
         if (!!searchString) url.searchParams.set("search", searchString);
-        const res = await axios.get(url.toString());
+
+        const res = await axios.get<{
+          data: IAlertData[];
+          pagination: IPagination;
+        }>(url.toString());
         const result = res.data;
+        
         dispatch(
           setAlertDataList(result.data, activePage, result.pagination.lastPage)
         );
@@ -38,6 +44,6 @@ export function getAlertDataListThunk(
       } finally {
         dispatch(setIsLoadingAction(false));
       }
-    }, 2000);
+    }, 800);
   };
 }

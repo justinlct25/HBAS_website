@@ -4,7 +4,12 @@ export class LoginService {
   constructor() {}
 
   getUser = async (username: string) => {
-    const user = authorizedUser[username];
+    const user:
+      | {
+          username: string;
+          password: string;
+        }
+      | undefined = authorizedUser[username];
     return user;
   };
 }

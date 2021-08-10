@@ -12,7 +12,6 @@ export const ICompaniesDataReducer = (
         companiesDataList: action.companiesDataList,
         activePage: action.activePage,
         totalPage: action.totalPage,
-        limit: action.limit,
       };
     case "@@ManageUser/RESET":
       return {
@@ -20,7 +19,6 @@ export const ICompaniesDataReducer = (
         companiesDataList: initCompaniesDataState.companiesDataList,
         activePage: initCompaniesDataState.activePage,
         totalPage: initCompaniesDataState.totalPage,
-        limit: initCompaniesDataState.limit,
         formErrorInput: initCompaniesDataState.formErrorInput,
       };
 

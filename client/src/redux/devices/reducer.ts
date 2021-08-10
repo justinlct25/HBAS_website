@@ -12,7 +12,6 @@ export const IDevicesDataReducer = (
         devicesDataList: action.devicesDataList,
         activePage: action.activePage,
         totalPage: action.totalPage,
-        limit: action.limit,
       };
     case "@@ManageDevice/RESET":
       return {
@@ -20,7 +19,6 @@ export const IDevicesDataReducer = (
         devicesDataList: initDevicesDataState.devicesDataList,
         activePage: initDevicesDataState.activePage,
         totalPage: initDevicesDataState.totalPage,
-        limit: initDevicesDataState.limit,
       };
     default:
       return state;

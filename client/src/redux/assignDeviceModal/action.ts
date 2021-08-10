@@ -12,16 +12,16 @@ export function resetPopUpAction() {
 }
 
 export function setSelectedItemAction(selectedItem: {
-  companyId?: number;
-  companyName?: string;
-  tel?: string;
-  contactPerson?: string;
+  companyId?: number | null;
+  companyName?: string | null;
+  tel?: string | null;
+  contactPerson?: string | null;
   deviceId?: number;
   deviceEui?: string;
-  carPlate?: string;
-  vehicleId?: number;
-  vehicleType?: string;
-  vehicleModel?: string;
+  carPlate?: string | null;
+  vehicleId?: number | null;
+  vehicleType?: string | null;
+  vehicleModel?: string | null;
 }) {
   return {
     type: "@@assignDeviceModal/setSelectedItem" as const,

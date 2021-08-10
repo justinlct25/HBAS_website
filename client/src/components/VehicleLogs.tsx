@@ -8,6 +8,7 @@ import {
   REACT_APP_API_VERSION,
 } from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
+import { IDataHistory } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 import { BackButton } from "./IconsOnly";
 
@@ -61,7 +62,7 @@ const VehicleLogs = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
+  const [incidentPoints, setIncidentPoints] = useState<IDataHistory[]>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
   useEffect(() => {
@@ -73,7 +74,7 @@ const VehicleLogs = () => {
           `${REACT_APP_API_VERSION}/alert-data/history/${deviceId}`,
           REACT_APP_API_SERVER
         );
-        const res = await axios.get(url.toString());
+        const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data;
         setIncidentPoints(result.data);
       } catch (error) {

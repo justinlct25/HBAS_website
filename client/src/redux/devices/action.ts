@@ -9,15 +9,13 @@ import {
 export function setDevicesDataList(
   devicesDataList: Array<IDevicesData>,
   activePage: number,
-  totalPage: number,
-  limit: number
+  totalPage: number
 ) {
   return {
     type: "@@ManageDevice/SET_devicesDataList" as const,
     devicesDataList,
     activePage,
     totalPage,
-    limit,
   };
 }
 

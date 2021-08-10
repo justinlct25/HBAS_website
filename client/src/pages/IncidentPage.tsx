@@ -10,6 +10,7 @@ import {
   REACT_APP_API_VERSION,
 } from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
+import { IAlertData, IDataHistory, IPagination } from "../models/resModels";
 import { setIncidentPageData } from "../redux/incidentPage/action";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
@@ -34,7 +35,15 @@ function IncidentPage() {
   const dispatch = useDispatch();
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
-  const [locationHistory, setLocationHistory] = useState([]);
+  const [locationHistory, setLocationHistory] = useState<
+    {
+      date: string;
+      geolocation: {
+        x: number;
+        y: number;
+      };
+    }[]
+  >([]);
 
   const [mapLoaded, setMapLoaded] = useState(false);
 
@@ -53,9 +62,12 @@ function IncidentPage() {
           REACT_APP_API_SERVER
         );
         url.searchParams.set("id", `${incidentId}`);
-        const res = await axios.get(url.toString());
+        const res = await axios.get<{
+          data: IAlertData[];
+          pagination: IPagination;
+        }>(url.toString());
         const result = res.data.data[0];
-        console.log(result);
+
         dispatch(
           setIncidentPageData({
             incidentId: result.id,
@@ -77,19 +89,22 @@ function IncidentPage() {
       }
     };
     fetchIncident();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
-    console.log(incidentPageData.date.substr(0, 10));
+    if (incidentPageData.deviceId === -1) return;
     const fetchAllPreviousPulse = async () => {
       try {
         const url = new URL(
           `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
           REACT_APP_API_SERVER
         );
-        url.searchParams.set("date", incidentPageData.date.substr(0, 10));
-        const res = await axios.get(url.toString());
-        const result = res.data;
+        url.searchParams.set(
+          "date",
+          new Date(incidentPageData.date).toLocaleDateString("en-CA")
+        );
+        const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
+        const result = res.data.data;
         // const url = new URL(
         //   `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
         //   REACT_APP_API_SERVER
@@ -97,16 +112,14 @@ function IncidentPage() {
         // const res = await axios.get(url.toString());
         // const result = res.data.data[0];
         setLocationHistory(
-          result.map((i: locationHistoryType) => {
-            return { date: i.date, geolocation: i.geolocation };
-          })
+          result.map((i) => ({ date: i.date, geolocation: i.geolocation }))
         );
       } catch (error) {
         dispatch(handleAxiosError(error));
       }
     };
     fetchAllPreviousPulse();
-  }, [incidentPageData.deviceId]);
+  }, [incidentPageData.deviceId, dispatch]);
 
   const data = useSelector(
     (state: IRootState) => state.incidentPage.incidentPage

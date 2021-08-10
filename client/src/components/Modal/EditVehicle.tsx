@@ -22,11 +22,14 @@ function EditVehicle() {
 
   const handleSubmit = async () => {
     try {
-      await axios.put(`/vehicles/${selectedItem.vehicleId}`, {
-        carPlate: selectedItem.carPlate,
-        vehicleModel: selectedItem.vehicleModel ?? "",
-        vehicleType: selectedItem.vehicleType ?? "",
-      });
+      await axios.put<{ message: string }>(
+        `/vehicles/${selectedItem.vehicleId}`,
+        {
+          carPlate: selectedItem.carPlate,
+          vehicleModel: selectedItem.vehicleModel ?? "",
+          vehicleType: selectedItem.vehicleType ?? "",
+        }
+      );
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {

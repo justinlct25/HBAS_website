@@ -29,7 +29,7 @@ export async function isLoggedIn(req: Request, res: Response, next: NextFunction
       });
     }
 
-    req.user = user;
+    req.user = { username: user.username };
     return next();
   } catch (err) {
     logger.error(err.message);

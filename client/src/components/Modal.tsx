@@ -6,7 +6,12 @@ import {
   REACT_APP_API_VERSION,
   REACT_APP_API_SERVER,
 } from "../helpers/processEnv";
-import { IDevicesForLinking } from "../models/resModels";
+import {
+  ICompanyInfo,
+  IDevicesForLinking,
+  IPagination,
+  IVehicleDetail,
+} from "../models/resModels";
 import { ModalType } from "../pages/ManageDevice";
 import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { handleAxiosError } from "../redux/login/thunk";
@@ -22,15 +27,6 @@ interface ModalProps {
     }>
   >;
 }
-
-type companyDetails = {
-  id: number;
-  companyName: string;
-  tel: string;
-  contactPerson: string | null;
-  updatedAt: string;
-  vehiclesCount: number;
-};
 
 type vehicleList = Array<{
   vehicleId: number;
@@ -57,8 +53,8 @@ export const Modal = (props: ModalProps) => {
     linkedDevices: Array<deviceInfo>;
     notAssigned: Array<deviceInfo>;
   }>({ linkedDevices: [], notAssigned: [] });
-  const [companyList, setCompanyList] = useState<Array<companyDetails>>();
-  const [allVehicles, setAllVehicles] = useState<vehicleList>([]);
+  const [companyList, setCompanyList] = useState<Array<ICompanyInfo>>();
+  const [allVehicles, setAllVehicles] = useState<IVehicleDetail[]>([]);
 
   const dispatch = useDispatch();
   const assignDeviceModal = useSelector(
@@ -78,7 +74,7 @@ export const Modal = (props: ModalProps) => {
       const fetchAllDevices = async () => {
         try {
           const res = await axios.get<{ data: IDevicesForLinking }>(
-            `/devices/link-device-vehicle`
+            "/devices/link-device-vehicle"
           );
           const result = res.data;
           const linkedDevices = result.data.linkedDevices;
@@ -103,7 +99,10 @@ export const Modal = (props: ModalProps) => {
           );
           url.searchParams.set("rows", "1000000"); // hardcoded rows to get all entries
 
-          const res = await axios.get(url.toString());
+          const res = await axios.get<{
+            data: ICompanyInfo[];
+            pagination: IPagination;
+          }>(url.toString());
           const result = res.data;
           setCompanyList(result.data);
         } catch (error) {
@@ -118,7 +117,7 @@ export const Modal = (props: ModalProps) => {
     if (selectedItem.companyId === -1) return;
     const fetchVehiclesByCompanyId = async () => {
       try {
-        const res = await axios.get(
+        const res = await axios.get<{ data: IVehicleDetail[] }>(
           `/vehicles/company-id/${selectedItem.companyId}`
         );
         const result = res.data;

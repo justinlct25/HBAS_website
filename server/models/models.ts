@@ -50,7 +50,10 @@ export interface ILocationDetail {
 export interface IDataHistory {
   id: number;
   deviceId: number;
-  geolocation: string;
+  geolocation: {
+    x: number;
+    y: number;
+  };
   date: string;
   address: string;
   msgType: string;
@@ -80,7 +83,10 @@ export interface IDeviceInfo {
 export interface IAlertData {
   id: number;
   date: string;
-  geolocation: string;
+  geolocation: {
+    x: number;
+    y: number;
+  };
   address: string;
   msgType: string;
   battery: string;

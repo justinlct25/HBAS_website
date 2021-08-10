@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "../../css/Modal.css";
 import {
   resetDeleteModalAction,
-  setDeleteModalOpenAction
+  setDeleteModalOpenAction,
 } from "../../redux/deleteModal/action";
 import { handleAxiosError } from "../../redux/login/thunk";
 import { IRootState } from "../../redux/store";
@@ -19,7 +19,9 @@ export const DeleteModal = () => {
   const handleSubmit = async () => {
     if (deleteModal.deleteType === "vehicle") {
       try {
-        await axios.delete(`/vehicles/${deleteModal.vehicleId}`);
+        await axios.delete<{ message: string }>(
+          `/vehicles/${deleteModal.vehicleId}`
+        );
       } catch (error) {
         dispatch(handleAxiosError(error));
       } finally {
@@ -28,7 +30,9 @@ export const DeleteModal = () => {
     }
     if (deleteModal.deleteType === "company") {
       try {
-        await axios.delete(`/companies/${deleteModal.companyId}`);
+        await axios.delete<{ message: string }>(
+          `/companies/${deleteModal.companyId}`
+        );
       } catch (error) {
         dispatch(handleAxiosError(error));
       } finally {

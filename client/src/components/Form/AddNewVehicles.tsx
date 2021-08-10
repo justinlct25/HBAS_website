@@ -54,9 +54,12 @@ function AddNewVehicles() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post(`/vehicles/company-id/${companyId}`, {
-        vehicles: totalVehicle,
-      });
+      await axios.post<{ message: string; ids: number[] }>(
+        `/vehicles/company-id/${companyId}`,
+        {
+          vehicles: totalVehicle,
+        }
+      );
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {

@@ -3,12 +3,12 @@ export interface IDevicesData {
   deviceId: number;
   deviceName: string;
   deviceEui: string;
-  vehicleId: number;
-  carPlate: string;
-  companyId: number;
-  companyName: string;
-  tel: string;
-  contactPerson: string;
+  vehicleId: number | null;
+  carPlate: string | null;
+  companyId: number | null;
+  companyName: string | null;
+  tel: string | null;
+  contactPerson: string | null;
   updatedAt: string;
 }
 
@@ -16,14 +16,12 @@ export interface IDevicesDataState {
   devicesDataList: Array<IDevicesData>;
   activePage: number;
   totalPage: number;
-  limit: number;
 }
 
 export const initDevicesDataState: IDevicesDataState = {
   devicesDataList: [],
   activePage: 1,
-  totalPage: 10,
-  limit: 7,
+  totalPage: 1,
 };
 ////End of device show by default page
 
@@ -41,25 +39,3 @@ export interface IAddDevices {
   id: number;
   device_eui: string;
 }
-
-//-----state interface
-export interface IAddDeviceCompanyState {
-  adCompanyList: Array<IAddDeviceCompany>;
-}
-export interface IAddDeviceVehiclesState {
-  adVehiclesList: Array<IAddDeviceVehicles>;
-}
-export interface IAddDevicesState {
-  adDevicesList: Array<IAddDevices>;
-}
-//-----initial state for add devices
-export const initAddDeviceCompanyState: IAddDeviceCompanyState = {
-  adCompanyList: [],
-};
-export const initAddDeviceVehiclesState: IAddDeviceVehiclesState = {
-  adVehiclesList: [],
-};
-export const initAddDevicesState: IAddDevicesState = {
-  adDevicesList: [],
-};
-//// End of add devices redux
