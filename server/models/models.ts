@@ -20,6 +20,7 @@ export interface INewVehicle {
   carPlate: string;
   vehicleModel: string | null;
   vehicleType: string | null;
+  manufactureYear: string | null;
 }
 
 export interface IVehicleDetail {
@@ -27,6 +28,7 @@ export interface IVehicleDetail {
   carPlate: string;
   vehicleModel: string | null;
   vehicleType: string | null;
+  manufactureYear: string | null;
   updatedAt: string;
   deviceId: number;
   deviceName: string;

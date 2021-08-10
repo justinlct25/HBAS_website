@@ -17,6 +17,7 @@ export class VehiclesService {
           carPlate: `${tables.VEHICLES}.car_plate`,
           vehicleModel: `${tables.VEHICLES}.vehicle_model`,
           vehicleType: `${tables.VEHICLES}.vehicle_type`,
+          manufactureYear: `${tables.VEHICLES}.manufacture_year`,
           updatedAt: `${tables.VEHICLES}.updated_at`,
         })
           .from(tables.VEHICLES)
@@ -82,6 +83,7 @@ export class VehiclesService {
             car_plate: v.carPlate.toUpperCase(),
             vehicle_model: v.vehicleModel,
             vehicle_type: v.vehicleType,
+            manufacture_year: v.manufactureYear,
           }))
         )
         .returning<number[]>('id');
@@ -106,7 +108,8 @@ export class VehiclesService {
     vehicleId: number,
     carPlate: string,
     vehicleModel: string | null,
-    vehicleType: string | null
+    vehicleType: string | null,
+    manufactureYear: string | null
   ) => {
     return await this.knex(tables.VEHICLES)
       .update(
@@ -114,6 +117,7 @@ export class VehiclesService {
           car_plate: carPlate.toUpperCase(),
           vehicle_model: vehicleModel,
           vehicle_type: vehicleType,
+          manufacture_year: manufactureYear,
           updated_at: new Date(),
         },
         'id'
