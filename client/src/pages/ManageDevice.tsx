@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AssignDeviceModal from "../components/AssignDeviceModal";
 import { SearchIcon } from "../components/IconsOnly";
-import {
-  setPopUpIsActiveAction,
-  setSelectedItemAction
-} from "../redux/assignDeviceModal/action";
+import { setPopUpIsActiveAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { getDeviceDataListThunk } from "../redux/devices/thunk";
 import { IRootState } from "../redux/store";
 import { manageDeviceTableHeaders } from "../table/tableHeader";
@@ -18,9 +15,7 @@ export type ModalType = "company" | "carPlate" | "device";
 
 function ManageDevice() {
   const [searchInput, setSearchInput] = useState("");
-  const devicesDataList = useSelector(
-    (state: IRootState) => state.devicesDataList
-  );
+  const devicesDataList = useSelector((state: IRootState) => state.devicesDataList);
 
   const popUpIsActive = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal.popUpIsActive
@@ -33,7 +28,7 @@ function ManageDevice() {
 
   useEffect(() => {
     dispatch(getDeviceDataListThunk(activePage));
-  }, [dispatch, popUpIsActive, activePage]);
+  }, [dispatch, popUpIsActive]);
 
   // const limit = devicesDataList.limit;
 
@@ -155,10 +150,7 @@ function ManageDevice() {
         </div>
         <AssignDeviceModal />
 
-        <div
-          className="flex-center"
-          style={{ width: "100%", maxHeight: "12vh" }}
-        >
+        <div className="flex-center" style={{ width: "100%", maxHeight: "12vh" }}>
           <div
             style={{
               margin: "16px",
