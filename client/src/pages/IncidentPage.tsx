@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import ReactMapboxGL, { Feature, Layer } from "react-mapbox-gl";
+import ReactMapboxGL, { Marker } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { BackButton, CaretIcon } from "../components/IconsOnly";
@@ -19,11 +19,9 @@ const Map = ReactMapboxGL({
 });
 
 function IncidentPage() {
-  // const DEFAULT_CENTER = [114.27424, 22.26828] as [number, number];
   const router = useRouter();
   const history = useHistory();
   const dispatch = useDispatch();
-  const [mapLoaded, setMapLoaded] = useState(false);
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
   const [locationHistory, setLocationHistory] = useState<
@@ -190,9 +188,6 @@ function IncidentPage() {
             center={currentMapView.center}
             zoom={currentMapView.zoom}
             containerStyle={{ height: "100%", width: "100%" }}
-            onStyleLoad={() => {
-              setMapLoaded(true);
-            }}
             onDrag={e => setCurrentMapView({
               center: e.getCenter().toArray() as [number, number],
               zoom: [e.getZoom()]
@@ -202,21 +197,34 @@ function IncidentPage() {
               zoom: [e.getZoom()]
             })}
           >
-            <Layer type="circle" paint={{ "circle-color": "#FF4545", "circle-radius": 12 }}>
-              {mapLoaded && !isGPSNotFound ? (
-                <Feature coordinates={[data.longitude, data.latitude]} />
-                ) : undefined}
-            </Layer>
-            <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 8 }}>
-              {isGPSNotFound && mapLoaded && locationHistory.length ? (
-                locationHistory
-                  .map((item, idx) => {
-                    return (
-                      <Feature key={idx} coordinates={[item.geolocation.y, item.geolocation.x]} />
-                    );
-                  })
-              ) : undefined}
-            </Layer>
+            {isGPSNotFound ?
+              locationHistory.map((item, idx) =>
+                <Marker coordinates={[item.geolocation.y, item.geolocation.x]} anchor="center">
+                  <div
+                    style={{
+                      height: "16px",
+                      width: "16px",
+                      borderRadius: "50%",
+                      background: "#00F900",
+                      pointerEvents: "none"
+                    }}
+                  >
+                    {idx}
+                  </div>
+                </Marker>
+              ) : 
+              <Marker coordinates={[data.longitude, data.latitude]} anchor="center">
+                <div
+                  style={{
+                    height: "24px",
+                    width: "24px",
+                    borderRadius: "50%",
+                    background:"#FF4545",
+                    pointerEvents: "none"
+                  }}
+                />
+              </Marker>
+            }
           </Map>
           <div
             className={
