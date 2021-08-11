@@ -14,6 +14,8 @@ type InsertVehicles = { id: number; car_plate: string };
 type InsertDevices = { id: number; device_eui: string };
 
 export async function seed(knex: Knex): Promise<void> {
+  if (process.env.NODE_ENV === 'production') return;
+  
   // Deletes ALL existing entries
   await knex(tables.VEHICLE_DEVICE).del();
   await knex(tables.COMPANY_VEHICLES).del();
