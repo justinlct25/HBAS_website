@@ -94,7 +94,7 @@
 }
 .tableBody {
   background-color: #fff;
-  overflow: scroll;
+  overflow: auto;
   box-shadow: 0 4px 8px #0003;
   border-radius: 0px 0px 10px 10px;
 }

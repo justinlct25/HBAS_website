@@ -2,7 +2,7 @@ $pageContainerHeight: calc(100vh - var(--topNavHeight) - 16px);
 $tableRowHeight: 40px;
 
 .pageContainer {
-  overflow-y: scroll;
+  overflow-y: auto;
   flex-direction: column;
   justify-content: flex-start !important;
   width: 100vw;
