@@ -80,13 +80,13 @@ export interface IAlertData {
 }
 
 export interface ILocationDetail {
+  battery: string;
   deviceId: number;
   deviceName: string;
   deviceEui: string;
   date: string;
-  geolocation: string;
+  geolocation: { x: number; y: number };
   msgType: string;
-  battery: string;
   carPlate: string;
   companyName: string;
 }

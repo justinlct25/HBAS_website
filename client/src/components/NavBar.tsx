@@ -20,8 +20,7 @@ function NavBar() {
     { display: "Pulse Message", link: "/pulse-message" },
     { display: "Manage User", link: "/manage-user" },
     { display: "Manage Device", link: "/manage-device" },
-    // { display: "Statistics (Coming soon)", link: "/statistics" },
-    { display: "Test Map Page", link: "/test-map" },
+    { display: "Latest Locations", link: "/latest-locations" },
   ];
 
   const closePathA =
@@ -47,9 +46,7 @@ function NavBar() {
   };
 
   const dispatch = useDispatch();
-  const notification = useSelector(
-    (state: IRootState) => state.notification.notification
-  );
+  const notification = useSelector((state: IRootState) => state.notification.notification);
   const showNotification = notification.showNotification;
   const expandNotification = notification.expandNotification;
 
@@ -70,16 +67,10 @@ function NavBar() {
                   className="flex-center menuButtonContainer"
                   style={{ marginRight: "24px", position: "relative" }}
                   onClick={() => {
-                    dispatch(
-                      expandNotificationMessageAction(!expandNotification)
-                    );
+                    dispatch(expandNotificationMessageAction(!expandNotification));
                   }}
                 >
-                  {showNotification ? (
-                    <NotificationAlertIcon />
-                  ) : (
-                    <NotificationIcon />
-                  )}
+                  {showNotification ? <NotificationAlertIcon /> : <NotificationIcon />}
                   {expandNotification && (
                     <div className="notificationModal">
                       {reallyNoMessage ? (

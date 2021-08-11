@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { setIsGPSNotFound } from "../redux/incidentPage/action";
+import { setGeolocation, setIsGPSNotFound } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { incidentRecordsTableHeaders } from "../table/tableHeader";
 
@@ -108,6 +108,11 @@ function AlertDataPage() {
                   key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
+                    if (item.address === "GPS not found") {
+                      dispatch(setIsGPSNotFound(true));
+                    } else {
+                      dispatch(setIsGPSNotFound(false));
+                    }
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >

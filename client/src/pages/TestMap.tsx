@@ -7,49 +7,20 @@ import styles from "../css/popUp.module.scss";
 import { ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 
-type lastSeenLocations = Array<{
-  battery: string;
-  carPlate: string;
-  companyName: string;
-  date: string;
-  deviceEui: string;
-  deviceId: number;
-  deviceName: string;
-  geolocation: { x: number; y: number };
-  msgType: string;
-}>;
-
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
 const TestMap = () => {
   const dispatch = useDispatch();
-  const [incidentPoints, setIncidentPoints] = useState<lastSeenLocations>([]);
+  const [incidentPoints, setIncidentPoints] = useState<ILocationDetail[]>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
 
   const fetchAllLastSeen = async () => {
     try {
-      const res = await axios.get<{ data: ILocationDetail[] }>(
-        `/alert-data/latest-locations`
-      );
-      const result = res.data;
-      console.log(result);
-      // setIncidentPoints(result.data);
-      //mock One-dot
-      // setIncidentPoints([
-      //   {
-      //     battery: "1",
-      //     carPlate: "1",
-      //     companyName: "1",
-      //     date: "1",
-      //     deviceEui: "1",
-      //     deviceId: 1,
-      //     deviceName: "1",
-      //     geolocation: { x: 22.35499699048897, y: 114.14865316808854 },
-      //     msgType: "1",
-      //   },
-      // ]);
+      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
+      const result = res.data.data;
+      setIncidentPoints(result);
     } catch (error) {
       dispatch(handleAxiosError(error));
     }
@@ -67,10 +38,7 @@ const TestMap = () => {
       onStyleLoad={fetchAllLastSeen}
     >
       <>
-        <Layer
-          type="circle"
-          paint={{ "circle-color": "#00FFFF", "circle-radius": 10 }}
-        >
+        <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
           {incidentPoints.map((point, idx) => (
             <Feature
               key={point.deviceId + idx}
@@ -112,17 +80,13 @@ const TestMap = () => {
                 <div>
                   <div>Date:</div>
                   <div>
-                    {new Date(
-                      incidentPoints[hoverAnimate.idx].date
-                    ).toLocaleDateString("en-CA")}
+                    {new Date(incidentPoints[hoverAnimate.idx].date).toLocaleDateString("en-CA")}
                   </div>
                 </div>
                 <div>
                   <div>Time:</div>
                   <div>
-                    {new Date(
-                      incidentPoints[hoverAnimate.idx].date
-                    ).toLocaleTimeString("en-CA")}
+                    {new Date(incidentPoints[hoverAnimate.idx].date).toLocaleTimeString("en-CA")}
                   </div>
                 </div>
               </div>
@@ -134,72 +98,6 @@ const TestMap = () => {
       </>
     </Map>
   );
-  // return (
-  //   // Important! Always set the container height explicitly
-  //   <div
-  //     className="flex-center"
-  //     style={{ height: "80vh", width: "100%", transform: "translateY(24px)" }}
-  //   >
-  //     <GoogleMapReact
-  //       bootstrapURLKeys={{
-  //         key: process.env.REACT_APP_API_GOOGLE_MAP as string,
-  //       }}
-  //       defaultCenter={{
-  //         lat: 22.3560207,
-  //         lng: 114.1131052,
-  //       }}
-  //       defaultZoom={11.67}
-  //     >
-  //       {incidentPoints.map((item, idx) => {
-  //         const checking = hoverAnimate.onHover && hoverAnimate.idx === idx;
-  //         return (
-  //           <IncidentPoint
-  //             onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
-  //             onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-  //             key={idx}
-  //             lat={item.geolocation.x}
-  //             lng={item.geolocation.y}
-  //             backgroundColor={item.msgType === "A" ? "#F00C" : "#00F9"}
-  //           >
-  //             <div
-  //               className="flex-center tooltip"
-  //               style={{
-  //                 top: checking ? "-120px" : 0,
-  //                 opacity: checking ? 1 : 0,
-  //               }}
-  //             >
-  //               <div className="flex-center">
-  //                 <div className="tooltipField">{"Device ID:"}</div>
-  //                 <div style={{ color: "#EEE" }}>{item.deviceEui}</div>
-  //               </div>
-  //               <div className="flex-center">
-  //                 <div className="tooltipField">{"Date:"}</div>
-  //                 <div style={{ color: "#EEE" }}>
-  //                   {new Date(item.date).toLocaleDateString("en-CA")}
-  //                 </div>
-  //               </div>
-  //               <div className="flex-center">
-  //                 <div className="tooltipField">{"Time:"}</div>
-  //                 <div style={{ color: "#EEE" }}>
-  //                   {new Date(item.date).toLocaleTimeString()}
-  //                 </div>
-  //               </div>
-  //               <div className="flex-center">
-  //                 <div className="tooltipField">{"Company:"}</div>
-  //                 <div style={{ color: "#EEE" }}>{item.companyName}</div>
-  //               </div>
-
-  //               <div className="flex-center">
-  //                 <div className="tooltipField">{"Car Plate:"}</div>
-  //                 <div style={{ color: "#EEE" }}>{item.carPlate}</div>
-  //               </div>
-  //             </div>
-  //           </IncidentPoint>
-  //         );
-  //       })}
-  //     </GoogleMapReact>
-  //   </div>
-  // );
 };
 
 export default TestMap;

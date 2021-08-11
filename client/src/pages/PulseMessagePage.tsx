@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { setIncidentPageData } from "../redux/incidentPage/action";
+import { setIncidentPageData, setIsGPSNotFound } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { pulseMessageTableHeaders } from "../table/tableHeader";
 
@@ -152,7 +152,11 @@ function PulseMessagePage() {
                         carPlate: item.carPlate,
                       })
                     );
-
+                    if (item.address === "GPS not found") {
+                      dispatch(setIsGPSNotFound(true));
+                    } else {
+                      dispatch(setIsGPSNotFound(false));
+                    }
                     dispatch(push(`/incident/${item.id}`));
                   }}
                 >

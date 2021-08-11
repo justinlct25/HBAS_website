@@ -5,10 +5,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/NavBar";
 import VehicleLogs from "./components/VehicleLogs";
-import {
-  REACT_APP_API_SERVER,
-  REACT_APP_API_VERSION,
-} from "./helpers/processEnv";
+import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "./helpers/processEnv";
 import AlertDataPage from "./pages/AlertDataPage";
 import IncidentPage from "./pages/IncidentPage";
 import LoginPage from "./pages/LoginPage";
@@ -29,10 +26,8 @@ function App() {
   // Axios setups
   axios.defaults.baseURL = `${REACT_APP_API_SERVER}${REACT_APP_API_VERSION}`;
   axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  axios.defaults.headers.get["Content-Type"] =
-    "application/json; charset=utf-8";
-  axios.defaults.headers.post["Content-Type"] =
-    "application/json; charset=utf-8";
+  axios.defaults.headers.get["Content-Type"] = "application/json; charset=utf-8";
+  axios.defaults.headers.post["Content-Type"] = "application/json; charset=utf-8";
 
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state: IRootState) => state.login.isLoggedIn);
@@ -55,47 +50,15 @@ function App() {
         <Route path="/login" exact={true} component={LoginPage} />
         {isLoggedIn && (
           <>
-            <AdminPrivateRoute
-              path="/alert-data-page"
-              exact
-              component={AlertDataPage}
-            />
-            <AdminPrivateRoute
-              path="/pulse-message"
-              exact
-              component={PulseMessagePage}
-            />
-            <AdminPrivateRoute
-              path="/incident/:id"
-              exact
-              component={IncidentPage}
-            />
-            <AdminPrivateRoute
-              path="/profile/:id"
-              exact
-              component={ProfilePage}
-            />
-            <AdminPrivateRoute
-              path="/manage-user"
-              exact
-              component={ManageUser}
-            />
-            <AdminPrivateRoute
-              path="/manage-device"
-              exact
-              component={ManageDevice}
-            />
-            <AdminPrivateRoute
-              path="/statistics"
-              exact
-              component={Statistics}
-            />
-            <AdminPrivateRoute
-              path="/vehicle-logs/:id"
-              exact
-              component={VehicleLogs}
-            />
-            <AdminPrivateRoute path="/test-map" exact component={TestMap} />
+            <AdminPrivateRoute path="/alert-data-page" exact component={AlertDataPage} />
+            <AdminPrivateRoute path="/pulse-message" exact component={PulseMessagePage} />
+            <AdminPrivateRoute path="/incident/:id" exact component={IncidentPage} />
+            <AdminPrivateRoute path="/profile/:id" exact component={ProfilePage} />
+            <AdminPrivateRoute path="/manage-user" exact component={ManageUser} />
+            <AdminPrivateRoute path="/manage-device" exact component={ManageDevice} />
+            <AdminPrivateRoute path="/statistics" exact component={Statistics} />
+            <AdminPrivateRoute path="/vehicle-logs/:id" exact component={VehicleLogs} />
+            <AdminPrivateRoute path="/latest-locations" exact component={TestMap} />
           </>
         )}
       </Switch>

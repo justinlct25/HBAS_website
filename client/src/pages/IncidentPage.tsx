@@ -9,11 +9,7 @@ import "../css/TablePage.css";
 import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processEnv";
 import { useRouter } from "../helpers/useRouter";
 import { IAlertData, IDataHistory, IPagination } from "../models/resModels";
-import {
-  setGeolocation,
-  setIncidentPageData,
-  setIsGPSNotFound,
-} from "../redux/incidentPage/action";
+import { setGeolocation, setIncidentPageData } from "../redux/incidentPage/action";
 import { setIsLoadingAction } from "../redux/loading/action";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
@@ -23,12 +19,13 @@ const Map = ReactMapboxGL({
 });
 
 function IncidentPage() {
+  const DEFAULT_CENTER = [114.27424, 22.26828] as [number, number];
   const router = useRouter();
   const history = useHistory();
   const dispatch = useDispatch();
+  const [mapLoaded, setMapLoaded] = useState(false);
   const [isLiveView, setIsLiveView] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(true);
-  // const [isGPSNotFound, setIsGPSNotFound] = useState(false);
   const [locationHistory, setLocationHistory] = useState<
     {
       date: string;
@@ -38,8 +35,6 @@ function IncidentPage() {
       };
     }[]
   >([]);
-
-  const [mapLoaded, setMapLoaded] = useState(false);
 
   const incidentPageData = useSelector((state: IRootState) => state.incidentPage.incidentPage);
   const isGPSNotFound = useSelector((state: IRootState) => state.incidentPage.isGPSNotFound);
@@ -60,11 +55,6 @@ function IncidentPage() {
           pagination: IPagination;
         }>(url.toString());
         const result = res.data.data[0];
-        if (result.address === "GPS not found") {
-          dispatch(setIsGPSNotFound(true));
-        } else {
-          dispatch(setIsGPSNotFound(false));
-        }
         dispatch(
           setIncidentPageData({
             incidentId: result.id,
@@ -72,8 +62,8 @@ function IncidentPage() {
             deviceId: result.deviceId,
             deviceEui: result.deviceEui,
             date: result.date,
-            longitude: isGPSNotFound ? -1 : result.geolocation.y,
-            latitude: isGPSNotFound ? -1 : result.geolocation.x,
+            longitude: isGPSNotFound ? incidentPageData.longitude : result.geolocation.y,
+            latitude: isGPSNotFound ? incidentPageData.latitude : result.geolocation.x,
             deviceName: result.deviceName,
             companyName: result.companyName,
             contactPerson: result.companyContactPerson,
@@ -99,15 +89,11 @@ function IncidentPage() {
         url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
-        setLocationHistory(result.map((i) => ({ date: i.date, geolocation: i.geolocation })));
-        if (isGPSNotFound) {
-          dispatch(
-            setGeolocation({
-              longitude: locationHistory[0].geolocation.y,
-              latitude: locationHistory[0].geolocation.x,
-            })
-          );
-        }
+        setLocationHistory(
+          result
+            .filter((i) => i.geolocation.y > 0 && i.geolocation.x > 0)
+            .map((i) => ({ date: i.date, geolocation: i.geolocation }))
+        );
       } catch (error) {
         dispatch(handleAxiosError(error));
       } finally {
@@ -116,6 +102,19 @@ function IncidentPage() {
     };
     fetchAllPreviousPulse();
   }, [incidentPageData.deviceId, dispatch]);
+
+  useEffect(() => {
+    if (!isGPSNotFound || !locationHistory) {
+      return;
+    } else if (isGPSNotFound && locationHistory.length > 0) {
+      dispatch(
+        setGeolocation({
+          longitude: locationHistory[0].geolocation.y,
+          latitude: locationHistory[0].geolocation.x,
+        })
+      );
+    }
+  }, [locationHistory, dispatch]);
 
   const data = useSelector((state: IRootState) => state.incidentPage.incidentPage);
 
@@ -178,14 +177,12 @@ function IncidentPage() {
                 ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
                 : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
             }
-            zoom={[14]}
-            center={
-              isGPSNotFound
-                ? [locationHistory[0].geolocation.y, locationHistory[0].geolocation.x]
-                : [data.longitude, data.latitude]
-            }
+            zoom={[isGPSNotFound ? 10 : 14]}
+            center={isGPSNotFound && mapLoaded ? DEFAULT_CENTER : [data.longitude, data.latitude]}
             containerStyle={{ height: "100%", width: "100%" }}
-            onStyleLoad={() => setMapLoaded(true)}
+            onStyleLoad={() => {
+              setMapLoaded(true);
+            }}
           >
             <Layer type="circle" paint={{ "circle-color": "#FF4545", "circle-radius": 12 }}>
               {mapLoaded && !isGPSNotFound ? (
@@ -256,12 +253,16 @@ function IncidentPage() {
                       <div className="incidentReportText">{timeString}</div>
                     </div>
                     <div className="flex-center">
-                      <div className="incidentReportText">Longitude:</div>
-                      <div className="incidentReportText">{data.longitude}</div>
+                      <div className="incidentReportText">Latitude:</div>
+                      <div className="incidentReportText">
+                        {isGPSNotFound ? "Not found" : data.latitude}
+                      </div>
                     </div>
                     <div className="flex-center">
-                      <div className="incidentReportText">Latitude:</div>
-                      <div className="incidentReportText">{data.latitude}</div>
+                      <div className="incidentReportText">Longitude:</div>
+                      <div className="incidentReportText">
+                        {isGPSNotFound ? "Not found" : data.longitude}
+                      </div>
                     </div>
                     <div className="flex-center">
                       <div className="incidentReportText">Device EUI:</div>
