@@ -7,6 +7,9 @@ import styles from "../css/popUp.module.scss";
 import { ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 
+const defaultZoom: [number] = [9.6];
+const defaultCenter: [number, number] = [114.15960518207243, 22.363101286562113];
+
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
@@ -29,11 +32,11 @@ const TestMap = () => {
   return (
     <Map
       // eslint-disable-next-line react/style-prop-object
-      // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
       style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
+      // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
       // style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
-      zoom={[9.6]}
-      center={[114.15960518207243, 22.363101286562113]}
+      zoom={defaultZoom}
+      center={defaultCenter}
       containerStyle={{ height: "80vh" }}
       onStyleLoad={fetchAllLastSeen}
     >
