@@ -52,7 +52,8 @@
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
       "semi": "warn",
@@ -63,7 +64,31 @@
         {
           "ignoreEOLComments": true
         }
-      ]
+      ],
+      "@typescript-eslint/naming-convention": [
+        "warn",
+        {
+          "selector": [
+            "interface",
+            "class"
+          ],
+          "format": [
+            "PascalCase"
+          ]
+        }
+      ],
+      "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-types": [
+        "error",
+        {
+          "extendDefaults": true,
+          "types": {
+            "{}": false
+          }
+        }
+      ],
+      "@typescript-eslint/no-empty-function": "warn"
     }
   },
   "browserslist": {
