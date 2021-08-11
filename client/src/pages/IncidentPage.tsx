@@ -19,7 +19,7 @@ const Map = ReactMapboxGL({
 });
 
 function IncidentPage() {
-  const DEFAULT_CENTER = [114.27424, 22.26828] as [number, number];
+  // const DEFAULT_CENTER = [114.27424, 22.26828] as [number, number];
   const router = useRouter();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -104,9 +104,7 @@ function IncidentPage() {
   }, [incidentPageData.deviceId, dispatch]);
 
   useEffect(() => {
-    if (!isGPSNotFound || !locationHistory) {
-      return;
-    } else if (isGPSNotFound && locationHistory.length > 0) {
+    if (isGPSNotFound && locationHistory.length) {
       dispatch(
         setGeolocation({
           longitude: locationHistory[0].geolocation.y,
@@ -117,6 +115,18 @@ function IncidentPage() {
   }, [locationHistory, dispatch]);
 
   const data = useSelector((state: IRootState) => state.incidentPage.incidentPage);
+
+  const [currentMapView, setCurrentMapView] = useState({
+    center: [data.longitude, data.latitude] as [number, number],
+    zoom: [14] as [number]
+  });
+
+  useEffect(() => {
+    setCurrentMapView({
+      center: [data.longitude, data.latitude],
+      zoom: [14]
+    });
+  }, [data]);
 
   const date = new Date(data.date);
   const dateString = date.toLocaleString("en-CA", {
@@ -154,7 +164,7 @@ function IncidentPage() {
               }}
               onClick={() => setIsLiveView(true)}
             >
-              {"Satellite View"}
+              Satellite View
             </div>
             <div
               className="flex-center satelliteButton"
@@ -165,7 +175,7 @@ function IncidentPage() {
               }}
               onClick={() => setIsLiveView(false)}
             >
-              {"Map View"}
+              Map View
             </div>
           </div>
 
@@ -177,35 +187,35 @@ function IncidentPage() {
                 ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
                 : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
             }
-            zoom={[isGPSNotFound ? 10 : 14]}
-            center={isGPSNotFound && mapLoaded ? DEFAULT_CENTER : [data.longitude, data.latitude]}
+            center={currentMapView.center}
+            zoom={currentMapView.zoom}
             containerStyle={{ height: "100%", width: "100%" }}
             onStyleLoad={() => {
               setMapLoaded(true);
             }}
+            onDrag={e => setCurrentMapView({
+              center: e.getCenter().toArray() as [number, number],
+              zoom: [e.getZoom()]
+            })}
+            onZoom={e => setCurrentMapView({
+              center: e.getCenter().toArray() as [number, number],
+              zoom: [e.getZoom()]
+            })}
           >
             <Layer type="circle" paint={{ "circle-color": "#FF4545", "circle-radius": 12 }}>
               {mapLoaded && !isGPSNotFound ? (
                 <Feature coordinates={[data.longitude, data.latitude]} />
-              ) : (
-                <></>
-              )}
+                ) : undefined}
             </Layer>
-
             <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 8 }}>
-              {isGPSNotFound && mapLoaded ? (
+              {isGPSNotFound && mapLoaded && locationHistory.length ? (
                 locationHistory
-                  .filter(
-                    (i) => i.geolocation.y !== data.longitude && i.geolocation.x !== data.latitude
-                  )
                   .map((item, idx) => {
                     return (
                       <Feature key={idx} coordinates={[item.geolocation.y, item.geolocation.x]} />
                     );
                   })
-              ) : (
-                <></>
-              )}
+              ) : undefined}
             </Layer>
           </Map>
           <div
