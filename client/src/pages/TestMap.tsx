@@ -7,8 +7,8 @@ import styles from "../css/popUp.module.scss";
 import { ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 
-const defaultZoom: [number] = [9.6];
-const defaultCenter: [number, number] = [114.15960518207243, 22.363101286562113];
+const defaultZoom: [number] = [10.2];
+const defaultCenter: [number, number] = [114.125, 22.35];
 
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
