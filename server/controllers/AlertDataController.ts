@@ -53,16 +53,16 @@ export class AlertDataController {
       return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Invalid device EUI.' });
 
     // handle json
-    const { battery, date, time, latitude, longitude, msgtype }: IObjectJSON = JSON.parse(
+    const { battery, timestamp, latitude, longitude, msgtype }: IObjectJSON = JSON.parse(
       data.objectJSON
-    )[0];
+    );
     const address = await gpsFetch(parseFloat(latitude), parseFloat(longitude));
 
     const id = await this.alertDataService.postData(
       deviceInfo.id,
       // check if the date is within 24 hours
-      date && time && new Date().valueOf() - new Date(`${date} ${time}`).valueOf() <= 86400000
-        ? new Date(`${date} ${time}`).toISOString()
+      timestamp && new Date().valueOf() - timestamp <= 86400000
+        ? new Date(timestamp).toISOString()
         : new Date().toISOString(),
       latitude && longitude ? `${latitude},${longitude}` : '0,0',
       address ?? 'GPS NOT FOUND',
