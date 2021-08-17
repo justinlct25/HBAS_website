@@ -61,7 +61,9 @@ export class AlertDataController {
     const id = await this.alertDataService.postData(
       deviceInfo.id,
       // check if the date is within 24 hours
-      timestamp && new Date().valueOf() - timestamp <= 86400000
+      timestamp &&
+        new Date().valueOf() - timestamp <= 86400000 &&
+        new Date().valueOf() - timestamp > 0
         ? new Date(timestamp).toISOString()
         : new Date().toISOString(),
       latitude && longitude ? `${latitude},${longitude}` : '0,0',
