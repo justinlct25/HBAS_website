@@ -15,6 +15,7 @@ export class VehiclesService {
         qb.distinct({
           vehicleId: `${tables.VEHICLES}.id`,
           carPlate: `${tables.VEHICLES}.car_plate`,
+          manufacturer: `${tables.VEHICLES}.manufacturer`,
           vehicleModel: `${tables.VEHICLES}.vehicle_model`,
           vehicleType: `${tables.VEHICLES}.vehicle_type`,
           manufactureYear: `${tables.VEHICLES}.manufacture_year`,
@@ -81,6 +82,7 @@ export class VehiclesService {
         .insert(
           vehicles.map((v) => ({
             car_plate: v.carPlate.toUpperCase(),
+            manufacturer: v.manufacturer,
             vehicle_model: v.vehicleModel,
             vehicle_type: v.vehicleType,
             manufacture_year: v.manufactureYear,
@@ -107,6 +109,7 @@ export class VehiclesService {
   editVehicle = async (
     vehicleId: number,
     carPlate: string,
+    manufacturer: string | null,
     vehicleModel: string | null,
     vehicleType: string | null,
     manufactureYear: string | null
@@ -115,6 +118,7 @@ export class VehiclesService {
       .update(
         {
           car_plate: carPlate.toUpperCase(),
+          manufacturer,
           vehicle_model: vehicleModel,
           vehicle_type: vehicleType,
           manufacture_year: manufactureYear,

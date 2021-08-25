@@ -64,10 +64,11 @@ export class VehiclesController {
 
   editVehicle = async (req: Request, res: Response) => {
     const { vehicleId } = req.params;
-    const { carPlate, vehicleModel, vehicleType, manufactureYear }: INewVehicle = req.body;
+    const { carPlate, manufacturer, vehicleModel, vehicleType, manufactureYear }: INewVehicle =
+      req.body;
 
     const checkingRes = await this.vehicleChecking(
-      [{ carPlate, vehicleModel, vehicleType, manufactureYear }],
+      [{ carPlate, manufacturer, vehicleModel, vehicleType, manufactureYear }],
       parseInt(vehicleId)
     );
 
@@ -81,6 +82,7 @@ export class VehiclesController {
     const success = await this.vehiclesService.editVehicle(
       parseInt(vehicleId),
       carPlate,
+      manufacturer,
       vehicleModel,
       vehicleType,
       manufactureYear
