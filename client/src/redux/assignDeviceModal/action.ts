@@ -22,6 +22,8 @@ export function setSelectedItemAction(selectedItem: {
   vehicleId?: number | null;
   vehicleType?: string | null;
   vehicleModel?: string | null;
+  manufactureYear?: string | null;
+  manufacturer?: string | null;
 }) {
   return {
     type: "@@assignDeviceModal/setSelectedItem" as const,

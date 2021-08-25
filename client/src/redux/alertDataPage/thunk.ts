@@ -22,7 +22,6 @@ export function getAlertDataListThunk(activePage: number, searchString?: string)
           pagination: IPagination;
         }>(url.toString());
         const result = res.data;
-        console.log(result);
         dispatch(setAlertDataList(result.data, activePage, result.pagination.lastPage));
       } catch (error) {
         dispatch(handleAxiosError(error));
