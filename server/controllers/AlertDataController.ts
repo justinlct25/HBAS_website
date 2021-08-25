@@ -31,6 +31,15 @@ export class AlertDataController {
 
     /* ----------------------------- 'join' messages handling ----------------------------- */
     if (queryMethod === 'join') {
+      // update device name if it does not match the one in database
+      if (!!deviceInfo && deviceInfo.deviceName !== deviceName) {
+        const id = await this.devicesService.updateDevice(deviceInfo.id, deviceName);
+        if (!id || !id.length)
+          return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot update device.' });
+        // success
+        return res.status(httpStatusCodes.OK).json({ message: 'Device updated.' });
+      }
+
       if (!!deviceInfo)
         return res.status(httpStatusCodes.CONFLICT).json({ message: 'Device already exists.' });
 
