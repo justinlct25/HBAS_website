@@ -1,3 +1,5 @@
+import { NotificationMessage } from "./state";
+
 export function setNotificationAction(showNotification: boolean) {
   return {
     type: "@@notification/setNotification" as const,
@@ -10,19 +12,16 @@ export function expandNotificationMessageAction(isOpen: boolean) {
     isOpen,
   };
 }
-export function setNotificationMessage(message: {
-  text: string;
-  createdAt: string;
-}) {
+export function setNotificationMessage(data: NotificationMessage[]) {
   return {
     type: "@@notification/setNotificationMessage" as const,
-    message,
+    data,
   };
 }
 
 type ActionCreators =
   | typeof setNotificationAction
-  | typeof setNotificationMessage
-  | typeof expandNotificationMessageAction;
+  | typeof expandNotificationMessageAction
+  | typeof setNotificationMessage;
 
 export type SetNotificationAction = ReturnType<ActionCreators>;

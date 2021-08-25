@@ -1,10 +1,14 @@
 import anime from "animejs";
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "../css/NavBar.css";
 import { useRouter } from "../helpers/useRouter";
-import { expandNotificationMessageAction } from "../redux/notification/action";
+import {
+  expandNotificationMessageAction,
+  setNotificationMessage,
+} from "../redux/notification/action";
 import { IRootState } from "../redux/store";
 import { CompanyName } from "./CompanyName";
 import { NotificationAlertIcon, NotificationIcon } from "./IconsOnly";
@@ -14,6 +18,7 @@ function NavBar() {
   const router = useRouter();
   const splitRoute = router.pathname;
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const [notificationIds, setNotificationIds] = useState<number[]>([]);
 
   const menuItem = [
     { display: "Incident Records", link: "/alert-data-page" },
@@ -50,10 +55,38 @@ function NavBar() {
   const showNotification = notification.showNotification;
   const expandNotification = notification.expandNotification;
 
-  const reallyNoMessage =
-    notification.message.length === 1 &&
-    !notification.message[0].text &&
-    !notification.message[0].createdAt;
+  const reallyNoMessage = !notification.message.length;
+
+  useEffect(() => {
+    const fetchLowBatteryNotification = async () => {
+      try {
+        const res = await axios.get(`/alert-data/battery`);
+        const result = res.data;
+        dispatch(setNotificationMessage(result.data));
+      } catch (e) {
+        console.error(e.Message);
+      }
+    };
+    fetchLowBatteryNotification();
+  }, []);
+
+  useEffect(() => {
+    const tempArr = notification.message.map((i) => i.id);
+    setNotificationIds(tempArr);
+  }, [expandNotification]);
+
+  useEffect(() => {
+    const notedWithThanks = async () => {
+      try {
+        await axios.put(`alert-data/battery`, {
+          notificationIds,
+        });
+      } catch (e) {
+        console.error(e.message);
+      }
+    };
+    notedWithThanks();
+  }, [notificationIds]);
 
   return (
     <div className="topNavContainer">
@@ -73,14 +106,19 @@ function NavBar() {
                   {showNotification ? <NotificationAlertIcon /> : <NotificationIcon />}
                   {expandNotification && (
                     <div className="notificationModal">
+                      <h4 style={{ marginBottom: "24px" }}>Low battery alert</h4>
                       {reallyNoMessage ? (
                         <div>{"No message yet"}</div>
                       ) : (
                         notification.message.map((message, idx) => {
                           return (
-                            <div key={`message-${idx}`}>
-                              <div>{message.text}</div>
-                              <div>{message.createdAt}</div>
+                            <div key={`message-${message.id}`} className="notificationContainer">
+                              <div style={{ textAlign: "left" }}>
+                                {message.deviceEui}{" "}
+                                <span style={{ color: "red" }}>({message.deviceName})</span>
+                                <br />
+                                {new Date(message.date).toLocaleString("en-CA")}
+                              </div>
                             </div>
                           );
                         })

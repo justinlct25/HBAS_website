@@ -296,3 +296,18 @@ body {
   border-radius: 4px;
   cursor: pointer;
 }
+.notificationContainer {
+  min-width: max-content;
+  height: 80px;
+  border-bottom: solid 1px #ddd;
+  padding: 0 48px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background: #fff;
+  transition: all 0.3s;
+}
+.notificationContainer:hover {
+  background: #ccc;
+  transition: all 0.3s;
+}

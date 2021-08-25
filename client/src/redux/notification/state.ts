@@ -1,6 +1,13 @@
+export interface NotificationMessage {
+  id: number;
+  deviceEui: string;
+  deviceName: string;
+  date: string;
+}
+
 export interface NotificationData {
   showNotification: boolean;
-  message: { text: string; createdAt: string }[];
+  message: NotificationMessage[];
   expandNotification: boolean;
 }
 export interface NotificationState {
