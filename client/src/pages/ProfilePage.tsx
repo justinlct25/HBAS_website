@@ -126,7 +126,7 @@ function ProfilePage() {
                 .map((item, idx) => {
                   return (
                     <VehicleCards
-                      key={`vehicle-${item.vehicleId}`}
+                      key={`vehicle-${item.vehicleId}+${idx}`}
                       item={item}
                       cursor={"pointer"}
                       callFunction={() => {
@@ -137,6 +137,8 @@ function ProfilePage() {
                             vehicleId: item.vehicleId,
                             deviceEui: item.deviceEui,
                             deviceId: item.deviceId,
+                            manufactureYear: item.manufactureYear,
+                            manufacturer: item.manufacturer,
                           })
                         );
                       }}

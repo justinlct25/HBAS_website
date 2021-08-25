@@ -33,6 +33,7 @@ export interface IVehicleDetail {
   carPlate: string;
   vehicleModel: string | null;
   vehicleType: string | null;
+  manufacturer: string | null;
   manufactureYear: string | null;
   updatedAt: string;
   deviceId: number;
