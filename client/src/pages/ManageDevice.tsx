@@ -103,10 +103,10 @@ function ManageDevice() {
                         setSelectedItemAction({
                           deviceId: item.deviceId,
                           deviceEui: item.deviceEui,
-                          vehicleId: item.vehicleId,
-                          carPlate: item.carPlate,
-                          companyId: item.companyId,
-                          companyName: item.companyName,
+                          vehicleId: item.vehicleId ?? -1,
+                          carPlate: item.carPlate ?? "",
+                          companyId: item.companyId ?? -1,
+                          companyName: item.companyName ?? "",
                         })
                       );
                     }}

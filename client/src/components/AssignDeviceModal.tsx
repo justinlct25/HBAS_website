@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
 import { ModalType } from "../pages/ManageDevice";
-import { setPopUpIsActiveAction } from "../redux/assignDeviceModal/action";
+import { setPopUpIsActiveAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
 import { BackButton, CloseIcon } from "./IconsOnly";
@@ -29,13 +29,10 @@ function AssignDeviceModal() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post<{ message: string; id: number }>(
-        `/devices/link-device-vehicle`,
-        {
-          vehicleId: assignDeviceModal.selectedItem.vehicleId,
-          deviceId: assignDeviceModal.deviceId,
-        }
-      );
+      await axios.post<{ message: string; id: number }>(`/devices/link-device-vehicle`, {
+        vehicleId: assignDeviceModal.selectedItem.vehicleId,
+        deviceId: assignDeviceModal.deviceId,
+      });
     } catch (error) {
       dispatch(handleAxiosError(error));
     } finally {
@@ -45,11 +42,7 @@ function AssignDeviceModal() {
 
   return (
     <div
-      className={
-        popUpIsActive
-          ? "flex-center popUpContainer popUp"
-          : "flex-center popUpContainer"
-      }
+      className={popUpIsActive ? "flex-center popUpContainer popUp" : "flex-center popUpContainer"}
     >
       <div className="popUpContent flex-center">
         <div className="closeIconContainer" onClick={closeAction}>
@@ -68,9 +61,7 @@ function AssignDeviceModal() {
                     justifyContent: "flex-start",
                   }}
                 >
-                  <div className="flex-center deviceId">
-                    {selectedItem.deviceEui}
-                  </div>
+                  <div className="flex-center deviceId">{selectedItem.deviceEui}</div>
                 </div>
               </div>
               <div className="flex-center formRow">
@@ -87,9 +78,7 @@ function AssignDeviceModal() {
                   }}
                 >
                   <div>
-                    {selectedItem.companyName === ""
-                      ? "Select Company"
-                      : selectedItem.companyName}
+                    {selectedItem.companyName === "" ? "Select Company" : selectedItem.companyName}
                   </div>
                   <div
                     style={{
@@ -126,9 +115,7 @@ function AssignDeviceModal() {
                       transition: "all 0.4s",
                     }}
                   >
-                    {selectedItem.carPlate === ""
-                      ? "Select car plate"
-                      : selectedItem.carPlate}
+                    {selectedItem.carPlate === "" ? "Select car plate" : selectedItem.carPlate}
                   </div>
                   <div
                     style={{
@@ -136,9 +123,7 @@ function AssignDeviceModal() {
                       paddingRight: "8px",
                     }}
                   >
-                    <BackButton
-                      color={selectedItem.companyName === "" ? "#AAA" : "#555"}
-                    />
+                    <BackButton color={selectedItem.companyName === "" ? "#AAA" : "#555"} />
                   </div>
                 </div>
               </div>

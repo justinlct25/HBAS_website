@@ -136,13 +136,13 @@ function AddNewVehicles() {
                         </div>
                       </div>
                       <div className="flex-center formRow">
-                        <div className="formLeftColumn">Vehicle Type :</div>
+                        <div className="formLeftColumn">Manufacturer :</div>
                         <div className="formRightColumn">
                           <input
                             className="formInput"
-                            value={totalVehicle[idx].vehicleType ?? ""}
+                            value={totalVehicle[idx].manufacturer ?? ""}
                             onChange={(e) => {
-                              handleEditContent("vehicleType", idx, e.target.value);
+                              handleEditContent("manufacturer", idx, e.target.value);
                             }}
                           />
                         </div>
@@ -160,17 +160,18 @@ function AddNewVehicles() {
                         </div>
                       </div>
                       <div className="flex-center formRow">
-                        <div className="formLeftColumn">Manufacturer :</div>
+                        <div className="formLeftColumn">Tonnes :</div>
                         <div className="formRightColumn">
                           <input
                             className="formInput"
-                            value={totalVehicle[idx].manufacturer ?? ""}
+                            value={totalVehicle[idx].vehicleType ?? ""}
                             onChange={(e) => {
-                              handleEditContent("manufacturer", idx, e.target.value);
+                              handleEditContent("vehicleType", idx, e.target.value);
                             }}
                           />
                         </div>
                       </div>
+
                       <div className="flex-center formRow">
                         <div className="formLeftColumn">Manufacture Year :</div>
                         <div className="formRightColumn">

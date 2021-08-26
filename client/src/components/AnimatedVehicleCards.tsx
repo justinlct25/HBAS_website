@@ -99,13 +99,13 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
             dispatch(setAddNewFormOpenAction(true, "editVehicle"));
             dispatch(
               setSelectedItemAction({
-                deviceId: item.deviceId,
-                vehicleId: item.vehicleId,
-                carPlate: item.carPlate,
+                deviceId: item.deviceId ?? -1,
+                vehicleId: item.vehicleId ?? -1,
+                carPlate: item.carPlate ?? "",
                 vehicleModel: item.vehicleModel ?? "",
                 vehicleType: item.vehicleType ?? "",
-                manufactureYear: item.manufactureYear,
-                manufacturer: item.manufacturer,
+                manufactureYear: item.manufactureYear ?? "",
+                manufacturer: item.manufacturer ?? "",
               })
             );
           }}
