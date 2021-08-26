@@ -139,20 +139,7 @@ function PulseMessagePage() {
                   key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
-                    dispatch(
-                      await setIncidentPageData({
-                        date: item.date,
-                        longitude: item.geolocation.y,
-                        latitude: item.geolocation.x,
-                        deviceEui: item.deviceEui,
-                        deviceName: item.deviceName,
-                        companyName: item.companyName,
-                        contactPerson: item.companyContactPerson,
-                        phoneNumber: item.companyTel,
-                        carPlate: item.carPlate,
-                      })
-                    );
-                    if (item.address === "GPS not found") {
+                    if (item.address === "GPS NOT FOUND") {
                       dispatch(setIsGPSNotFound(true));
                     } else {
                       dispatch(setIsGPSNotFound(false));
@@ -164,7 +151,6 @@ function PulseMessagePage() {
                   <div className="flex-center tdItem">{item.deviceName || "-"}</div>
                   <div className="flex-center tdItem">{item.carPlate || "-"}</div>
                   <div className="flex-center tdItem">{item.companyName || "-"}</div>
-                  {/* <div className="flex-center tdItem">{item.companyTel || "-"}</div> */}
                   <div className="flex-center tdItem">{item.address || "-"}</div>
                   <div
                     className="flex-center tdItem"

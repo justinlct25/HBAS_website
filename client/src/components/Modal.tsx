@@ -2,16 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../css/Modal.css";
-import {
-  REACT_APP_API_VERSION,
-  REACT_APP_API_SERVER,
-} from "../helpers/processEnv";
-import {
-  ICompanyInfo,
-  IDevicesForLinking,
-  IPagination,
-  IVehicleDetail,
-} from "../models/resModels";
+import { REACT_APP_API_VERSION, REACT_APP_API_SERVER } from "../helpers/processEnv";
+import { ICompanyInfo, IDevicesForLinking, IPagination, IVehicleDetail } from "../models/resModels";
 import { ModalType } from "../pages/ManageDevice";
 import { setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { handleAxiosError } from "../redux/login/thunk";
@@ -65,17 +57,13 @@ export const Modal = (props: ModalProps) => {
   const popUpIsActive = assignDeviceModal.popUpIsActive;
 
   const headerText =
-    modalType === "carPlate"
-      ? "Car plate"
-      : modalType === "company" && "Select company";
+    modalType === "carPlate" ? "Car plate" : modalType === "company" && "Select company";
 
   useEffect(() => {
     if (modalType === "device") {
       const fetchAllDevices = async () => {
         try {
-          const res = await axios.get<{ data: IDevicesForLinking }>(
-            "/devices/link-device-vehicle"
-          );
+          const res = await axios.get<{ data: IDevicesForLinking }>("/devices/link-device-vehicle");
           const result = res.data;
           const linkedDevices = result.data.linkedDevices;
           const notAssigned = result.data.newDevices;
@@ -93,10 +81,7 @@ export const Modal = (props: ModalProps) => {
       const fetchAllCompanies = async () => {
         try {
           // construct api url with (or without) search params
-          const url = new URL(
-            `${REACT_APP_API_VERSION}/companies`,
-            REACT_APP_API_SERVER
-          );
+          const url = new URL(`${REACT_APP_API_VERSION}/companies`, REACT_APP_API_SERVER);
           url.searchParams.set("rows", "1000000"); // hardcoded rows to get all entries
 
           const res = await axios.get<{
@@ -187,7 +172,11 @@ export const Modal = (props: ModalProps) => {
         {modalType === "device"
           ? focusNewDevice
             ? allDevices?.notAssigned
-                .filter((item) => item.deviceEui.includes(searchField))
+                .filter((item) => {
+                  return (
+                    item.deviceEui.includes(searchField) || item.deviceName.includes(searchField)
+                  );
+                })
                 .map((item) => {
                   return (
                     <div
@@ -204,12 +193,17 @@ export const Modal = (props: ModalProps) => {
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {item.deviceEui}
+                      {item.deviceName}
+                      <br /> {item.deviceEui}
                     </div>
                   );
                 })
             : allDevices?.linkedDevices
-                .filter((item) => item.deviceEui.includes(searchField))
+                .filter((item) => {
+                  return (
+                    item.deviceEui.includes(searchField) || item.deviceName.includes(searchField)
+                  );
+                })
                 .map((item) => {
                   return (
                     <div
@@ -226,7 +220,8 @@ export const Modal = (props: ModalProps) => {
                         setSelectModalOpen({ isOpen: false, target: "device" });
                       }}
                     >
-                      {item.deviceEui}
+                      {item.deviceName}
+                      <br /> {item.deviceEui}
                     </div>
                   );
                 })

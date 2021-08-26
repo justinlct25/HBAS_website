@@ -11,13 +11,12 @@ export const VehicleCards = (props: VehicleProps) => {
   const { item, callFunction, cursor = "default" } = props;
 
   return (
-    <div
-      className="deviceVehicleCard"
-      onClick={callFunction}
-      style={{ cursor }}
-    >
+    <div className="deviceVehicleCard" onClick={callFunction} style={{ cursor }}>
+      <h4>{item.carPlate}</h4>
       <div className="flex-center">
-        <div className="incidentReportText">Device ID:</div>
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Device ID:
+        </div>
         <div
           className="incidentReportText"
           style={{
@@ -28,7 +27,9 @@ export const VehicleCards = (props: VehicleProps) => {
         </div>
       </div>
       <div className="flex-center">
-        <div className="incidentReportText">Device Name:</div>
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Device Name:
+        </div>
         <div
           className="incidentReportText deviceName"
           style={{
@@ -40,14 +41,16 @@ export const VehicleCards = (props: VehicleProps) => {
       </div>
 
       <div className="flex-center">
-        <div className="incidentReportText">Car plate:</div>
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Car plate:
+        </div>
         <div
           className="incidentReportText"
           style={{
             color: "#333",
           }}
         >
-          {item.carPlate}
+          {item.carPlate ?? " - "}
         </div>
       </div>
     </div>

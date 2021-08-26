@@ -101,18 +101,18 @@ function NavBar() {
     setNotificationIds(tempArr);
   }, [expandNotification]);
 
-  useEffect(() => {
-    const notedWithThanks = async () => {
-      try {
-        await axios.put(`alert-data/battery`, {
-          notificationIds,
-        });
-      } catch (e) {
-        console.error(e.message);
-      }
-    };
-    notedWithThanks();
-  }, [notificationIds]);
+  // useEffect(() => {
+  //   const notedWithThanks = async () => {
+  //     try {
+  //       await axios.put(`alert-data/battery`, {
+  //         notificationIds,
+  //       });
+  //     } catch (e) {
+  //       console.error(e.message);
+  //     }
+  //   };
+  //   notedWithThanks();
+  // }, [notificationIds]);
 
   return (
     <div className="topNavContainer">

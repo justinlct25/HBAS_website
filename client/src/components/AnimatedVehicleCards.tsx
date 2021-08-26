@@ -16,8 +16,16 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
 
   return (
     <div className="deviceVehicleCard">
+      <h4>{item.carPlate}</h4>
       <div className="flex-center">
-        <div className="incidentReportText">Device ID:</div>
+        <div
+          className="incidentReportText"
+          style={{
+            color: "#888",
+          }}
+        >
+          Device ID:
+        </div>
         <div
           className="incidentReportText"
           style={{
@@ -28,7 +36,9 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
         </div>
       </div>
       <div className="flex-center">
-        <div className="incidentReportText">Device Name:</div>
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Device Name:
+        </div>
         <div
           className="incidentReportText deviceName"
           style={{
@@ -40,37 +50,16 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
       </div>
 
       <div className="flex-center">
-        <div className="incidentReportText">Car plate:</div>
-        <div
-          className="incidentReportText"
-          style={{
-            color: "#333",
-          }}
-        >
-          {item.carPlate}
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Manufacturer:
         </div>
+        <div className="incidentReportText">{item.manufacturer ?? " - "}</div>
       </div>
       <div className="flex-center">
-        <div className="incidentReportText">Manufacturer:</div>
-        <div
-          className="incidentReportText"
-          style={{
-            color: "#333",
-          }}
-        >
-          {item.manufacturer}
+        <div className="incidentReportText" style={{ color: "#888" }}>
+          Manufacture Year:
         </div>
-      </div>
-      <div className="flex-center">
-        <div className="incidentReportText">Manufacture Year:</div>
-        <div
-          className="incidentReportText"
-          style={{
-            color: "#333",
-          }}
-        >
-          {item.manufactureYear}
-        </div>
+        <div className="incidentReportText">{item.manufactureYear ?? " - "}</div>
       </div>
       <div className="hiddenButtonContainer">
         <div

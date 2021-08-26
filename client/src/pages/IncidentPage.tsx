@@ -191,9 +191,7 @@ function IncidentPage() {
                 ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
                 : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
             }
-            center={
-              currentMapView.center === [0, 0] ? [114.27424, 22.26828] : currentMapView.center
-            }
+            center={currentMapView.center}
             zoom={currentMapView.zoom}
             containerStyle={{ height: "100%", width: "100%" }}
             onDrag={(e) =>
