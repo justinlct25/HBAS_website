@@ -120,7 +120,9 @@ function AlertDataPage() {
                   <div className="flex-center tdItem">{item.deviceName}</div>
                   <div className="flex-center tdItem">{item.carPlate || "-"}</div>
                   <div className="flex-center tdItem">{item.companyName || "-"}</div>
-                  <div className="flex-center tdItem">{item.address || "-"}</div>
+                  <div className="flex-center tdItem">
+                    {(item.address === "GPS NOT FOUND" ? "HISTORIC RECORD" : item.address) || "-"}
+                  </div>
                   <div className="flex-center tdItem">
                     {`${new Date(item.date).toLocaleDateString("en-CA")} ${new Date(
                       item.date
