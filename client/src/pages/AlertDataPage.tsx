@@ -108,7 +108,7 @@ function AlertDataPage() {
                   key={item.deviceEui + idx}
                   className={`flex-center ${styles.tableRow}`}
                   onClick={async () => {
-                    if (item.address === "GPS not found") {
+                    if (item.address === "GPS NOT FOUND") {
                       dispatch(setIsGPSNotFound(true));
                     } else {
                       dispatch(setIsGPSNotFound(false));
