@@ -16,6 +16,8 @@ export const initialState: AssignDeviceState = {
       vehicleModel: "",
       vehicleType: "",
       vehicleId: -1,
+      manufactureYear: null,
+      manufacturer: null,
     },
   },
 };
@@ -42,36 +44,31 @@ export const assignDeviceReducer = (
         ...state,
         assignDeviceModal: {
           ...state.assignDeviceModal,
-          deviceId:
-            action.selectedItem.deviceId ?? state.assignDeviceModal.deviceId,
+          deviceId: action.selectedItem.deviceId ?? state.assignDeviceModal.deviceId,
           selectedItem: {
+            ...state.assignDeviceModal.selectedItem,
             companyId:
-              action.selectedItem.companyId ??
-              state.assignDeviceModal.selectedItem.companyId,
+              action.selectedItem.companyId ?? state.assignDeviceModal.selectedItem.companyId,
             companyName:
-              action.selectedItem.companyName ??
-              state.assignDeviceModal.selectedItem.companyName,
-            tel:
-              action.selectedItem.tel ??
-              state.assignDeviceModal.selectedItem.tel,
+              action.selectedItem.companyName ?? state.assignDeviceModal.selectedItem.companyName,
+            tel: action.selectedItem.tel ?? state.assignDeviceModal.selectedItem.tel,
             contactPerson:
               action.selectedItem.contactPerson ??
               state.assignDeviceModal.selectedItem.contactPerson,
             deviceEui:
-              action.selectedItem.deviceEui ??
-              state.assignDeviceModal.selectedItem.deviceEui,
-            carPlate:
-              action.selectedItem.carPlate ??
-              state.assignDeviceModal.selectedItem.carPlate,
+              action.selectedItem.deviceEui ?? state.assignDeviceModal.selectedItem.deviceEui,
+            carPlate: action.selectedItem.carPlate ?? state.assignDeviceModal.selectedItem.carPlate,
             vehicleId:
-              action.selectedItem.vehicleId ??
-              state.assignDeviceModal.selectedItem.vehicleId,
+              action.selectedItem.vehicleId ?? state.assignDeviceModal.selectedItem.vehicleId,
             vehicleType:
-              action.selectedItem.vehicleType ??
-              state.assignDeviceModal.selectedItem.vehicleType,
+              action.selectedItem.vehicleType ?? state.assignDeviceModal.selectedItem.vehicleType,
             vehicleModel:
-              action.selectedItem.vehicleModel ??
-              state.assignDeviceModal.selectedItem.vehicleModel,
+              action.selectedItem.vehicleModel ?? state.assignDeviceModal.selectedItem.vehicleModel,
+            manufactureYear:
+              action.selectedItem.manufactureYear ??
+              state.assignDeviceModal.selectedItem.manufactureYear,
+            manufacturer:
+              action.selectedItem.manufacturer ?? state.assignDeviceModal.selectedItem.manufacturer,
           },
         },
       };

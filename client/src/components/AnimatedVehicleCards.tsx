@@ -1,14 +1,8 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
-import {
-  setPopUpIsActiveAction,
-  setSelectedItemAction,
-} from "../redux/assignDeviceModal/action";
-import {
-  setDeleteModalDataAction,
-  setDeleteModalOpenAction,
-} from "../redux/deleteModal/action";
+import { setPopUpIsActiveAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
+import { setDeleteModalDataAction, setDeleteModalOpenAction } from "../redux/deleteModal/action";
 import { IProfile } from "../redux/profile/state";
 import { AssignIcon, DeleteIcon, EditIcon } from "./IconsOnly";
 
@@ -56,6 +50,28 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
           {item.carPlate}
         </div>
       </div>
+      <div className="flex-center">
+        <div className="incidentReportText">Manufacturer:</div>
+        <div
+          className="incidentReportText"
+          style={{
+            color: "#333",
+          }}
+        >
+          {item.manufacturer}
+        </div>
+      </div>
+      <div className="flex-center">
+        <div className="incidentReportText">Manufacture Year:</div>
+        <div
+          className="incidentReportText"
+          style={{
+            color: "#333",
+          }}
+        >
+          {item.manufactureYear}
+        </div>
+      </div>
       <div className="hiddenButtonContainer">
         <div
           className="hiddenButton flex-center"
@@ -68,6 +84,8 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
                 vehicleId: item.vehicleId,
                 deviceEui: item.deviceEui ?? "",
                 deviceId: item.deviceId ?? -1,
+                manufactureYear: item.manufactureYear,
+                manufacturer: item.manufacturer,
               })
             );
           }}
@@ -81,11 +99,13 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
             dispatch(setAddNewFormOpenAction(true, "editVehicle"));
             dispatch(
               setSelectedItemAction({
-                deviceId: item.deviceId,
-                vehicleId: item.vehicleId,
-                carPlate: item.carPlate,
+                deviceId: item.deviceId ?? -1,
+                vehicleId: item.vehicleId ?? -1,
+                carPlate: item.carPlate ?? "",
                 vehicleModel: item.vehicleModel ?? "",
                 vehicleType: item.vehicleType ?? "",
+                manufactureYear: item.manufactureYear ?? "",
+                manufacturer: item.manufacturer ?? "",
               })
             );
           }}

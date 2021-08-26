@@ -103,16 +103,19 @@ function ManageDevice() {
                         setSelectedItemAction({
                           deviceId: item.deviceId,
                           deviceEui: item.deviceEui,
-                          vehicleId: item.vehicleId,
-                          carPlate: item.carPlate,
-                          companyId: item.companyId,
-                          companyName: item.companyName,
+                          vehicleId: item.vehicleId ?? -1,
+                          carPlate: item.carPlate ?? "",
+                          companyId: item.companyId ?? -1,
+                          companyName: item.companyName ?? "",
                         })
                       );
                     }}
                   >
                     <div key={idx} className="flex-center tdMainItem">
                       {item.deviceEui}
+                    </div>
+                    <div key={idx} className="tdItem">
+                      {item.deviceName || "-"}
                     </div>
                     <div key={idx} className="tdItem">
                       {item.carPlate || "-"}

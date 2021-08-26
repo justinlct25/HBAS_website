@@ -31,6 +31,15 @@ export class AlertDataController {
 
     /* ----------------------------- 'join' messages handling ----------------------------- */
     if (queryMethod === 'join') {
+      // update device name if it does not match the one in database
+      if (!!deviceInfo && deviceInfo.deviceName !== deviceName) {
+        const id = await this.devicesService.updateDevice(deviceInfo.id, deviceName);
+        if (!id || !id.length)
+          return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot update device.' });
+        // success
+        return res.status(httpStatusCodes.OK).json({ message: 'Device updated.' });
+      }
+
       if (!!deviceInfo)
         return res.status(httpStatusCodes.CONFLICT).json({ message: 'Device already exists.' });
 
@@ -53,16 +62,18 @@ export class AlertDataController {
       return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Invalid device EUI.' });
 
     // handle json
-    const { battery, date, time, latitude, longitude, msgtype }: IObjectJSON = JSON.parse(
+    const { battery, timestamp, latitude, longitude, msgtype }: IObjectJSON = JSON.parse(
       data.objectJSON
-    )[0];
+    );
     const address = await gpsFetch(parseFloat(latitude), parseFloat(longitude));
 
     const id = await this.alertDataService.postData(
       deviceInfo.id,
       // check if the date is within 24 hours
-      date && time && new Date().valueOf() - new Date(`${date} ${time}`).valueOf() <= 86400000
-        ? new Date(`${date} ${time}`).toISOString()
+      timestamp &&
+        new Date().valueOf() - timestamp <= 86400000 &&
+        new Date().valueOf() - timestamp > 0
+        ? new Date(timestamp).toISOString()
         : new Date().toISOString(),
       latitude && longitude ? `${latitude},${longitude}` : '0,0',
       address ?? 'GPS NOT FOUND',

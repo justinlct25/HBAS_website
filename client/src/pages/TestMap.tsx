@@ -9,6 +9,8 @@ import { handleAxiosError } from "../redux/login/thunk";
 
 const defaultZoom: [number] = [10.2];
 const defaultCenter: [number, number] = [114.125, 22.35];
+const BATTERY_MAX = 4.2;
+const BATTERY_MIN = 3.6;
 
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
@@ -27,6 +29,18 @@ const TestMap = () => {
     } catch (error) {
       dispatch(handleAxiosError(error));
     }
+  };
+
+  const batteryCalculation = (bat: string) => {
+    const battery = parseFloat(bat);
+    let percentage = ((battery - BATTERY_MIN) / (BATTERY_MAX - BATTERY_MIN)) * 100;
+    if (percentage > 100) {
+      percentage = 100;
+    }
+    if (percentage < 0) {
+      percentage = 0;
+    }
+    return percentage;
   };
 
   return (
@@ -77,8 +91,15 @@ const TestMap = () => {
                   <div>{incidentPoints[hoverAnimate.idx].deviceEui}</div>
                 </div>
                 <div>
+                  <div>Device Name:</div>
+                  <div>{incidentPoints[hoverAnimate.idx].deviceName}</div>
+                </div>
+                <div>
                   <div>Battery:</div>
-                  <div>{incidentPoints[hoverAnimate.idx].battery}</div>
+                  <div>{incidentPoints[hoverAnimate.idx].battery + "v"}</div>
+                  {/* <div>
+                    {batteryCalculation(incidentPoints[hoverAnimate.idx].battery).toFixed(2) + "%"}
+                  </div> */}
                 </div>
                 <div>
                   <div>Date:</div>

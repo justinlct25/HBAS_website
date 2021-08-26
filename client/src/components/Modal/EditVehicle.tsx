@@ -14,21 +14,28 @@ function EditVehicle() {
   const selectedItem = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal.selectedItem
   );
-  const addNewForm = useSelector(
-    (state: IRootState) => state.addNewForm.addNewForm
-  );
+  const addNewForm = useSelector((state: IRootState) => state.addNewForm.addNewForm);
   const isOpen = addNewForm.isOpen;
   const modalType = addNewForm.modalType;
 
   const handleSubmit = async () => {
     try {
-      await axios.put<{ message: string }>(
-        `/vehicles/${selectedItem.vehicleId}`,
-        {
-          carPlate: selectedItem.carPlate,
-          vehicleModel: selectedItem.vehicleModel ?? "",
-          vehicleType: selectedItem.vehicleType ?? "",
-        }
+      await axios.put<{ message: string }>(`/vehicles/${selectedItem.vehicleId}`, {
+        carPlate: selectedItem.carPlate,
+        vehicleModel: selectedItem.vehicleModel ?? "",
+        vehicleType: selectedItem.vehicleType ?? "",
+        manufacturer: selectedItem.manufacturer ?? "",
+        manufactureYear: selectedItem.manufactureYear ?? "",
+      });
+
+      dispatch(
+        setSelectedItemAction({
+          carPlate: "",
+          vehicleModel: "",
+          vehicleType: "",
+          manufacturer: "",
+          manufactureYear: "",
+        })
       );
     } catch (error) {
       dispatch(handleAxiosError(error));
@@ -84,15 +91,15 @@ function EditVehicle() {
                   </div>
                 </div>
                 <div className="flex-center formRow">
-                  <div className="formLeftColumn">Vehicle Type :</div>
+                  <div className="formLeftColumn">Manufacturer :</div>
                   <div className="formRightColumn">
                     <input
                       className="formInput"
-                      value={selectedItem.vehicleType}
+                      value={selectedItem.manufacturer ?? ""}
                       onChange={(e) => {
                         dispatch(
                           setSelectedItemAction({
-                            vehicleType: e.target.value,
+                            manufacturer: e.target.value,
                           })
                         );
                       }}
@@ -104,11 +111,44 @@ function EditVehicle() {
                   <div className="formRightColumn">
                     <input
                       className="formInput"
-                      value={selectedItem.vehicleModel}
+                      value={selectedItem.vehicleModel ?? ""}
                       onChange={(e) => {
                         dispatch(
                           setSelectedItemAction({
                             vehicleModel: e.target.value,
+                          })
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex-center formRow">
+                  <div className="formLeftColumn">Tonnes :</div>
+                  <div className="formRightColumn">
+                    <input
+                      className="formInput"
+                      value={selectedItem.vehicleType ?? ""}
+                      onChange={(e) => {
+                        dispatch(
+                          setSelectedItemAction({
+                            vehicleType: e.target.value,
+                          })
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-center formRow">
+                  <div className="formLeftColumn">Manufacture Year :</div>
+                  <div className="formRightColumn">
+                    <input
+                      className="formInput"
+                      value={selectedItem.manufactureYear ?? ""}
+                      onChange={(e) => {
+                        dispatch(
+                          setSelectedItemAction({
+                            manufactureYear: e.target.value,
                           })
                         );
                       }}

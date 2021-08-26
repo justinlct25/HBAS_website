@@ -6,13 +6,13 @@ import { handleAxiosError } from "../login/thunk";
 import { ThunkDispatch } from "../store";
 import { setAlertDataList } from "./action";
 
-export function getAlertDataListThunk(activePage: number, searchString?: string) {
+export function getAlertDataListThunk(activePage: number, searchString?: string, msgType?: string) {
   return async (dispatch: ThunkDispatch) => {
     dispatch(setIsLoadingAction(true));
     setTimeout(async () => {
       try {
         const url = new URL(`${REACT_APP_API_VERSION}/alert-data`, REACT_APP_API_SERVER);
-        url.searchParams.set("msg", "A");
+        url.searchParams.set("msg", msgType ? msgType : "A");
         url.searchParams.set("page", String(activePage));
         url.searchParams.set("rows", String(10));
         if (!!searchString) url.searchParams.set("search", searchString);

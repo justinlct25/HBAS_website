@@ -39,11 +39,10 @@ export interface ITxInfo {
 
 export interface IObjectJSON {
   battery: string;
-  date: string;
+  timestamp: number;
   latitude: string;
   longitude: string;
   msgtype: string;
-  time: string;
 }
 
 // interfaces for messages themselves ----------------------------------------

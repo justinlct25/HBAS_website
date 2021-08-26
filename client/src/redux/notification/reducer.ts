@@ -4,12 +4,7 @@ import { SetNotificationAction } from "./action";
 export const initialState: NotificationState = {
   notification: {
     showNotification: false,
-    message: [
-      {
-        text: "",
-        createdAt: "",
-      },
-    ],
+    message: [],
     expandNotification: false,
   },
 };
@@ -40,7 +35,7 @@ export const notificationReducer = (
         ...state,
         notification: {
           ...state.notification,
-          message: [...state.notification.message, action.message],
+          message: [...action.data, ...state.notification.message],
         },
       };
 

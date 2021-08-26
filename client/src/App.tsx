@@ -47,7 +47,7 @@ function App() {
         <Route exact path="/">
           <Redirect to="/alert-data-page" />
         </Route>
-        <Route path="/login" exact={true} component={LoginPage} />
+        <Route path="/login" exact component={LoginPage} />
         {isLoggedIn && (
           <>
             <AdminPrivateRoute path="/alert-data-page" exact component={AlertDataPage} />

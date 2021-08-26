@@ -18,6 +18,7 @@ export interface INewCompany {
 
 export interface INewVehicle {
   carPlate: string;
+  manufacturer: string | null;
   vehicleModel: string | null;
   vehicleType: string | null;
   manufactureYear: string | null;
@@ -26,6 +27,7 @@ export interface INewVehicle {
 export interface IVehicleDetail {
   vehicleId: number;
   carPlate: string;
+  manufacturer: string | null;
   vehicleModel: string | null;
   vehicleType: string | null;
   manufactureYear: string | null;

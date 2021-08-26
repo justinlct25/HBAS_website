@@ -11,17 +11,28 @@ function AddNewVehicles() {
   const [totalVehicle, setTotalVehicle] = useState<
     Array<{
       carPlate: string;
-      vehicleType: string;
-      vehicleModel: string;
+      vehicleType: string | null;
+      vehicleModel: string | null;
+      manufactureYear: string | null;
+      manufacturer: string | null;
     }>
   >([
     {
       carPlate: "",
       vehicleType: "",
       vehicleModel: "",
+      manufactureYear: "",
+      manufacturer: "",
     },
   ]);
 
+  const emptyVehicle = {
+    carPlate: "",
+    vehicleType: null,
+    vehicleModel: null,
+    manufactureYear: null,
+    manufacturer: null,
+  };
   const dispatch = useDispatch();
   const addNewForm = useSelector((state: IRootState) => state.addNewForm.addNewForm);
 
@@ -39,11 +50,11 @@ function AddNewVehicles() {
     setTotalVehicle(newArr);
   };
   const handleAddVehicle = () => {
-    setTotalVehicle([{ carPlate: "", vehicleType: "", vehicleModel: "" }, ...totalVehicle]);
+    setTotalVehicle([emptyVehicle, ...totalVehicle]);
   };
 
   const handleReset = () => {
-    setTotalVehicle([{ carPlate: "", vehicleType: "", vehicleModel: "" }]);
+    setTotalVehicle([emptyVehicle]);
     dispatch(resetAddNewFormAction());
   };
 
@@ -68,7 +79,7 @@ function AddNewVehicles() {
     setTotalVehicle(newArr);
   };
 
-  const overLength = totalVehicle.some((i) => i.carPlate.length >= 8);
+  const overLength = totalVehicle.some((i) => i.carPlate.length > 8);
 
   return (
     <>
@@ -117,7 +128,7 @@ function AddNewVehicles() {
                               handleEditContent("carPlate", idx, e.target.value);
                             }}
                           />
-                          {totalVehicle[idx].carPlate.length >= 8 && (
+                          {totalVehicle[idx].carPlate.length > 8 && (
                             <div className="overLengthWarning">
                               Car plate length should not exceed 8 characters
                             </div>
@@ -125,13 +136,13 @@ function AddNewVehicles() {
                         </div>
                       </div>
                       <div className="flex-center formRow">
-                        <div className="formLeftColumn">Vehicle Type :</div>
+                        <div className="formLeftColumn">Manufacturer :</div>
                         <div className="formRightColumn">
                           <input
                             className="formInput"
-                            value={totalVehicle[idx].vehicleType}
+                            value={totalVehicle[idx].manufacturer ?? ""}
                             onChange={(e) => {
-                              handleEditContent("vehicleType", idx, e.target.value);
+                              handleEditContent("manufacturer", idx, e.target.value);
                             }}
                           />
                         </div>
@@ -141,9 +152,34 @@ function AddNewVehicles() {
                         <div className="formRightColumn">
                           <input
                             className="formInput"
-                            value={totalVehicle[idx].vehicleModel}
+                            value={totalVehicle[idx].vehicleModel ?? ""}
                             onChange={(e) => {
                               handleEditContent("vehicleModel", idx, e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="flex-center formRow">
+                        <div className="formLeftColumn">Tonnes :</div>
+                        <div className="formRightColumn">
+                          <input
+                            className="formInput"
+                            value={totalVehicle[idx].vehicleType ?? ""}
+                            onChange={(e) => {
+                              handleEditContent("vehicleType", idx, e.target.value);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex-center formRow">
+                        <div className="formLeftColumn">Manufacture Year :</div>
+                        <div className="formRightColumn">
+                          <input
+                            className="formInput"
+                            value={totalVehicle[idx].manufactureYear ?? ""}
+                            onChange={(e) => {
+                              handleEditContent("manufactureYear", idx, e.target.value);
                             }}
                           />
                         </div>

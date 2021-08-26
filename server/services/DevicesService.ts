@@ -112,6 +112,13 @@ export class DevicesService {
       .returning<number[]>('id');
   };
 
+  updateDevice = async (deviceId: number, device_name: string) => {
+    return await this.knex(tables.DEVICES)
+      .update({ device_name })
+      .where('id', deviceId)
+      .returning<number[]>('id');
+  };
+
   linkDeviceAndVehicle = async (deviceId: number, vehicleId: number) => {
     const trx = await this.knex.transaction();
     try {

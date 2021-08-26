@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Item } from "react-bootstrap/lib/Pagination";
 import ReactMapboxGL, { Marker } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -87,6 +88,11 @@ function IncidentPage() {
         url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
+        console.log(
+          result
+            .filter((i) => i.geolocation.y > 0 && i.geolocation.x > 0)
+            .map((i) => ({ date: i.date, geolocation: i.geolocation }))
+        );
         setLocationHistory(
           result
             .filter((i) => i.geolocation.y > 0 && i.geolocation.x > 0)
@@ -116,13 +122,13 @@ function IncidentPage() {
 
   const [currentMapView, setCurrentMapView] = useState({
     center: [data.longitude, data.latitude] as [number, number],
-    zoom: [14] as [number]
+    zoom: [14] as [number],
   });
 
   useEffect(() => {
     setCurrentMapView({
       center: [data.longitude, data.latitude],
-      zoom: [14]
+      zoom: [14],
     });
   }, [data]);
 
@@ -185,20 +191,26 @@ function IncidentPage() {
                 ? "mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
                 : "mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
             }
-            center={currentMapView.center}
+            center={
+              currentMapView.center === [0, 0] ? [114.27424, 22.26828] : currentMapView.center
+            }
             zoom={currentMapView.zoom}
             containerStyle={{ height: "100%", width: "100%" }}
-            onDrag={e => setCurrentMapView({
-              center: e.getCenter().toArray() as [number, number],
-              zoom: [e.getZoom()]
-            })}
-            onZoom={e => setCurrentMapView({
-              center: e.getCenter().toArray() as [number, number],
-              zoom: [e.getZoom()]
-            })}
+            onDrag={(e) =>
+              setCurrentMapView({
+                center: e.getCenter().toArray() as [number, number],
+                zoom: [e.getZoom()],
+              })
+            }
+            onZoom={(e) =>
+              setCurrentMapView({
+                center: e.getCenter().toArray() as [number, number],
+                zoom: [e.getZoom()],
+              })
+            }
           >
-            {isGPSNotFound ?
-              locationHistory.map((item, idx) =>
+            {isGPSNotFound ? (
+              locationHistory.map((item, idx) => (
                 <Marker coordinates={[item.geolocation.y, item.geolocation.x]} anchor="center">
                   <div
                     style={{
@@ -206,25 +218,26 @@ function IncidentPage() {
                       width: "16px",
                       borderRadius: "50%",
                       background: "#00F900",
-                      pointerEvents: "none"
+                      pointerEvents: "none",
                     }}
                   >
                     {idx}
                   </div>
                 </Marker>
-              ) : 
+              ))
+            ) : (
               <Marker coordinates={[data.longitude, data.latitude]} anchor="center">
                 <div
                   style={{
                     height: "24px",
                     width: "24px",
                     borderRadius: "50%",
-                    background:"#FF4545",
-                    pointerEvents: "none"
+                    background: "#FF4545",
+                    pointerEvents: "none",
                   }}
                 />
               </Marker>
-            }
+            )}
           </Map>
           <div
             className={
