@@ -1,8 +1,9 @@
 export const incidentRecordsTableHeaders = [
   "Device EUI",
+  "Device Name",
   "Car Plate",
   "User",
-  "Phone number",
+  // "Phone number",
   "Location",
   "Date",
 ];
@@ -16,6 +17,7 @@ export const manageUserTableHeaders = [
 
 export const manageDeviceTableHeaders = [
   "Device EUI",
+  "Device Name",
   "Car Plate",
   "Company",
   "Phone number",
@@ -24,9 +26,10 @@ export const manageDeviceTableHeaders = [
 
 export const pulseMessageTableHeaders = [
   "Device EUI",
+  "Device Name",
   "Car Plate",
   "User",
-  "Phone number",
+  // "Phone number",
   "Location",
   "Battery",
   "Received",

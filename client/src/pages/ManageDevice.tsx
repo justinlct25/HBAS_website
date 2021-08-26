@@ -115,6 +115,9 @@ function ManageDevice() {
                       {item.deviceEui}
                     </div>
                     <div key={idx} className="tdItem">
+                      {item.deviceName || "-"}
+                    </div>
+                    <div key={idx} className="tdItem">
                       {item.carPlate || "-"}
                     </div>
                     <div key={idx} className="tdItem">

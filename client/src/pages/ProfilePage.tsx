@@ -119,7 +119,7 @@ function ProfilePage() {
           <div className="flex-center" style={{ width: "100%", marginTop: "2vh" }}>
             <div className="titleText">Vehicle Logs</div>
           </div>
-          <div className="flex-center vehicleCardContainer" style={{ width: "80%" }}>
+          <div className="flex-center vehicleCardContainer">
             {profileList.length > 0 &&
               profileList
                 .filter((i) => i.deviceId)
@@ -168,12 +168,14 @@ function ProfilePage() {
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               overflowY: "scroll",
+              marginBottom: "32px",
             }}
           >
             {profileList.length > 0 &&
               profileList.map((item, idx) => {
                 return <AnimatedVehicleCards key={item.vehicleId + idx} item={item} />;
               })}
+            <div style={{ height: "32px" }}></div>
           </div>
         </div>
         <AssignDeviceByVehicleModal />

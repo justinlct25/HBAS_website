@@ -30,7 +30,7 @@ function PulseMessagePage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAlertDataListThunk(1));
+    dispatch(getAlertDataListThunk(1, "", "B"));
   }, [dispatch]);
 
   useEffect(() => {
@@ -161,9 +161,10 @@ function PulseMessagePage() {
                   }}
                 >
                   <div className="flex-center tdMainItem">{item.deviceEui}</div>
+                  <div className="flex-center tdItem">{item.deviceName || "-"}</div>
                   <div className="flex-center tdItem">{item.carPlate || "-"}</div>
                   <div className="flex-center tdItem">{item.companyName || "-"}</div>
-                  <div className="flex-center tdItem">{item.companyTel || "-"}</div>
+                  {/* <div className="flex-center tdItem">{item.companyTel || "-"}</div> */}
                   <div className="flex-center tdItem">{item.address || "-"}</div>
                   <div
                     className="flex-center tdItem"

@@ -79,7 +79,7 @@ function AddNewVehicles() {
     setTotalVehicle(newArr);
   };
 
-  const overLength = totalVehicle.some((i) => i.carPlate.length >= 8);
+  const overLength = totalVehicle.some((i) => i.carPlate.length > 8);
 
   return (
     <>
@@ -128,7 +128,7 @@ function AddNewVehicles() {
                               handleEditContent("carPlate", idx, e.target.value);
                             }}
                           />
-                          {totalVehicle[idx].carPlate.length >= 8 && (
+                          {totalVehicle[idx].carPlate.length > 8 && (
                             <div className="overLengthWarning">
                               Car plate length should not exceed 8 characters
                             </div>

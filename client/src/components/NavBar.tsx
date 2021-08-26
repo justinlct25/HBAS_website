@@ -7,6 +7,7 @@ import "../css/NavBar.css";
 import { useRouter } from "../helpers/useRouter";
 import {
   expandNotificationMessageAction,
+  setNotificationAction,
   setNotificationMessage,
 } from "../redux/notification/action";
 import { IRootState } from "../redux/store";
@@ -35,17 +36,40 @@ function NavBar() {
     "M0.762563 0.762563C1.44598 0.0791457 2.55402 0.0791457 3.23744 0.762563L26.5 24.0251L49.7626 0.762563C50.446 0.0791457 51.554 0.0791457 52.2374 0.762563C52.9209 1.44598 52.9209 2.55402 52.2374 3.23744L28.9749 26.5L52.2374 49.7626C52.9209 50.446 52.9209 51.554 52.2374 52.2374C51.554 52.9209 50.446 52.9209 49.7626 52.2374L26.5 28.9749L3.23744 52.2374C2.55402 52.9209 1.44598 52.9209 0.762563 52.2374C0.0791457 51.554 0.0791457 50.446 0.762563 49.7626L24.0251 26.5L0.762563 3.23744C0.0791457 2.55402 0.0791457 1.44598 0.762563 0.762563Z";
 
   const handleClick = () => {
+    setMenuIsOpen(false);
+    dispatch(expandNotificationMessageAction(false));
+  };
+  useEffect(() => {
     const timeline = anime.timeline({
       duration: 300,
       easing: "easeOutExpo",
     });
     timeline.add({
       targets: ".menuPointA",
-      d: [{ value: !menuIsOpen ? openPathA : closePathA }],
+      d: [{ value: menuIsOpen ? openPathA : closePathA }],
     });
+  }, [menuIsOpen]);
+
+  const handleClick2 = () => {
     if (menuIsOpen) {
       setMenuIsOpen(false);
+      const timeline = anime.timeline({
+        duration: 300,
+        easing: "easeOutExpo",
+      });
+      timeline.add({
+        targets: ".menuPointA",
+        d: [{ value: closePathA }],
+      });
     } else {
+      const timeline = anime.timeline({
+        duration: 300,
+        easing: "easeOutExpo",
+      });
+      timeline.add({
+        targets: ".menuPointA",
+        d: [{ value: openPathA }],
+      });
       setMenuIsOpen(true);
     }
   };
@@ -55,13 +79,15 @@ function NavBar() {
   const showNotification = notification.showNotification;
   const expandNotification = notification.expandNotification;
 
-  const reallyNoMessage = !notification.message.length;
+  const reallyNoMessage = notification.message.length < 1;
 
   useEffect(() => {
     const fetchLowBatteryNotification = async () => {
       try {
         const res = await axios.get(`/alert-data/battery`);
         const result = res.data;
+        console.log("result");
+        console.log(result);
         dispatch(setNotificationMessage(result.data));
       } catch (e) {
         console.error(e.Message);
@@ -110,7 +136,7 @@ function NavBar() {
                       {reallyNoMessage ? (
                         <div>{"No message yet"}</div>
                       ) : (
-                        notification.message.map((message, idx) => {
+                        notification.message.map((message) => {
                           return (
                             <div key={`message-${message.id}`} className="notificationContainer">
                               <div style={{ textAlign: "left" }}>
@@ -127,7 +153,7 @@ function NavBar() {
                   )}
                 </div>
                 <div className="flex-center menuButtonContainer">
-                  <MenuButton isOpen={menuIsOpen} handleClick={handleClick} />
+                  <MenuButton isOpen={menuIsOpen} handleClick={() => setMenuIsOpen(!menuIsOpen)} />
                 </div>
               </div>
             </div>
@@ -167,11 +193,10 @@ function NavBar() {
           />
         </>
       )}
-      {menuIsOpen && (
+      {(menuIsOpen || expandNotification) && (
         <div
           className="clickElsewhereMain"
           onClick={() => {
-            setMenuIsOpen(false);
             handleClick();
           }}
         />

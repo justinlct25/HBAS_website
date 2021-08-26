@@ -35,7 +35,7 @@ export const notificationReducer = (
         ...state,
         notification: {
           ...state.notification,
-          message: action.data,
+          message: [...action.data, ...state.notification.message],
         },
       };
 
