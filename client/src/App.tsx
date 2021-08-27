@@ -45,7 +45,7 @@ function App() {
       </div>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/alert-data-page" />
+          <Redirect to="/latest-locations" />
         </Route>
         <Route path="/login" exact component={LoginPage} />
         {isLoggedIn && (
