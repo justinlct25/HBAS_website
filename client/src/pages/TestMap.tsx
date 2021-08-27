@@ -1,16 +1,26 @@
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import React, { useState } from "react";
 import ReactMapboxGL, { Feature, Layer, Popup } from "react-mapbox-gl";
 import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
-import styles from "../css/popUp.module.scss";
 import { ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
+import styles from "./TestMap.module.scss";
 
 const defaultZoom: [number] = [10.2];
 const defaultCenter: [number, number] = [114.125, 22.35];
 const BATTERY_MAX = 4.2;
 const BATTERY_MIN = 3.6;
+const localizationSelection = [
+  {
+    iso: "zh-Hant",
+    innerHTML: "中"
+  },
+  {
+    iso: "en",
+    innerHTML: "Eng"
+  }
+];
 
 const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
@@ -18,10 +28,19 @@ const Map = ReactMapboxGL({
 
 const TestMap = () => {
   const dispatch = useDispatch();
+  const [map, setMap] = useState<mapboxgl.Map>();
   const [incidentPoints, setIncidentPoints] = useState<ILocationDetail[]>([]);
   const [hoverAnimate, setHoverAnimate] = useState({ onHover: false, idx: -1 });
+  const [localization, setLocalization] = useState(localizationSelection[0].iso);
 
-  const fetchAllLastSeen = async () => {
+  const onMapLoad = async (map: mapboxgl.Map) => {
+    setMap(map);
+    map.getStyle().layers?.forEach(layer => {
+      if (layer.id.endsWith("-label")) {
+        map.setLayoutProperty(layer.id, "text-field", ["get", `name_${localization}`]);
+      }
+    });
+
     try {
       const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const result = res.data.data;
@@ -43,7 +62,16 @@ const TestMap = () => {
     return percentage;
   };
 
+  useEffect(() => {
+    map?.getStyle().layers?.forEach(layer => {
+      if (layer.id.endsWith("-label")) {
+        map.setLayoutProperty(layer.id, "text-field", ["get", `name_${localization}`]);
+      }
+    });
+  }, [map, localization]);
+
   return (
+    <>
     <Map
       // eslint-disable-next-line react/style-prop-object
       style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
@@ -51,8 +79,8 @@ const TestMap = () => {
       // style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
       zoom={defaultZoom}
       center={defaultCenter}
-      containerStyle={{ height: "80vh" }}
-      onStyleLoad={fetchAllLastSeen}
+      containerStyle={{ height: "80vh", width: "100vw", position: "absolute" }}
+      onStyleLoad={map => onMapLoad(map)}
     >
       <>
         <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
@@ -121,6 +149,13 @@ const TestMap = () => {
         </CSSTransition>
       </>
     </Map>
+    <ul id={styles.localization}>
+      {localizationSelection.map(i =>
+        // eslint-disable-next-line jsx-a11y/role-supports-aria-props
+        <li key={i.iso} onClick={() => setLocalization(i.iso)} aria-selected={localization === i.iso}>{i.innerHTML}</li> 
+      )}
+    </ul>
+    </>
   );
 };
 
