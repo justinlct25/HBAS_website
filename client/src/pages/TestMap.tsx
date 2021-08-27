@@ -35,8 +35,9 @@ const TestMap = () => {
 
   const onMapLoad = async (map: mapboxgl.Map) => {
     setMap(map);
+
     map.getStyle().layers?.forEach(layer => {
-      if (layer.id.endsWith("-label")) {
+      if (layer.id.includes("-label")) {
         map.setLayoutProperty(layer.id, "text-field", ["get", `name_${localization}`]);
       }
     });
