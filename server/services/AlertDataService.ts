@@ -100,7 +100,7 @@ export class AlertDataService {
 
   getLatestLocations = async () => {
     const d = new Date();
-    d.setHours(d.getHours() - 24);
+    d.setHours(d.getHours() - 72);
 
     return await this.knex(tables.ALERT_DATA)
       .distinctOn(`${tables.ALERT_DATA}.device_id`)
