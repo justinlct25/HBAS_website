@@ -16,7 +16,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      dispatch(push("/alert-data-page"));
+      dispatch(push("/latest-locations"));
     }
   }, [dispatch, isLoggedIn]);
 
@@ -31,10 +31,7 @@ function LoginPage() {
       <div style={{ width: "50%", height: "80%" }}>
         <div className="titleText">Muse Labs - Handbrake Alert System</div>
         <div className="titleText">Admin Login</div>
-        <div
-          className="flex-center"
-          style={{ width: "100%", margin: "40px 0" }}
-        >
+        <div className="flex-center" style={{ width: "100%", margin: "40px 0" }}>
           <div style={{ width: "104px" }}>Username :</div>
           <input
             style={{
@@ -78,10 +75,7 @@ function LoginPage() {
           />
         </div>
 
-        <div
-          className="flex-center formButtonContainer"
-          style={{ width: "100%" }}
-        >
+        <div className="flex-center formButtonContainer" style={{ width: "100%" }}>
           <div className="button" onClick={handleSubmit}>
             Login
           </div>
