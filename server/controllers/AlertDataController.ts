@@ -139,7 +139,9 @@ export class AlertDataController {
   };
 
   getLowBatteryNotifications = async (req: Request, res: Response) => {
-    const data = await this.alertDataService.getLowBatteryNotifications();
+    const { min } = req.query;
+    if (!min) return res.status(httpStatusCodes.BAD_REQUEST).json('Missing required information.');
+    const data = await this.alertDataService.getLowBatteryNotifications(parseInt(String(min)));
     return res.status(httpStatusCodes.OK).json({ data });
   };
 

@@ -1,6 +1,5 @@
 import { Knex } from 'knex';
 import { IAlertData, IDataHistory, ILocationDetail, msgType } from '../models/models';
-import { BATTERY_MIN } from '../utils/variables';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
@@ -177,7 +176,7 @@ export class AlertDataService {
       .orderBy('date', 'desc');
   };
 
-  getLowBatteryNotifications = async () => {
+  getLowBatteryNotifications = async (BATTERY_MIN: number) => {
     const tempAlertDataTable = 'temp_alert_data';
 
     return await this.knex
@@ -213,7 +212,20 @@ export class AlertDataService {
   };
 
   updateNotificationsStatus = async (notificationIds: number[]) => {
+    const tempDevicesTable = 'temp_devices';
+
     return await this.knex(tables.ALERT_DATA)
+      .with(tempDevicesTable, (qb) => {
+        qb.select('device_id')
+          .from(tables.ALERT_DATA)
+          .leftJoin(tables.DEVICES, `${tables.ALERT_DATA}.device_id`, `${tables.DEVICES}.id`)
+          .where({
+            [`${tables.ALERT_DATA}.is_active`]: true,
+            [`${tables.ALERT_DATA}.is_read`]: false,
+            [`${tables.DEVICES}.is_active`]: true,
+          })
+          .whereIn(`${tables.ALERT_DATA}.id`, notificationIds);
+      })
       .update(
         {
           is_read: true,
@@ -222,6 +234,9 @@ export class AlertDataService {
         ['id']
       )
       .whereIn('id', notificationIds)
+      .orWhereIn('device_id', (builder) => {
+        builder.select('*').from(tempDevicesTable);
+      })
       .andWhere({
         is_read: false,
         is_active: true,
