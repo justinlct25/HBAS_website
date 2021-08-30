@@ -24,7 +24,10 @@ body {
   overflow-y: hidden;
   position: fixed;
 }
-
+ul {
+  margin: 0;
+  padding: 0;
+}
 .App {
   text-align: center;
 }
@@ -193,31 +196,25 @@ body {
 }
 .popup {
   opacity: 0;
-  top: 120px;
+  transition: all 0.4s;
 }
 .popup-enter {
   opacity: 0 !important;
-  top: 120px !important;
 }
 .popup-enter-active {
   opacity: 1 !important;
-  top: 0 !important;
 }
 .popup-enter-done {
   opacity: 1 !important;
-  top: 0 !important;
 }
 .popup-exit {
   opacity: 1 !important;
-  top: 0 !important;
 }
 .popup-exit-active {
   opacity: 0 !important;
-  top: 120px !important;
 }
 .popup-exit-done {
   opacity: 0 !important;
-  top: 120px !important;
 }
 .notificationModal {
   position: absolute;

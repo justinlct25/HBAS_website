@@ -22,11 +22,11 @@ function NavBar() {
   const [notificationIds, setNotificationIds] = useState<number[]>([]);
 
   const menuItem = [
+    { display: "Latest Locations", link: "/latest-locations" },
     { display: "Incident Records", link: "/alert-data-page" },
     { display: "Pulse Message", link: "/pulse-message" },
     { display: "Manage User", link: "/manage-user" },
     { display: "Manage Device", link: "/manage-device" },
-    { display: "Latest Locations", link: "/latest-locations" },
   ];
 
   const closePathA =

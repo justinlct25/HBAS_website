@@ -45,11 +45,12 @@ function App() {
       </div>
       <Switch>
         <Route exact path="/">
-          <Redirect to="/alert-data-page" />
+          <Redirect to="/latest-locations" />
         </Route>
         <Route path="/login" exact component={LoginPage} />
         {isLoggedIn && (
           <>
+            <AdminPrivateRoute path="/latest-locations" exact component={TestMap} />
             <AdminPrivateRoute path="/alert-data-page" exact component={AlertDataPage} />
             <AdminPrivateRoute path="/pulse-message" exact component={PulseMessagePage} />
             <AdminPrivateRoute path="/incident/:id" exact component={IncidentPage} />
@@ -58,7 +59,6 @@ function App() {
             <AdminPrivateRoute path="/manage-device" exact component={ManageDevice} />
             <AdminPrivateRoute path="/statistics" exact component={Statistics} />
             <AdminPrivateRoute path="/vehicle-logs/:id" exact component={VehicleLogs} />
-            <AdminPrivateRoute path="/latest-locations" exact component={TestMap} />
           </>
         )}
       </Switch>
