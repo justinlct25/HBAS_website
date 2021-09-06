@@ -1,5 +1,13 @@
 export type direction = 'asc' | 'desc';
 export type msgType = 'A' | 'B';
+export type Roles = 'ADMIN' | 'USER';
+
+export interface IUserInfo {
+  id: number;
+  email: string;
+  role: string;
+  devicesCount?: string | number;
+}
 
 export interface ICompanyInfo {
   id?: number;

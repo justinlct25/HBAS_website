@@ -7,12 +7,15 @@ import {
 import { companiesAdminRoutes, companiesUserRoutes } from './routes/companies.routes';
 import { devicesAdminRoutes, devicesUserRoutes } from './routes/devices.routes';
 import { loginRoutes } from './routes/login.routes';
+import { usersRoutes } from './routes/users.routes';
 import { vehiclesAdminRoutes, vehiclesUserRoutes } from './routes/vehicles.routes';
 import { adminIsLoggedIn, isLoggedIn } from './utils/guards';
 
 export const routes = express.Router();
 
 routes.use('/login', loginRoutes);
+
+routes.use('/users', isLoggedIn, adminIsLoggedIn, usersRoutes);
 
 routes.use('/devices', isLoggedIn, devicesUserRoutes);
 routes.use('/devices', isLoggedIn, adminIsLoggedIn, devicesAdminRoutes);
