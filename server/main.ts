@@ -56,7 +56,7 @@ io.on('connection', (socket: Socket) => {
 });
 
 // create services
-export const loginService = new LoginService();
+export const loginService = new LoginService(knex);
 const devicesService = new DevicesService(knex);
 const companiesService = new CompaniesService(knex);
 const alertDataService = new AlertDataService(knex);

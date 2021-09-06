@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
 import jwtSimple from 'jwt-simple';
 import { LoginService } from '../services/LoginService';
+import { checkPassword } from '../utils/hash';
 import jwt from '../utils/jwt';
 import { logger } from '../utils/logger';
 
@@ -10,30 +11,25 @@ export class LoginController {
 
   login = async (req: Request, res: Response) => {
     try {
-      if (!req.body.username || !req.body.password) {
+      const { email, password }: { email: string; password: string } = req.body;
+      if (!email || !password) {
         return res.status(httpStatusCodes.BAD_REQUEST).json({
           message: 'Missing required information.',
         });
       }
 
-      const { username, password }: { username: string; password: string } = req.body;
-      const user = await this.loginService.getUser(username);
-      if (!user || password !== user.password) {
+      const user = await this.loginService.getUser(email);
+      if (!user || !(await checkPassword(password, user.password))) {
         return res.status(httpStatusCodes.UNAUTHORIZED).json({
-          message: 'Invalid username or password.',
+          message: 'Invalid email or password.',
         });
       }
 
-      const payload = { username: user.username };
-      const token = jwtSimple.encode(
-        {
-          ...payload,
-          exp: Date.now() / 1000 + 43200, // 12 hours
-        },
-        jwt.jwtSecret
-      );
+      const { id, role } = user;
+      const payload = { id, userEmail: user.email, role, exp: Date.now() / 1000 + 43200 };
 
-      return res.status(httpStatusCodes.OK).json({ token: token });
+      const token = jwtSimple.encode(payload, jwt.jwtSecret);
+      return res.status(httpStatusCodes.OK).json({ token, id, role });
     } catch (err) {
       logger.error(err);
       return res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({
