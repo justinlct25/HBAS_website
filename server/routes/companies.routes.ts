@@ -2,13 +2,14 @@ import express from 'express';
 import { companiesController } from '../main';
 import { createAsyncMiddleware } from '../utils/middleware';
 
-export const companiesRoutes = express.Router();
+export const companiesUserRoutes = express.Router();
+export const companiesAdminRoutes = express.Router();
 
 // get apis
-companiesRoutes.get('/', createAsyncMiddleware(companiesController.getCompaniesInfo));
-companiesRoutes.get('/:companyId', createAsyncMiddleware(companiesController.getCompanyDetails));
+companiesUserRoutes.get('/', createAsyncMiddleware(companiesController.getCompaniesInfo));
+companiesUserRoutes.get('/:companyId', createAsyncMiddleware(companiesController.getCompanyDetails));
 
 // other apis
-companiesRoutes.post('/', createAsyncMiddleware(companiesController.addCompany));
-companiesRoutes.put('/:companyId', createAsyncMiddleware(companiesController.editCompany));
-companiesRoutes.delete('/:companyId', createAsyncMiddleware(companiesController.deleteCompany));
+companiesAdminRoutes.post('/', createAsyncMiddleware(companiesController.addCompany));
+companiesAdminRoutes.put('/:companyId', createAsyncMiddleware(companiesController.editCompany));
+companiesAdminRoutes.delete('/:companyId', createAsyncMiddleware(companiesController.deleteCompany));

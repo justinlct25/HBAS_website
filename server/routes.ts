@@ -1,15 +1,28 @@
 import express from 'express';
-import { alertDataRoutes } from './routes/alertData.routes';
-import { companiesRoutes } from './routes/companies.routes';
-import { devicesRoutes } from './routes/devices.routes';
+import {
+  alertDataAdminRoutes,
+  alertDataPostRoute,
+  alertDataUserRoutes,
+} from './routes/alertData.routes';
+import { companiesAdminRoutes, companiesUserRoutes } from './routes/companies.routes';
+import { devicesAdminRoutes, devicesUserRoutes } from './routes/devices.routes';
 import { loginRoutes } from './routes/login.routes';
-import { vehiclesRoutes } from './routes/vehicles.routes';
-import { isLoggedIn } from './utils/guards';
+import { vehiclesAdminRoutes, vehiclesUserRoutes } from './routes/vehicles.routes';
+import { adminIsLoggedIn, isLoggedIn } from './utils/guards';
 
 export const routes = express.Router();
 
 routes.use('/login', loginRoutes);
-routes.use('/devices', isLoggedIn, devicesRoutes);
-routes.use('/alert-data', alertDataRoutes);
-routes.use('/companies', isLoggedIn, companiesRoutes);
-routes.use('/vehicles', isLoggedIn, vehiclesRoutes);
+
+routes.use('/devices', isLoggedIn, devicesUserRoutes);
+routes.use('/devices', isLoggedIn, adminIsLoggedIn, devicesAdminRoutes);
+
+routes.use('/alert-data', isLoggedIn, alertDataUserRoutes);
+routes.use('/alert-data', alertDataPostRoute);
+routes.use('/alert-data', isLoggedIn, adminIsLoggedIn, alertDataAdminRoutes);
+
+routes.use('/companies', isLoggedIn, companiesUserRoutes);
+routes.use('/companies', isLoggedIn, adminIsLoggedIn, companiesAdminRoutes);
+
+routes.use('/vehicles', isLoggedIn, vehiclesUserRoutes);
+routes.use('/vehicles', isLoggedIn, adminIsLoggedIn, vehiclesAdminRoutes);

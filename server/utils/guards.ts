@@ -7,37 +7,33 @@ import jwt from './jwt';
 import { logger } from './logger';
 
 const permit = new Bearer({ query: 'access_token' });
+const authFailedRes = { message: 'Unauthorized access.' };
 
 export const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
-  const authFailedRes = res.status(httpStatusCodes.UNAUTHORIZED).json({
-    message: 'Unauthorized access.',
-  });
   try {
     const token = permit.check(req);
-    if (!token) return authFailedRes;
+    if (!token) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
     const payload = jwtSimple.decode(token, jwt.jwtSecret);
     const user = await loginService.getUser(payload.email);
-    if (!user) return authFailedRes;
+    if (!user) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
     const { password, ...others } = user;
     req.user = { ...others };
     return next();
   } catch (err) {
     logger.error(err.message);
-    return authFailedRes;
+    return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
   }
 };
 
 export const adminIsLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
-  const authFailedRes = res.status(httpStatusCodes.UNAUTHORIZED).json({
-    message: 'Unauthorized access.',
-  });
   try {
-    if (!req.user || req.user.role !== 'ADMIN') return authFailedRes;
+    if (!req.user || req.user.role !== 'ADMIN')
+      return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
     return next();
   } catch (err) {
     logger.error(err.message);
-    return authFailedRes;
+    return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
   }
 };

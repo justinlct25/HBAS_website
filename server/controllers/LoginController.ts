@@ -26,7 +26,7 @@ export class LoginController {
       }
 
       const { id, role } = user;
-      const payload = { id, userEmail: user.email, role, exp: Date.now() / 1000 + 43200 };
+      const payload = { id, email: user.email, role, exp: Date.now() / 1000 + 43200 };
 
       const token = jwtSimple.encode(payload, jwt.jwtSecret);
       return res.status(httpStatusCodes.OK).json({ token, id, role });
