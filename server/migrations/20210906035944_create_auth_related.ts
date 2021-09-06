@@ -7,6 +7,7 @@ const userDevices = 'user_devices';
 export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable(usersTable, (table) => {
     table.increments();
+    table.string('username');
     table.string('email').notNullable();
     table.string('password').notNullable();
     table.string('role').notNullable().defaultTo('USER');
