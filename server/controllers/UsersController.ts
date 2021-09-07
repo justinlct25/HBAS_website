@@ -7,10 +7,19 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   getUsers = async (req: Request, res: Response) => {
+    const dataType = req.query.type;
     const perPage = req.query.rows;
     const currentPage = req.query.page;
     const searchString = req.query.search;
     const role = req.query.role;
+
+    if (dataType === 'form')
+      return res.status(httpStatusCodes.OK).json({
+        data: await this.usersService.getUsersForm(
+          !!searchString ? `%${String(searchString)}%` : null,
+          !!role ? (String(role) as Roles) : null
+        ),
+      });
 
     // get data
     const data = await this.usersService.getUsers(

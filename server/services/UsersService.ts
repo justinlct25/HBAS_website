@@ -31,12 +31,37 @@ export class UsersService {
       .orderBy([
         { column: 'role', order: 'asc' },
         { column: 'updated_at', order: 'desc' },
+        { column: 'username', order: 'asc' },
         { column: 'email', order: 'asc' },
       ]);
 
-    if (!!searchString) query.andWhere('email', 'ILIKE', searchString);
+    const searchQuery = (builder: Knex.QueryBuilder) => {
+      builder.where('username', 'ILIKE', searchString).orWhere('email', 'ILIKE', searchString);
+    };
+
+    if (!!searchString) query.andWhere(searchQuery);
     if (!!role) query.andWhere('role', role);
     return await query.paginate<IUserInfo[]>({ perPage, currentPage, isLengthAware: true });
+  };
+
+  getUsersForm = async (searchString: string | null, role: Roles | null) => {
+    const query = this.knex(tables.USERS)
+      .select<Omit<IUserInfo, 'devicesCount'>>('id', 'username', 'email', 'role')
+      .where('is_active', true)
+      .orderBy([
+        { column: 'role', order: 'asc' },
+        { column: 'username', order: 'asc' },
+        { column: 'email', order: 'asc' },
+        { column: 'updated_at', order: 'desc' },
+      ]);
+
+    const searchQuery = (builder: Knex.QueryBuilder) => {
+      builder.where('username', 'ILIKE', searchString).orWhere('email', 'ILIKE', searchString);
+    };
+
+    if (!!searchString) query.andWhere(searchQuery);
+    if (!!role) query.andWhere('role', role);
+    return await query;
   };
 
   checkDuplicatedUser = async (username: string, email: string) => {

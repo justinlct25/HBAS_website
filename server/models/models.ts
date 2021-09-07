@@ -4,6 +4,7 @@ export type Roles = 'ADMIN' | 'USER';
 
 export interface IUserInfo {
   id: number;
+  username: string;
   email: string;
   role: string;
   devicesCount?: string | number;
