@@ -23,7 +23,7 @@ export class UsersService {
           .groupBy('user_id')
           .orderBy('user_id');
       })
-      .select<IUserInfo>('id', 'email', 'role', 'devicesCount')
+      .select<IUserInfo>('id', 'username', 'email', 'role', 'devicesCount')
       .from(tables.USERS)
       .leftJoin(tempCountTable, `${tables.USERS}.id`, `${tempCountTable}.user_id`)
       .where('is_active', true)
@@ -53,5 +53,14 @@ export class UsersService {
     return await this.knex(tables.USERS)
       .insert({ username, email, password, role })
       .returning<number[]>('id');
+  };
+
+  editUser = async (userId: number, username: string, email: string, role?: string) => {
+    return await this.knex(tables.USERS)
+      .update({ username, email, role, updated_at: new Date() }, 'id')
+      .where({
+        is_active: true,
+        id: userId,
+      });
   };
 }

@@ -28,10 +28,13 @@ export class UsersController {
     return res.status(httpStatusCodes.OK).json(data);
   };
 
-  userChecking = async (username: string, email: string, userId?: number) => {
+  userChecking = async (username: string, email: string, role?: string, userId?: number) => {
     // check if required info is provided
     if (!username || !email)
       return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Missing required information.' };
+
+    if (!!role && role !== 'ADMIN' && role !== 'USER')
+      return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Invalid role.' };
 
     const existing = await this.usersService.checkDuplicatedUser(username, email);
     if (!!existing && existing.id !== userId)
@@ -40,19 +43,12 @@ export class UsersController {
     return;
   };
 
-  addUsers = async (req: Request, res: Response) => {
+  addUser = async (req: Request, res: Response) => {
     const { username, email, role }: INewUser = req.body;
 
-    const checkingRes = await this.userChecking(username, email);
+    const checkingRes = await this.userChecking(username, email, role);
     if (!!checkingRes)
-      return res.status(checkingRes.statusCode).json({
-        message: checkingRes.message,
-      });
-
-    if (!!role && role !== 'ADMIN' && role !== 'USER')
-      return res.status(httpStatusCodes.BAD_REQUEST).json({
-        message: 'Invalid role.',
-      });
+      return res.status(checkingRes.statusCode).json({ message: checkingRes.message });
 
     // insert data
     const id = await this.usersService.addUser(username, email, role);
@@ -66,5 +62,23 @@ export class UsersController {
       message: `Added 1 user successfully.`,
       id: id[0],
     });
+  };
+
+  editUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const { username, email, role }: INewUser = req.body;
+
+    const checkingRes = await this.userChecking(username, email, role, parseInt(userId));
+    if (!!checkingRes)
+      return res.status(checkingRes.statusCode).json({ message: checkingRes.message });
+
+    const success = await this.usersService.editUser(parseInt(userId), username, email, role);
+
+    // if update failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot update user.' });
+
+    // update successful
+    return res.status(httpStatusCodes.OK).json({ message: 'Edited user successfully.' });
   };
 }
