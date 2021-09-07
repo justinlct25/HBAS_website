@@ -9,6 +9,12 @@ export interface IUserInfo {
   devicesCount?: string | number;
 }
 
+export interface INewUser {
+  username: string;
+  email: string;
+  role?: string;
+}
+
 export interface ICompanyInfo {
   id?: number;
   companyName: string;

@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import { IUserInfo, Roles } from '../models/models';
+import { hashPassword } from '../utils/hash';
 import { tables } from './../utils/table_model';
 
 export class UsersService {
@@ -35,5 +36,22 @@ export class UsersService {
     if (!!searchString) query.andWhere('email', 'ILIKE', searchString);
     if (!!role) query.andWhere('role', role);
     return await query.paginate<IUserInfo[]>({ perPage, currentPage, isLengthAware: true });
+  };
+
+  checkDuplicatedUser = async (username: string, email: string) => {
+    return await this.knex(tables.USERS)
+      .distinct('id')
+      .where('is_active', true)
+      .andWhere((builder) => {
+        builder.where('username', 'ILIKE', username).orWhere('email', 'ILIKE', email);
+      })
+      .first();
+  };
+
+  addUser = async (username: string, email: string, role?: string) => {
+    const password = await hashPassword(email);
+    return await this.knex(tables.USERS)
+      .insert({ username, email, password, role })
+      .returning<number[]>('id');
   };
 }
