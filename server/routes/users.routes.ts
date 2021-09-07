@@ -8,3 +8,6 @@ usersRoutes.get('/', createAsyncMiddleware(usersController.getUsers));
 usersRoutes.post('/', createAsyncMiddleware(usersController.addUser));
 usersRoutes.put('/:userId', createAsyncMiddleware(usersController.editUser));
 usersRoutes.delete('/:userId', createAsyncMiddleware(usersController.deleteUser));
+
+// for linking users and devices
+usersRoutes.get('/devices', createAsyncMiddleware(usersController.getDevicesForm));

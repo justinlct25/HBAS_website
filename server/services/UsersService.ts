@@ -1,5 +1,5 @@
 import { Knex } from 'knex';
-import { IUserInfo, Roles } from '../models/models';
+import { IDeviceInfo, IUserInfo, Roles } from '../models/models';
 import { hashPassword } from '../utils/hash';
 import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
@@ -109,5 +109,28 @@ export class UsersService {
       await trx.rollback();
       return;
     }
+  };
+
+  getDevicesForm = async (deviceId: number | null) => {
+    const query = () => {
+      return this.knex(tables.DEVICES)
+        .distinct<IDeviceInfo[]>({ id: 'id', deviceName: 'device_name', deviceEui: 'device_eui' })
+        .where('is_active', true)
+        .andWhereNot('id', deviceId)
+        .orderBy('device_eui');
+    };
+
+    const filterQuery = (builder: Knex.QueryBuilder) => {
+      builder
+        .select<{ device_id: number }>('device_id')
+        .from(tables.USER_DEVICES)
+        .whereRaw(/* SQL*/ `${tables.DEVICES}.id = ${tables.USER_DEVICES}.device_id`)
+        .andWhere('is_active', true);
+    };
+
+    return {
+      linkedDevices: await query().whereExists(filterQuery),
+      newDevices: await query().whereNotExists(filterQuery),
+    };
   };
 }

@@ -106,4 +106,12 @@ export class UsersController {
       message: `Deleted user successfully.`,
     });
   };
+
+  getDevicesForm = async (req: Request, res: Response) => {
+    const { deviceId } = req.query;
+    const data = await this.usersService.getDevicesForm(
+      !!deviceId ? parseInt(String(deviceId)) : null
+    );
+    return res.status(httpStatusCodes.OK).json({ data });
+  };
 }
