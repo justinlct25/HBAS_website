@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { IUserInfo, Roles } from '../models/models';
 import { hashPassword } from '../utils/hash';
+import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
 export class UsersService {
@@ -62,5 +63,26 @@ export class UsersService {
         is_active: true,
         id: userId,
       });
+  };
+
+  deleteUser = async (userId: number) => {
+    const trx = await this.knex.transaction();
+    try {
+      const query = () => {
+        return trx
+          .update({ is_active: false, updated_at: new Date() }, 'id')
+          .where({ is_active: true });
+      };
+
+      await query().from(tables.USER_DEVICES).andWhere({ user_id: userId });
+      const ids = await query().from(tables.USERS).andWhere({ id: userId });
+
+      await trx.commit();
+      return ids;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
   };
 }

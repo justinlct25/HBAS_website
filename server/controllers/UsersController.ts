@@ -81,4 +81,20 @@ export class UsersController {
     // update successful
     return res.status(httpStatusCodes.OK).json({ message: 'Edited user successfully.' });
   };
+
+  deleteUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+
+    // delete data
+    const success = await this.usersService.deleteUser(parseInt(userId));
+
+    // if delete failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot delete user.' });
+
+    // delete successful
+    return res.status(httpStatusCodes.OK).json({
+      message: `Deleted user successfully.`,
+    });
+  };
 }
