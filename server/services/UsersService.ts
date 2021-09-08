@@ -155,4 +155,13 @@ export class UsersService {
       return;
     }
   };
+
+  unlinkDeviceAndUser = async (userId: number, deviceIds: number[]) => {
+    return await this.knex(tables.USER_DEVICES)
+      .update({ is_active: false, updated_at: new Date() }, 'id')
+      .where({ is_active: true })
+      .andWhere((builder) => {
+        builder.whereIn('device_id', deviceIds).andWhere({ user_id: userId });
+      });
+  };
 }

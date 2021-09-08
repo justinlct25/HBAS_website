@@ -133,4 +133,24 @@ export class UsersController {
     // insert successful
     return res.status(httpStatusCodes.CREATED).json({ message: `Linked device successfully.`, id });
   };
+
+  unlinkDeviceAndUser = async (req: Request, res: Response) => {
+    const { userId, deviceIds }: { userId: number; deviceIds: number[] } = req.body;
+
+    // check if required info is provided
+    if (!userId || !deviceIds || !deviceIds.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        message: 'Missing required information.',
+      });
+
+    // delete data
+    const success = await this.usersService.unlinkDeviceAndUser(userId, deviceIds);
+
+    // if delete failed
+    if (!success || !success.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot unlink device.' });
+
+    // delete successful
+    return res.status(httpStatusCodes.OK).json({ message: `Unlinked device successfully.` });
+  };
 }
