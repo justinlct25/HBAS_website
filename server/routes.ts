@@ -16,6 +16,7 @@ export const routes = express.Router();
 routes.use('/login', loginRoutes);
 
 routes.use('/users', isLoggedIn, adminIsLoggedIn, usersRoutes);
+routes.use('/user-devices', isLoggedIn, adminIsLoggedIn, usersRoutes);
 
 routes.use('/devices', isLoggedIn, devicesUserRoutes);
 routes.use('/devices', isLoggedIn, adminIsLoggedIn, devicesAdminRoutes);

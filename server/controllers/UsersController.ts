@@ -114,4 +114,23 @@ export class UsersController {
     );
     return res.status(httpStatusCodes.OK).json({ data });
   };
+
+  linkDeviceAndUser = async (req: Request, res: Response) => {
+    const { userId, deviceIds }: { userId: number; deviceIds: number[] } = req.body;
+
+    // check if required info is provided
+    if (!userId || !deviceIds || !deviceIds.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({
+        message: 'Missing required information.',
+      });
+
+    const id = await this.usersService.linkDeviceAndUser(userId, deviceIds);
+
+    // if insert failed
+    if (!id || !id.length)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot link device.' });
+
+    // insert successful
+    return res.status(httpStatusCodes.CREATED).json({ message: `Linked device successfully.`, id });
+  };
 }

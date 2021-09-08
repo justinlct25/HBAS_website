@@ -133,4 +133,26 @@ export class UsersService {
       newDevices: await query().whereNotExists(filterQuery),
     };
   };
+
+  linkDeviceAndUser = async (userId: number, deviceIds: number[]) => {
+    const trx = await this.knex.transaction();
+    try {
+      // link up new device and user
+      const ids = await trx(tables.USER_DEVICES)
+        .insert(
+          deviceIds.map((device_id) => ({
+            device_id,
+            user_id: userId,
+          }))
+        )
+        .returning<number[]>('id');
+
+      await trx.commit();
+      return ids;
+    } catch (e) {
+      logger.error(e.message);
+      await trx.rollback();
+      return;
+    }
+  };
 }
