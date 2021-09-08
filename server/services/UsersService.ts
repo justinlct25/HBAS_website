@@ -115,51 +115,33 @@ export class UsersService {
 
   getUserDevicesList = async (userId: number, perPage: number, currentPage: number) => {
     const tempUsers = 'temp_users';
-    const tempVehicles = 'temp_vehicles';
-    const tempCompanies = 'temp_companies';
-    const tempVehicleDevice = 'temp_vehicle_device';
-    const tempCompaniesVehicles = 'temp_companies_vehicles';
 
     const query = this.knex
       .with(tempUsers, (qb) => {
         qb.select('device_id', 'user_id').from(USER_DEVICES).where('is_active', true);
       })
-      .with(tempVehicles, (qb) => {
-        qb.select('id', 'car_plate').from(VEHICLES).where('is_active', true);
-      })
-      .with(tempCompanies, (qb) => {
-        qb.select('id', 'company_name', 'tel', 'contact_person')
-          .from(COMPANIES)
-          .where('is_active', true);
-      })
-      .with(tempVehicleDevice, (qb) => {
-        qb.select('device_id', 'vehicle_id').from(VEHICLE_DEVICE).where('is_active', true);
-      })
-      .with(tempCompaniesVehicles, (qb) => {
-        qb.select('company_id', 'vehicle_id').from(COMPANY_VEHICLES).where('is_active', true);
-      })
       .distinct<IDeviceDetail[]>({
         deviceId: `${DEVICES}.id`,
         deviceName: `${DEVICES}.device_name`,
         deviceEui: `${DEVICES}.device_eui`,
-        vehicleId: `${tempVehicles}.id`,
-        carPlate: `${tempVehicles}.car_plate`,
-        companyId: `${tempCompanies}.id`,
-        companyName: `${tempCompanies}.company_name`,
-        tel: `${tempCompanies}.tel`,
-        contactPerson: `${tempCompanies}.contact_person`,
+        deviceIsActive: `${DEVICES}.is_active`,
+        vehicleId: `${VEHICLES}.id`,
+        carPlate: `${VEHICLES}.car_plate`,
+        vehicleIsActive: `${VEHICLES}.is_active`,
+        companyId: `${COMPANIES}.id`,
+        companyName: `${COMPANIES}.company_name`,
+        tel: `${COMPANIES}.tel`,
+        contactPerson: `${COMPANIES}.contact_person`,
+        companyIsActive: `${COMPANIES}.is_active`,
         updatedAt: `${DEVICES}.updated_at`,
       })
       .from(DEVICES)
-      .leftJoin(tempVehicleDevice, `${DEVICES}.id`, `${tempVehicleDevice}.device_id`)
-      .leftJoin(tempVehicles, `${tempVehicles}.id`, `${tempVehicleDevice}.vehicle_id`)
-      .leftJoin(tempCompaniesVehicles, `${tempCompaniesVehicles}.vehicle_id`, `${tempVehicles}.id`)
-      .leftJoin(tempCompanies, `${tempCompaniesVehicles}.company_id`, `${tempCompanies}.id`)
+      .leftJoin(VEHICLE_DEVICE, `${DEVICES}.id`, `${VEHICLE_DEVICE}.device_id`)
+      .leftJoin(VEHICLES, `${VEHICLES}.id`, `${VEHICLE_DEVICE}.vehicle_id`)
+      .leftJoin(COMPANY_VEHICLES, `${COMPANY_VEHICLES}.vehicle_id`, `${VEHICLES}.id`)
+      .leftJoin(COMPANIES, `${COMPANY_VEHICLES}.company_id`, `${COMPANIES}.id`)
       .innerJoin(tempUsers, `${tempUsers}.device_id`, `${DEVICES}.id`)
-      .where({
-        [`${DEVICES}.is_active`]: true,
-        [`${tempUsers}.user_id`]: userId,
-      })
+      .where(`${tempUsers}.user_id`, userId)
       .orderBy([
         { column: `${DEVICES}.updated_at`, order: 'desc' },
         { column: `${DEVICES}.device_name`, order: 'asc' },
