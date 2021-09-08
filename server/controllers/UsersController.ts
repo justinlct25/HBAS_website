@@ -107,6 +107,20 @@ export class UsersController {
     });
   };
 
+  getUserDevicesList = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const perPage = req.query.rows;
+    const currentPage = req.query.page;
+
+    // get data
+    const data = await this.usersService.getUserDevicesList(
+      parseInt(userId),
+      !!perPage ? parseInt(String(perPage)) : 10,
+      !!currentPage ? parseInt(String(currentPage)) : 1
+    );
+    return res.status(httpStatusCodes.OK).json(data);
+  };
+
   getDevicesForm = async (req: Request, res: Response) => {
     const { deviceId } = req.query;
     const data = await this.usersService.getDevicesForm(

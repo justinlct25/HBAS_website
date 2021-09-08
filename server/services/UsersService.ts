@@ -1,9 +1,11 @@
 import { Knex } from 'knex';
-import { IDeviceInfo, IUserInfo, Roles } from '../models/models';
+import { IDeviceDetail, IDeviceInfo, IUserInfo, Roles } from '../models/models';
 import { hashPassword } from '../utils/hash';
 import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
+const { USER_DEVICES, USERS, DEVICES, COMPANY_VEHICLES, VEHICLE_DEVICE, COMPANIES, VEHICLES } =
+  tables;
 export class UsersService {
   constructor(private knex: Knex) {}
 
@@ -19,14 +21,14 @@ export class UsersService {
       .with(tempCountTable, (qb) => {
         qb.select('user_id')
           .count('user_id AS devicesCount')
-          .from(tables.USER_DEVICES)
+          .from(USER_DEVICES)
           .where('is_active', true)
           .groupBy('user_id')
           .orderBy('user_id');
       })
       .select<IUserInfo>('id', 'username', 'email', 'role', 'devicesCount')
-      .from(tables.USERS)
-      .leftJoin(tempCountTable, `${tables.USERS}.id`, `${tempCountTable}.user_id`)
+      .from(USERS)
+      .leftJoin(tempCountTable, `${USERS}.id`, `${tempCountTable}.user_id`)
       .where('is_active', true)
       .orderBy([
         { column: 'role', order: 'asc' },
@@ -45,7 +47,7 @@ export class UsersService {
   };
 
   getUsersForm = async (searchString: string | null, role: Roles | null) => {
-    const query = this.knex(tables.USERS)
+    const query = this.knex(USERS)
       .select<Omit<IUserInfo, 'devicesCount'>>('id', 'username', 'email', 'role')
       .where('is_active', true)
       .orderBy([
@@ -65,7 +67,7 @@ export class UsersService {
   };
 
   checkDuplicatedUser = async (username: string, email: string) => {
-    return await this.knex(tables.USERS)
+    return await this.knex(USERS)
       .distinct('id')
       .where('is_active', true)
       .andWhere((builder) => {
@@ -76,13 +78,13 @@ export class UsersService {
 
   addUser = async (username: string, email: string, role?: string) => {
     const password = await hashPassword(email);
-    return await this.knex(tables.USERS)
+    return await this.knex(USERS)
       .insert({ username, email, password, role })
       .returning<number[]>('id');
   };
 
   editUser = async (userId: number, username: string, email: string, role?: string) => {
-    return await this.knex(tables.USERS)
+    return await this.knex(USERS)
       .update({ username, email, role, updated_at: new Date() }, 'id')
       .where({
         is_active: true,
@@ -99,8 +101,8 @@ export class UsersService {
           .where({ is_active: true });
       };
 
-      await query().from(tables.USER_DEVICES).andWhere({ user_id: userId });
-      const ids = await query().from(tables.USERS).andWhere({ id: userId });
+      await query().from(USER_DEVICES).andWhere({ user_id: userId });
+      const ids = await query().from(USERS).andWhere({ id: userId });
 
       await trx.commit();
       return ids;
@@ -111,9 +113,64 @@ export class UsersService {
     }
   };
 
+  getUserDevicesList = async (userId: number, perPage: number, currentPage: number) => {
+    const tempUsers = 'temp_users';
+    const tempVehicles = 'temp_vehicles';
+    const tempCompanies = 'temp_companies';
+    const tempVehicleDevice = 'temp_vehicle_device';
+    const tempCompaniesVehicles = 'temp_companies_vehicles';
+
+    const query = this.knex
+      .with(tempUsers, (qb) => {
+        qb.select('device_id', 'user_id').from(USER_DEVICES).where('is_active', true);
+      })
+      .with(tempVehicles, (qb) => {
+        qb.select('id', 'car_plate').from(VEHICLES).where('is_active', true);
+      })
+      .with(tempCompanies, (qb) => {
+        qb.select('id', 'company_name', 'tel', 'contact_person')
+          .from(COMPANIES)
+          .where('is_active', true);
+      })
+      .with(tempVehicleDevice, (qb) => {
+        qb.select('device_id', 'vehicle_id').from(VEHICLE_DEVICE).where('is_active', true);
+      })
+      .with(tempCompaniesVehicles, (qb) => {
+        qb.select('company_id', 'vehicle_id').from(COMPANY_VEHICLES).where('is_active', true);
+      })
+      .distinct<IDeviceDetail[]>({
+        deviceId: `${DEVICES}.id`,
+        deviceName: `${DEVICES}.device_name`,
+        deviceEui: `${DEVICES}.device_eui`,
+        vehicleId: `${tempVehicles}.id`,
+        carPlate: `${tempVehicles}.car_plate`,
+        companyId: `${tempCompanies}.id`,
+        companyName: `${tempCompanies}.company_name`,
+        tel: `${tempCompanies}.tel`,
+        contactPerson: `${tempCompanies}.contact_person`,
+        updatedAt: `${DEVICES}.updated_at`,
+      })
+      .from(DEVICES)
+      .leftJoin(tempVehicleDevice, `${DEVICES}.id`, `${tempVehicleDevice}.device_id`)
+      .leftJoin(tempVehicles, `${tempVehicles}.id`, `${tempVehicleDevice}.vehicle_id`)
+      .leftJoin(tempCompaniesVehicles, `${tempCompaniesVehicles}.vehicle_id`, `${tempVehicles}.id`)
+      .leftJoin(tempCompanies, `${tempCompaniesVehicles}.company_id`, `${tempCompanies}.id`)
+      .innerJoin(tempUsers, `${tempUsers}.device_id`, `${DEVICES}.id`)
+      .where({
+        [`${DEVICES}.is_active`]: true,
+        [`${tempUsers}.user_id`]: userId,
+      })
+      .orderBy([
+        { column: `${DEVICES}.updated_at`, order: 'desc' },
+        { column: `${DEVICES}.device_name`, order: 'asc' },
+      ]);
+
+    return await query.paginate<IDeviceDetail[]>({ perPage, currentPage, isLengthAware: true });
+  };
+
   getDevicesForm = async (deviceId: number | null) => {
     const query = () => {
-      return this.knex(tables.DEVICES)
+      return this.knex(DEVICES)
         .distinct<IDeviceInfo[]>({ id: 'id', deviceName: 'device_name', deviceEui: 'device_eui' })
         .where('is_active', true)
         .andWhereNot('id', deviceId)
@@ -123,8 +180,8 @@ export class UsersService {
     const filterQuery = (builder: Knex.QueryBuilder) => {
       builder
         .select<{ device_id: number }>('device_id')
-        .from(tables.USER_DEVICES)
-        .whereRaw(/* SQL*/ `${tables.DEVICES}.id = ${tables.USER_DEVICES}.device_id`)
+        .from(USER_DEVICES)
+        .whereRaw(/* SQL*/ `${DEVICES}.id = ${USER_DEVICES}.device_id`)
         .andWhere('is_active', true);
     };
 
@@ -138,7 +195,7 @@ export class UsersService {
     const trx = await this.knex.transaction();
     try {
       // link up new device and user
-      const ids = await trx(tables.USER_DEVICES)
+      const ids = await trx(USER_DEVICES)
         .insert(
           deviceIds.map((device_id) => ({
             device_id,
@@ -157,7 +214,7 @@ export class UsersService {
   };
 
   unlinkDeviceAndUser = async (userId: number, deviceIds: number[]) => {
-    return await this.knex(tables.USER_DEVICES)
+    return await this.knex(USER_DEVICES)
       .update({ is_active: false, updated_at: new Date() }, 'id')
       .where({ is_active: true })
       .andWhere((builder) => {
