@@ -19,17 +19,23 @@ export class LoginController {
       }
 
       const user = await this.loginService.getUser(email);
-      if (!user || !(await checkPassword(password, user.password))) {
+      if (!user.info || !(await checkPassword(password, user.info.password))) {
         return res.status(httpStatusCodes.UNAUTHORIZED).json({
           message: 'Invalid email or password.',
         });
       }
 
-      const { id, role } = user;
-      const payload = { id, email: user.email, role, exp: Date.now() / 1000 + 43200 };
+      const { id, role } = user.info;
+      const payload = {
+        id,
+        email: user.info.email,
+        role,
+        devices: user.devices,
+        exp: Date.now() / 1000 + 43200,
+      };
 
       const token = jwtSimple.encode(payload, jwt.jwtSecret);
-      return res.status(httpStatusCodes.OK).json({ token, id, role });
+      return res.status(httpStatusCodes.OK).json({ token, id, role, devices: user.devices });
     } catch (err) {
       logger.error(err);
       return res.status(httpStatusCodes.INTERNAL_SERVER_ERROR).json({

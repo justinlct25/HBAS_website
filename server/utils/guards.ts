@@ -16,10 +16,10 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
 
     const payload = jwtSimple.decode(token, jwt.jwtSecret);
     const user = await loginService.getUser(payload.email);
-    if (!user) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
+    if (!user.info) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
-    const { password, ...others } = user;
-    req.user = { ...others };
+    const { password, ...others } = user.info;
+    req.user = { ...others, devices: user.devices };
     return next();
   } catch (err) {
     logger.error(err.message);
