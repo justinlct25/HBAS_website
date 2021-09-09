@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import httpStatusCodes from 'http-status-codes';
 import jwtSimple from 'jwt-simple';
 import { LoginService } from '../services/LoginService';
-import { checkPassword } from '../utils/hash';
+import { checkPassword, hashPassword } from '../utils/hash';
 import jwt from '../utils/jwt';
 import { logger } from '../utils/logger';
 
@@ -42,5 +42,30 @@ export class LoginController {
         message: 'Internal server error.',
       });
     }
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    const userId = req.user.id;
+    const { oldPassword, newPassword }: { oldPassword: string; newPassword: string } = req.body;
+
+    // check if required info is provided
+    if (!userId || !oldPassword || !newPassword)
+      return res
+        .status(httpStatusCodes.BAD_REQUEST)
+        .json({ message: 'Missing required information.' });
+
+    const currentPassword = await this.loginService.checkPassword(userId);
+    if (!currentPassword || !(await checkPassword(oldPassword, currentPassword.password)))
+      return res.status(httpStatusCodes.UNAUTHORIZED).json({ message: 'Incorrect password.' });
+
+    const changePasswordSuccess = await this.loginService.changePassword(
+      userId,
+      await hashPassword(String(newPassword))
+    );
+
+    if (!changePasswordSuccess)
+      return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Cannot change password.' });
+
+    return res.status(httpStatusCodes.OK).json({ message: 'Changed password successfully.' });
   };
 }

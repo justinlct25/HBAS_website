@@ -33,4 +33,25 @@ export class LoginService {
       devices: info?.role === 'USER' ? (await devicesQuery).map((d) => d.id) : null,
     };
   };
+
+  checkPassword = async (userId: number) => {
+    return await this.knex(tables.USERS)
+      .select<{ password: string }>('password')
+      .where('id', userId)
+      .andWhere('is_active', true)
+      .first();
+  };
+
+  changePassword = async (userId: number, newPassword: string) => {
+    return await this.knex(tables.USERS)
+      .update(
+        {
+          password: newPassword,
+          updated_at: new Date(Date.now()),
+        },
+        'id'
+      )
+      .where('id', userId)
+      .andWhere('is_active', true);
+  };
 }
