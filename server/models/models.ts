@@ -81,12 +81,15 @@ export interface IDeviceDetail {
   deviceId: number;
   deviceName: string;
   deviceEui: string;
+  deviceIsActive: boolean;
   vehicleId: number | null;
   carPlate: string | null;
+  vehicleIsActive: boolean;
   companyId: number | null;
   companyName: string | null;
   tel: string | null;
   contactPerson: string | null;
+  companyIsActive: boolean;
   updatedAt: string;
 }
 

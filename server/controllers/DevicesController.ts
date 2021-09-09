@@ -12,6 +12,7 @@ export class DevicesController {
 
     // get data
     const data = await this.devicesService.getAllDevices(
+      req.user.devices,
       !!perPage ? parseInt(String(perPage)) : 10,
       !!currentPage ? parseInt(String(currentPage)) : 1,
       !!searchString ? `%${String(searchString)}%` : null
