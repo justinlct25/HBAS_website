@@ -6,5 +6,5 @@ export const devicesUserRoutes = express.Router();
 export const devicesAdminRoutes = express.Router();
 
 devicesUserRoutes.get('/', CAM(devicesController.getAllDevices));
-devicesUserRoutes.get('/link-device-vehicle', CAM(devicesController.getDevicesForLinking));
+devicesAdminRoutes.get('/link-device-vehicle', CAM(devicesController.getDevicesForLinking));
 devicesAdminRoutes.post('/link-device-vehicle', CAM(devicesController.linkDeviceAndVehicle));
