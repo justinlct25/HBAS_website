@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 import { push } from "connected-react-router";
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
+import styles from "./LoginPage.module.scss";
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -21,29 +23,19 @@ function LoginPage() {
   }, [dispatch, isLoggedIn]);
 
   return (
-    <div
-      className="flex-center"
-      style={{
-        width: "100vw",
-        height: "calc(100vh - var(--topNavHeight))",
-      }}
-    >
-      <div style={{ width: "50%", height: "80%" }}>
+    <div className={`${styles.container}${isMobile ? " " + styles.mobile : ""}`}>
+      <div>
+        {/* Please use semantic tags like <h1> instead...
+        And fix the css on TablePage.css so it doesn't override <h1> globally... */}
         <div className="titleText">Muse Labs - Handbrake Alert System</div>
         <div className="titleText">Admin Login</div>
-        <div className="flex-center" style={{ width: "100%", margin: "40px 0" }}>
-          <div style={{ width: "104px" }}>Username :</div>
+        <form onSubmit={e => {
+          e.preventDefault();
+          handleSubmit();
+        }}>
+          <label>Username :</label>
           <input
-            style={{
-              width: "500px",
-              marginLeft: "8px",
-            }}
             value={loginInput.username}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
             onChange={(e) => {
               setLoginInput({
                 username: e.target.value,
@@ -51,21 +43,9 @@ function LoginPage() {
               });
             }}
           />
-        </div>
-        <div className="flex-center" style={{ width: "100%" }}>
-          <div style={{ width: "104px" }}>Password :</div>
+          <label>Password :</label>
           <input
             type="password"
-            style={{
-              width: "500px",
-              marginLeft: "8px",
-            }}
-            value={loginInput.password}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
             onChange={(e) => {
               setLoginInput({
                 username: loginInput.username,
@@ -73,16 +53,8 @@ function LoginPage() {
               });
             }}
           />
-        </div>
-
-        <div className="flex-center formButtonContainer" style={{ width: "100%" }}>
-          <div className="button" onClick={handleSubmit}>
-            Login
-          </div>
-          {/* <div>
-            second time
-          </div> */}
-        </div>
+          <button className="button" type="submit">Login</button>
+        </form>
       </div>
     </div>
   );

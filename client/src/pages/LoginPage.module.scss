@@ -1,0 +1,51 @@
+$is-mobile: false;
+
+div.container {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: calc(100vh - var(--topNavHeight));
+    overflow: auto;
+
+    > div {
+        > form {
+            --label-width: 100px;
+
+            label {
+                min-width: var(--label-width);
+                margin-right: 1em;
+                text-align: right;
+                margin-bottom: 40px;
+            }
+
+            input { 
+                width: calc(100% - var(--label-width) - 1em);
+            }
+
+            button {
+                border: none;
+            }
+        }
+    }
+
+    &.mobile {
+        > div {
+            width: 90%;
+
+            > form {
+                padding: 40px 10px;
+            }
+        }
+    }
+    
+    &:not(div.mobile) {
+        > div {
+            width: 50%;
+            height: 80%;
+
+            > form {
+                padding: 40px;
+            }
+        }
+    }
+}
