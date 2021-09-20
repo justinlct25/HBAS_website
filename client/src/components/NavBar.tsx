@@ -84,13 +84,17 @@ function NavBar() {
   useEffect(() => {
     const fetchLowBatteryNotification = async () => {
       try {
-        const res = await axios.get(`/alert-data/battery`);
+        const url = new URL(
+          `${process.env.REACT_APP_API_SERVER}${process.env.REACT_APP_API_VERSION}/alert-data/battery`
+        );
+        url.searchParams.set("min", "3.6");
+        const res = await axios.get(url.toString());
         const result = res.data;
         console.log("result");
         console.log(result);
         dispatch(setNotificationMessage(result.data));
-      } catch (e) {
-        console.error(e.Message);
+      } catch (error) {
+        console.error(error);
       }
     };
     fetchLowBatteryNotification();

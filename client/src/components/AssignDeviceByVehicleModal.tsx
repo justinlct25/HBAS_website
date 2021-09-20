@@ -28,15 +28,12 @@ function AssignDeviceByVehicleModal() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post<{ message: string; id: number }>(
-        `/devices/link-device-vehicle`,
-        {
-          deviceId: assignDeviceModal.deviceId,
-          vehicleId: assignDeviceModal.selectedItem.vehicleId,
-        }
-      );
-    } catch (e) {
-      console.error(e.message);
+      await axios.post<{ message: string; id: number }>(`/devices/link-device-vehicle`, {
+        deviceId: assignDeviceModal.deviceId,
+        vehicleId: assignDeviceModal.selectedItem.vehicleId,
+      });
+    } catch (error) {
+      console.error(error);
     } finally {
       dispatch(setPopUpIsActiveAction(false));
     }
@@ -45,11 +42,7 @@ function AssignDeviceByVehicleModal() {
   return (
     <div
       style={{ zIndex: 10 }}
-      className={
-        popUpIsActive
-          ? "flex-center popUpContainer popUp"
-          : "flex-center popUpContainer"
-      }
+      className={popUpIsActive ? "flex-center popUpContainer popUp" : "flex-center popUpContainer"}
     >
       <div className="popUpContent flex-center">
         <div className="closeIconContainer" onClick={closeAction}>
@@ -63,9 +56,7 @@ function AssignDeviceByVehicleModal() {
                 <div className="formLeftColumn">Company name :</div>
                 <div className="flex-center notSelectable">
                   <div>
-                    {selectedItem.companyName === ""
-                      ? "Select Company"
-                      : selectedItem.companyName}
+                    {selectedItem.companyName === "" ? "Select Company" : selectedItem.companyName}
                   </div>
                 </div>
               </div>
@@ -73,9 +64,7 @@ function AssignDeviceByVehicleModal() {
                 <div className="formLeftColumn">Car Plate :</div>
                 <div className="flex-center notSelectable">
                   <div>
-                    {selectedItem.carPlate === ""
-                      ? "Select car plate"
-                      : selectedItem.carPlate}
+                    {selectedItem.carPlate === "" ? "Select car plate" : selectedItem.carPlate}
                   </div>
                 </div>
               </div>
@@ -88,9 +77,7 @@ function AssignDeviceByVehicleModal() {
                     justifyContent: "flex-start",
                     cursor: "pointer",
                   }}
-                  onClick={() =>
-                    setSelectModalOpen({ isOpen: true, target: "device" })
-                  }
+                  onClick={() => setSelectModalOpen({ isOpen: true, target: "device" })}
                 >
                   <div
                     className="flex-center deviceId"
@@ -99,9 +86,7 @@ function AssignDeviceByVehicleModal() {
                       color: "#555",
                     }}
                   >
-                    {selectedItem.deviceEui === ""
-                      ? "Select device"
-                      : selectedItem.deviceEui}
+                    {selectedItem.deviceEui === "" ? "Select device" : selectedItem.deviceEui}
                   </div>
                   <div
                     style={{
@@ -109,9 +94,7 @@ function AssignDeviceByVehicleModal() {
                       paddingRight: "8px",
                     }}
                   >
-                    <BackButton
-                      color={selectedItem.companyName === "" ? "#AAA" : "#555"}
-                    />
+                    <BackButton color={selectedItem.companyName === "" ? "#AAA" : "#555"} />
                   </div>
                 </div>
               </div>
