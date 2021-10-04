@@ -88,11 +88,6 @@ function IncidentPage() {
         url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
-        console.log(
-          result
-            .filter((i) => i.geolocation.y > 0 && i.geolocation.x > 0)
-            .map((i) => ({ date: i.date, geolocation: i.geolocation }))
-        );
         setLocationHistory(
           result
             .filter((i) => i.geolocation.y > 0 && i.geolocation.x > 0)

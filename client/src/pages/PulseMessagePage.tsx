@@ -88,7 +88,7 @@ function PulseMessagePage() {
               value={searchInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  dispatch(getAlertDataListThunk(1, searchInput));
+                  dispatch(getAlertDataListThunk(1, searchInput, "B"));
                 }
               }}
               onChange={(e) => {
