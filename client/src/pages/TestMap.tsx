@@ -122,69 +122,54 @@ const TestMap = () => {
         onStyleLoad={(map) => onMapLoad(map)}
       >
         <>
-          {viewHistory ? (
-            viewHistory.map((point, idx) => (
-              <Marker
-                coordinates={[point.geolocation.y, point.geolocation.x]}
-                anchor="center"
-                style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
-              >
-                <div
-                  className="flex-center"
-                  style={{
-                    height: historyHoverIndex === idx ? "32px" : "16px",
-                    width: historyHoverIndex === idx ? "32px" : "16px",
-                    borderRadius: "50%",
-                    background: historyHoverIndex === idx ? "#FF6666CC" : "#00F900",
-                    pointerEvents: "none",
-                    transition: "all 0.3s",
-                  }}
-                >
-                  {idx + 1}
-                </div>
-              </Marker>
-            ))
-          ) : (
-            <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
-              {incidentPoints.map((point, idx) => (
-                <Feature
-                  key={point.deviceId + idx}
+          {viewHistory
+            ? viewHistory.map((point, idx) => (
+                <Marker
                   coordinates={[point.geolocation.y, point.geolocation.x]}
+                  anchor="center"
+                  style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
+                >
+                  <div
+                    className="flex-center"
+                    style={{
+                      height: historyHoverIndex === idx ? "48px" : "24px",
+                      width: historyHoverIndex === idx ? "48px" : "24px",
+                      borderRadius: "50%",
+                      background: historyHoverIndex === idx ? "#FF6666CC" : "#00F900CC",
+                      pointerEvents: "none",
+                      transition: "all 0.3s",
+                    }}
+                  >
+                    {idx + 1}
+                  </div>
+                </Marker>
+              ))
+            : incidentPoints.map((point, idx) => (
+                <Marker
+                  key={point.deviceId + idx}
                   onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
                   onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-                  // onClick={() => setViewHistory(point)}
+                  coordinates={[point.geolocation.y, point.geolocation.x]}
+                  anchor="center"
+                  style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
                   onClick={() => fetchAllPreviousPulse(point)}
-                />
-              ))}
-            </Layer>
-          )}
-          <Layer type="circle" paint={{ "circle-color": "#00F900", "circle-radius": 10 }}>
-            {viewHistory
-              ? viewHistory.map((point, idx) => (
-                  <Feature
-                    key={point.deviceId + idx}
-                    coordinates={[point.geolocation.y, point.geolocation.x]}
-                    onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
-                    onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-                    // onClick={() => setViewHistory(point)}
-                  >
-                    {idx}
-                  </Feature>
-                ))
-              : incidentPoints.map((point, idx) => (
-                  <Feature
-                    key={point.deviceId + idx}
-                    coordinates={[point.geolocation.y, point.geolocation.x]}
-                    onMouseEnter={() => setHoverAnimate({ onHover: true, idx })}
-                    onMouseLeave={() => setHoverAnimate({ onHover: false, idx })}
-                    // onClick={() => setViewHistory(point)}
-                    onClick={() => {
-                      fetchAllPreviousPulse(point);
-                      setDeviceData({ deviceName: point.deviceName, carPlate: point.carPlate });
+                >
+                  <div
+                    className="flex-center"
+                    style={{
+                      cursor: "pointer",
+                      height: "24px",
+                      width: "24px",
+                      borderRadius: "50%",
+                      background: "#00F900BB",
+                      pointerEvents: "none",
+                      transition: "all 0.3s",
                     }}
-                  />
-                ))}
-          </Layer>
+                  >
+                    {" "}
+                  </div>
+                </Marker>
+              ))}
           <CSSTransition
             in={hoverAnimate.onHover}
             timeout={400}
@@ -299,7 +284,7 @@ const TestMap = () => {
                         <th className="incidentReportText">Index</th>
                         <th className="incidentReportText">Date</th>
                         <th className="incidentReportText">Battery</th>
-                        <th className="incidentReportText">Message Type</th>
+                        {/* <th className="incidentReportText">Message Type</th> */}
                       </tr>
                     </thead>
                     <tbody className="flex-center" style={{ flexDirection: "column" }}>
@@ -322,7 +307,7 @@ const TestMap = () => {
                               {formatDate(item.date) + " " + formatTime(item.date)}
                             </td>
                             <td className="incidentReportText">{item.battery}</td>
-                            <td className="incidentReportText">{item.msgType}</td>
+                            {/* <td className="incidentReportText">{item.msgType}</td> */}
                           </tr>
                         ))}
                     </tbody>
@@ -370,7 +355,16 @@ const TestMap = () => {
         </div>
       )}
       <ul id={styles.localization}>
-        {viewHistory && <li onClick={() => setViewHistory(null)}>BACK</li>}
+        {viewHistory && (
+          <li
+            onClick={() => {
+              setViewHistory(null);
+              setHoverAnimate({ idx: -1, onHover: false });
+            }}
+          >
+            BACK
+          </li>
+        )}
         {localizationSelection.map((i) => (
           // eslint-disable-next-line jsx-a11y/role-supports-aria-props
           <li
