@@ -22,8 +22,8 @@ routes.use('/user-devices', isLoggedIn, adminIsLoggedIn, userDevicesRoutes);
 routes.use('/devices', isLoggedIn, devicesUserRoutes);
 routes.use('/devices', isLoggedIn, adminIsLoggedIn, devicesAdminRoutes);
 
-routes.use('/alert-data', isLoggedIn, alertDataUserRoutes);
 routes.use('/alert-data', alertDataPostRoute);
+routes.use('/alert-data', isLoggedIn, alertDataUserRoutes);
 routes.use('/alert-data', isLoggedIn, adminIsLoggedIn, alertDataAdminRoutes);
 
 routes.use('/companies', isLoggedIn, adminIsLoggedIn, companiesRoutes);
