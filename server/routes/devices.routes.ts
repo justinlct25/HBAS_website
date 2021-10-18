@@ -1,9 +1,10 @@
 import express from 'express';
 import { devicesController } from '../main';
-import { createAsyncMiddleware } from '../utils/middleware';
+import { createAsyncMiddleware as CAM } from '../utils/middleware';
 
-export const devicesRoutes = express.Router();
+export const devicesUserRoutes = express.Router();
+export const devicesAdminRoutes = express.Router();
 
-devicesRoutes.get('/', createAsyncMiddleware(devicesController.getAllDevices));
-devicesRoutes.get('/link-device-vehicle', createAsyncMiddleware(devicesController.getDevicesForLinking));
-devicesRoutes.post('/link-device-vehicle', createAsyncMiddleware(devicesController.linkDeviceAndVehicle));
+devicesUserRoutes.get('/', CAM(devicesController.getAllDevices));
+devicesAdminRoutes.get('/link-device-vehicle', CAM(devicesController.getDevicesForLinking));
+devicesAdminRoutes.post('/link-device-vehicle', CAM(devicesController.linkDeviceAndVehicle));

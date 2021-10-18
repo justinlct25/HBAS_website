@@ -1,5 +1,8 @@
 export interface ILoginData {
-  username: string;
+  id: number;
+  email: string;
+  role: string;
+  devices: number[] | null;
 }
 
 declare module 'express-serve-static-core' {

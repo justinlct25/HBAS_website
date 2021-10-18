@@ -15,12 +15,14 @@ import { DevicesService } from './services/DevicesService';
 import { CompaniesService } from './services/CompaniesService';
 import { AlertDataService } from './services/AlertDataService';
 import { VehiclesService } from './services/VehiclesService';
+import { UsersService } from './services/UsersService';
 
 import { LoginController } from './controllers/LoginController';
 import { DevicesController } from './controllers/DevicesController';
 import { CompaniesController } from './controllers/CompaniesController';
 import { AlertDataController } from './controllers/AlertDataController';
 import { VehiclesController } from './controllers/VehiclesController';
+import { UsersController } from './controllers/UsersController';
 
 //knex
 const knex = Knex(knexConfig[process.env.NODE_ENV || 'development']);
@@ -56,11 +58,12 @@ io.on('connection', (socket: Socket) => {
 });
 
 // create services
-export const loginService = new LoginService();
+export const loginService = new LoginService(knex);
 const devicesService = new DevicesService(knex);
 const companiesService = new CompaniesService(knex);
 const alertDataService = new AlertDataService(knex);
 const vehiclesService = new VehiclesService(knex);
+const usersService = new UsersService(knex);
 
 // create controllers
 export const loginController = new LoginController(loginService);
@@ -68,6 +71,7 @@ export const devicesController = new DevicesController(devicesService);
 export const companiesController = new CompaniesController(companiesService);
 export const alertDataController = new AlertDataController(alertDataService, devicesService);
 export const vehiclesController = new VehiclesController(vehiclesService);
+export const usersController = new UsersController(usersService);
 
 //route
 import { routes } from './routes';
