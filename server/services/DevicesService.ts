@@ -1,11 +1,9 @@
-import { ROLES } from './../utils/variables';
 import { Knex } from 'knex';
 import { IDeviceDetail, IDeviceInfo } from '../models/models';
 import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
-const { DEVICES, COMPANY_VEHICLES, VEHICLE_DEVICE, COMPANIES, VEHICLES, USERS, USER_DEVICES } =
-  tables;
+const { DEVICES, COMPANY_VEHICLES, VEHICLE_DEVICE, COMPANIES, VEHICLES } = tables;
 
 export class DevicesService {
   constructor(private knex: Knex) {}
@@ -96,27 +94,7 @@ export class DevicesService {
   };
 
   addDevice = async (device_name: string, device_eui: string) => {
-    const trx = await this.knex.transaction();
-    try {
-      const deviceId = await trx(DEVICES)
-        .insert({ device_name, device_eui })
-        .returning<number[]>('id');
-      const admins = await trx(USERS).select<{ id: number }[]>('id').where('role', ROLES.ADMIN);
-
-      await trx(USER_DEVICES).insert(
-        admins.map((admin) => ({
-          device_id: deviceId[0],
-          user_id: admin.id,
-        }))
-      );
-
-      await trx.commit();
-      return deviceId;
-    } catch (e) {
-      logger.error(e.message);
-      await trx.rollback();
-      return;
-    }
+    return await this.knex(DEVICES).insert({ device_name, device_eui }).returning<number[]>('id');
   };
 
   updateDevice = async (deviceId: number, device_name: string) => {
@@ -152,15 +130,6 @@ export class DevicesService {
         .where('id', deviceId);
 
       const newDeviceId = await trx(DEVICES).insert(deviceDetails).returning<number[]>('id');
-      const admins = await trx(USERS).select<{ id: number }[]>('id').where('role', ROLES.ADMIN);
-
-      // assign new devices to admins
-      await trx(USER_DEVICES).insert(
-        admins.map((admin) => ({
-          device_id: newDeviceId[0],
-          user_id: admin.id,
-        }))
-      );
 
       // link up new device and vehicle
       const ids = await trx(VEHICLE_DEVICE)
