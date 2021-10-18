@@ -3,73 +3,60 @@ import { IDeviceDetail, IDeviceInfo } from '../models/models';
 import { logger } from '../utils/logger';
 import { tables } from './../utils/table_model';
 
+const { DEVICES, COMPANY_VEHICLES, VEHICLE_DEVICE, COMPANIES, VEHICLES } = tables;
+
 export class DevicesService {
   constructor(private knex: Knex) {}
 
-  getAllDevices = async (perPage: number, currentPage: number, searchString: string | null) => {
-    const tempVehicles = 'temp_vehicles';
-    const tempCompanies = 'temp_companies';
-    const tempVehicleDevice = 'temp_vehicle_device';
-    const tempCompaniesVehicles = 'temp_companies_vehicles';
-
+  getAllDevices = async (
+    devicesList: number[] | null,
+    perPage: number,
+    currentPage: number,
+    searchString: string | null
+  ) => {
     const query = this.knex
-      .with(tempVehicles, (qb) => {
-        qb.select('id', 'car_plate').from(tables.VEHICLES).where('is_active', true);
-      })
-      .with(tempCompanies, (qb) => {
-        qb.select('id', 'company_name', 'tel', 'contact_person')
-          .from(tables.COMPANIES)
-          .where('is_active', true);
-      })
-      .with(tempVehicleDevice, (qb) => {
-        qb.select('device_id', 'vehicle_id').from(tables.VEHICLE_DEVICE).where('is_active', true);
-      })
-      .with(tempCompaniesVehicles, (qb) => {
-        qb.select('company_id', 'vehicle_id')
-          .from(tables.COMPANY_VEHICLES)
-          .where('is_active', true);
-      })
       .distinct<IDeviceDetail[]>({
-        deviceId: `${tables.DEVICES}.id`,
-        deviceName: `${tables.DEVICES}.device_name`,
-        deviceEui: `${tables.DEVICES}.device_eui`,
-        vehicleId: `${tempVehicles}.id`,
-        carPlate: `${tempVehicles}.car_plate`,
-        companyId: `${tempCompanies}.id`,
-        companyName: `${tempCompanies}.company_name`,
-        tel: `${tempCompanies}.tel`,
-        contactPerson: `${tempCompanies}.contact_person`,
-        updatedAt: `${tables.DEVICES}.updated_at`,
+        deviceId: `${DEVICES}.id`,
+        deviceName: `${DEVICES}.device_name`,
+        deviceEui: `${DEVICES}.device_eui`,
+        deviceIsActive: `${DEVICES}.is_active`,
+        vehicleId: `${VEHICLES}.id`,
+        carPlate: `${VEHICLES}.car_plate`,
+        vehicleIsActive: `${VEHICLES}.is_active`,
+        companyId: `${COMPANIES}.id`,
+        companyName: `${COMPANIES}.company_name`,
+        tel: `${COMPANIES}.tel`,
+        contactPerson: `${COMPANIES}.contact_person`,
+        companyIsActive: `${COMPANIES}.is_active`,
+        updatedAt: `${DEVICES}.updated_at`,
       })
-      .from(tables.DEVICES)
-      .leftJoin(tempVehicleDevice, `${tables.DEVICES}.id`, `${tempVehicleDevice}.device_id`)
-      .leftJoin(tempVehicles, `${tempVehicles}.id`, `${tempVehicleDevice}.vehicle_id`)
-      .leftJoin(tempCompaniesVehicles, `${tempCompaniesVehicles}.vehicle_id`, `${tempVehicles}.id`)
-      .leftJoin(tempCompanies, `${tempCompaniesVehicles}.company_id`, `${tempCompanies}.id`)
-      .where({
-        [`${tables.DEVICES}.is_active`]: true,
-      })
+      .from(DEVICES)
+      .leftJoin(VEHICLE_DEVICE, `${DEVICES}.id`, `${VEHICLE_DEVICE}.device_id`)
+      .leftJoin(VEHICLES, `${VEHICLES}.id`, `${VEHICLE_DEVICE}.vehicle_id`)
+      .leftJoin(COMPANY_VEHICLES, `${COMPANY_VEHICLES}.vehicle_id`, `${VEHICLES}.id`)
+      .leftJoin(COMPANIES, `${COMPANY_VEHICLES}.company_id`, `${COMPANIES}.id`)
       .orderBy([
-        { column: `${tables.DEVICES}.updated_at`, order: 'desc' },
-        { column: `${tables.DEVICES}.device_name`, order: 'asc' },
+        { column: `${DEVICES}.updated_at`, order: 'desc' },
+        { column: `${DEVICES}.device_name`, order: 'asc' },
       ]);
 
     const searchQuery = (builder: Knex.QueryBuilder) => {
       builder
-        .where(`${tempCompanies}.company_name`, 'ILIKE', searchString)
-        .orWhere(`${tempCompanies}.tel`, 'ILIKE', searchString)
-        .orWhere(`${tempCompanies}.contact_person`, 'ILIKE', searchString)
-        .orWhere(`${tables.DEVICES}.device_name`, 'ILIKE', searchString)
-        .orWhere(`${tables.DEVICES}.device_eui`, 'ILIKE', searchString)
-        .orWhere(`${tempVehicles}.car_plate`, 'ILIKE', searchString);
+        .where(`${COMPANIES}.company_name`, 'ILIKE', searchString)
+        .orWhere(`${COMPANIES}.tel`, 'ILIKE', searchString)
+        .orWhere(`${COMPANIES}.contact_person`, 'ILIKE', searchString)
+        .orWhere(`${DEVICES}.device_name`, 'ILIKE', searchString)
+        .orWhere(`${DEVICES}.device_eui`, 'ILIKE', searchString)
+        .orWhere(`${VEHICLES}.car_plate`, 'ILIKE', searchString);
     };
 
     if (!!searchString) query.andWhere(searchQuery);
+    if (!!devicesList) query.whereIn(`${DEVICES}.id`, devicesList);
     return await query.paginate<IDeviceDetail[]>({ perPage, currentPage, isLengthAware: true });
   };
 
   getDeviceDetails = async (device_eui: string) => {
-    return await this.knex(tables.DEVICES)
+    return await this.knex(DEVICES)
       .select<IDeviceInfo>({
         id: 'id',
         deviceName: 'device_name',
@@ -85,7 +72,7 @@ export class DevicesService {
 
   getDevicesForLinking = async (deviceId: number | null) => {
     const query = () => {
-      return this.knex(tables.DEVICES)
+      return this.knex(DEVICES)
         .distinct<IDeviceInfo[]>({ id: 'id', deviceName: 'device_name', deviceEui: 'device_eui' })
         .where('is_active', true)
         .andWhereNot('id', deviceId)
@@ -95,8 +82,8 @@ export class DevicesService {
     const filterQuery = (builder: Knex.QueryBuilder) => {
       builder
         .select<{ device_id: number }>('device_id')
-        .from(tables.VEHICLE_DEVICE)
-        .whereRaw(/* SQL*/ `${tables.DEVICES}.id = ${tables.VEHICLE_DEVICE}.device_id`)
+        .from(VEHICLE_DEVICE)
+        .whereRaw(/* SQL*/ `${DEVICES}.id = ${VEHICLE_DEVICE}.device_id`)
         .andWhere('is_active', true);
     };
 
@@ -107,13 +94,11 @@ export class DevicesService {
   };
 
   addDevice = async (device_name: string, device_eui: string) => {
-    return await this.knex(tables.DEVICES)
-      .insert({ device_name, device_eui })
-      .returning<number[]>('id');
+    return await this.knex(DEVICES).insert({ device_name, device_eui }).returning<number[]>('id');
   };
 
   updateDevice = async (deviceId: number, device_name: string) => {
-    return await this.knex(tables.DEVICES)
+    return await this.knex(DEVICES)
       .update({ device_name })
       .where('id', deviceId)
       .returning<number[]>('id');
@@ -123,7 +108,7 @@ export class DevicesService {
     const trx = await this.knex.transaction();
     try {
       // unlink existing pairs (if exists)
-      await trx(tables.VEHICLE_DEVICE)
+      await trx(VEHICLE_DEVICE)
         .update({
           is_active: false,
           updated_at: new Date(Date.now()),
@@ -134,7 +119,7 @@ export class DevicesService {
         .andWhere('is_active', true);
 
       // delete and insert device as a new one
-      const deviceDetails = await trx(tables.DEVICES)
+      const deviceDetails = await trx(DEVICES)
         .update(
           {
             is_active: false,
@@ -144,10 +129,10 @@ export class DevicesService {
         )
         .where('id', deviceId);
 
-      const newDeviceId = await trx(tables.DEVICES).insert(deviceDetails).returning<number[]>('id');
+      const newDeviceId = await trx(DEVICES).insert(deviceDetails).returning<number[]>('id');
 
       // link up new device and vehicle
-      const ids = await trx(tables.VEHICLE_DEVICE)
+      const ids = await trx(VEHICLE_DEVICE)
         .insert({
           device_id: newDeviceId[0],
           vehicle_id: vehicleId,

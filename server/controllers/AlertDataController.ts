@@ -107,6 +107,7 @@ export class AlertDataController {
 
     // get data
     const data = await this.alertDataService.getData(
+      req.user.devices,
       !!dataId ? parseInt(String(dataId)) : null,
       !!msgType ? (msgType as msgType) : null,
       !!perPage ? parseInt(String(perPage)) : 20,
@@ -119,12 +120,16 @@ export class AlertDataController {
   };
 
   getLatestLocations = async (req: Request, res: Response) => {
-    const data = await this.alertDataService.getLatestLocations();
+    const data = await this.alertDataService.getLatestLocations(req.user.devices);
     return res.status(httpStatusCodes.OK).json({ data });
   };
 
   getDatesWithMessages = async (req: Request, res: Response) => {
     const { deviceId } = req.params;
+
+    if (!req.user.devices?.includes(parseInt(deviceId)) && req.user.role !== 'ADMIN')
+      return res.status(httpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized access.' });
+
     const data = await this.alertDataService.getDatesWithMessages(parseInt(deviceId));
     data.forEach((d) => (d.messageCount = parseInt(String(d.messageCount))));
     return res.status(httpStatusCodes.OK).json({ data });
@@ -133,6 +138,10 @@ export class AlertDataController {
   getHistoryByDeviceAndDate = async (req: Request, res: Response) => {
     const { deviceId } = req.params;
     const { date } = req.query;
+
+    if (!req.user.devices?.includes(parseInt(deviceId)) && req.user.role !== 'ADMIN')
+      return res.status(httpStatusCodes.UNAUTHORIZED).json({ message: 'Unauthorized access.' });
+
     const data = await this.alertDataService.getHistoryByDeviceAndDate(
       parseInt(deviceId),
       !!date ? String(date) : null
@@ -143,7 +152,10 @@ export class AlertDataController {
   getLowBatteryNotifications = async (req: Request, res: Response) => {
     const { min } = req.query;
     if (!min) return res.status(httpStatusCodes.BAD_REQUEST).json('Missing required information.');
-    const data = await this.alertDataService.getLowBatteryNotifications(parseInt(String(min)));
+    const data = await this.alertDataService.getLowBatteryNotifications(
+      parseInt(String(min)),
+      req.user.devices
+    );
     return res.status(httpStatusCodes.OK).json({ data });
   };
 

@@ -6,35 +6,34 @@ import { loginService } from '../main';
 import jwt from './jwt';
 import { logger } from './logger';
 
-const permit = new Bearer({
-  query: 'access_token',
-});
+const permit = new Bearer({ query: 'access_token' });
+const authFailedRes = { message: 'Unauthorized access.' };
 
-export async function isLoggedIn(req: Request, res: Response, next: NextFunction) {
+export const isLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = permit.check(req);
-
-    if (!token) {
-      return res.status(httpStatusCodes.UNAUTHORIZED).json({
-        message: 'Unauthorized access.',
-      });
-    }
+    if (!token) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
     const payload = jwtSimple.decode(token, jwt.jwtSecret);
-    const user = await loginService.getUser(payload.username);
+    const user = await loginService.getUser(payload.email);
+    if (!user.info) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
-    if (!user) {
-      return res.status(httpStatusCodes.UNAUTHORIZED).json({
-        message: 'Unauthorized access.',
-      });
-    }
-
-    req.user = { username: user.username };
+    const { password, ...others } = user.info;
+    req.user = { ...others, devices: user.devices };
     return next();
   } catch (err) {
     logger.error(err.message);
-    return res.status(httpStatusCodes.UNAUTHORIZED).json({
-      message: 'Unauthorized access.',
-    });
+    return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
   }
-}
+};
+
+export const adminIsLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    if (!req.user || req.user.role !== 'ADMIN')
+      return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
+    return next();
+  } catch (err) {
+    logger.error(err.message);
+    return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
+  }
+};
