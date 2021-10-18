@@ -8,5 +8,3 @@ loginRoutes.post('/', loginController.login);
 loginRoutes.get('/current-user', isLoggedIn, (req, res) => {
   res.json(req.user);
 });
-
-loginRoutes.post('/change-password', isLoggedIn, loginController.changePassword);

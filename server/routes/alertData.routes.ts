@@ -1,19 +1,18 @@
 import express from 'express';
-import { alertDataController as CON } from '../main';
-import { createAsyncMiddleware as CAM } from '../utils/middleware';
+import { alertDataController } from '../main';
+import { isLoggedIn } from '../utils/guards';
+import { createAsyncMiddleware } from '../utils/middleware';
 
-export const alertDataUserRoutes = express.Router();
-export const alertDataPostRoute = express.Router();
-export const alertDataAdminRoutes = express.Router();
+export const alertDataRoutes = express.Router();
 
-alertDataUserRoutes.get('/', CAM(CON.getData));
-alertDataPostRoute.post('/', CAM(CON.postData));
-alertDataUserRoutes.get('/latest-locations', CAM(CON.getLatestLocations));
+alertDataRoutes.get('/', isLoggedIn, createAsyncMiddleware(alertDataController.getData));
+alertDataRoutes.post('/', createAsyncMiddleware(alertDataController.postData));
+alertDataRoutes.get('/latest-locations', isLoggedIn, createAsyncMiddleware(alertDataController.getLatestLocations));
 
 // history
-alertDataUserRoutes.get('/history/dates/:deviceId', CAM(CON.getDatesWithMessages));
-alertDataUserRoutes.get('/history/:deviceId', CAM(CON.getHistoryByDeviceAndDate));
+alertDataRoutes.get('/history/dates/:deviceId', isLoggedIn, createAsyncMiddleware(alertDataController.getDatesWithMessages));
+alertDataRoutes.get('/history/:deviceId', isLoggedIn, createAsyncMiddleware(alertDataController.getHistoryByDeviceAndDate));
 
 // battery
-alertDataUserRoutes.get('/battery', CAM(CON.getLowBatteryNotifications));
-alertDataAdminRoutes.put('/battery', CAM(CON.updateNotificationsStatus));
+alertDataRoutes.get('/battery', isLoggedIn, createAsyncMiddleware(alertDataController.getLowBatteryNotifications));
+alertDataRoutes.put('/battery', isLoggedIn, createAsyncMiddleware(alertDataController.updateNotificationsStatus));

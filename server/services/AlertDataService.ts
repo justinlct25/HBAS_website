@@ -28,7 +28,6 @@ export class AlertDataService {
   };
 
   getData = async (
-    devicesList: number[] | null,
     id: number | null,
     msgType: msgType | null,
     perPage: number,
@@ -95,15 +94,14 @@ export class AlertDataService {
     if (!!msgType) query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType.toUpperCase());
     if (!!searchString) query.andWhere(searchQuery);
     if (!!startDate) query.andWhere(dateQuery);
-    if (!!devicesList) query.whereIn(`${tables.ALERT_DATA}.device_id`, devicesList);
     return await query.paginate<IAlertData[]>({ perPage, currentPage, isLengthAware: true });
   };
 
-  getLatestLocations = async (devicesList: number[] | null) => {
+  getLatestLocations = async () => {
     const d = new Date();
     d.setHours(d.getHours() - 168);
 
-    const query = this.knex(tables.ALERT_DATA)
+    return await this.knex(tables.ALERT_DATA)
       .distinctOn(`${tables.ALERT_DATA}.device_id`)
       .select<ILocationDetail[]>({
         deviceId: `${tables.ALERT_DATA}.device_id`,
@@ -128,6 +126,10 @@ export class AlertDataService {
       .where({
         [`${tables.ALERT_DATA}.is_active`]: true,
         [`${tables.DEVICES}.is_active`]: true,
+        // [`${tables.VEHICLE_DEVICE}.is_active`]: true,
+        // [`${tables.VEHICLES}.is_active`]: true,
+        // [`${tables.COMPANY_VEHICLES}.is_active`]: true,
+        // [`${tables.COMPANIES}.is_active`]: true,
       })
       .andWhereBetween(`${tables.ALERT_DATA}.date`, [d, new Date()])
       .andWhereNot(`${tables.ALERT_DATA}.address`, 'GPS NOT FOUND')
@@ -135,9 +137,6 @@ export class AlertDataService {
         { column: `${tables.ALERT_DATA}.device_id`, order: 'asc' },
         { column: `${tables.ALERT_DATA}.date`, order: 'desc' },
       ]);
-
-    if (!!devicesList) query.whereIn(`${tables.ALERT_DATA}.device_id`, devicesList);
-    return await query;
   };
 
   getDatesWithMessages = async (deviceId: number) => {
@@ -177,10 +176,10 @@ export class AlertDataService {
       .orderBy('date', 'desc');
   };
 
-  getLowBatteryNotifications = async (BATTERY_MIN: number, devicesList: number[] | null) => {
+  getLowBatteryNotifications = async (BATTERY_MIN: number) => {
     const tempAlertDataTable = 'temp_alert_data';
 
-    const query = this.knex
+    return await this.knex
       .with(tempAlertDataTable, (qb) => {
         qb.from(tables.ALERT_DATA)
           .distinctOn(`${tables.ALERT_DATA}.device_id`)
@@ -210,9 +209,6 @@ export class AlertDataService {
         { column: `${tempAlertDataTable}.date`, order: 'desc' },
         { column: `${tempAlertDataTable}.deviceName`, order: 'asc' },
       ]);
-
-    if (!!devicesList) query.whereIn(`${tempAlertDataTable}.deviceId`, devicesList);
-    return await query;
   };
 
   updateNotificationsStatus = async (notificationIds: number[]) => {

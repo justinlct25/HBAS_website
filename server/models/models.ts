@@ -1,20 +1,5 @@
 export type direction = 'asc' | 'desc';
 export type msgType = 'A' | 'B';
-export type Roles = 'ADMIN' | 'USER';
-
-export interface IUserInfo {
-  id: number;
-  username: string;
-  email: string;
-  role: string;
-  devicesCount?: string | number;
-}
-
-export interface INewUser {
-  username: string;
-  email: string;
-  role?: string;
-}
 
 export interface ICompanyInfo {
   id?: number;
@@ -81,15 +66,12 @@ export interface IDeviceDetail {
   deviceId: number;
   deviceName: string;
   deviceEui: string;
-  deviceIsActive: boolean;
   vehicleId: number | null;
   carPlate: string | null;
-  vehicleIsActive: boolean;
   companyId: number | null;
   companyName: string | null;
   tel: string | null;
   contactPerson: string | null;
-  companyIsActive: boolean;
   updatedAt: string;
 }
 

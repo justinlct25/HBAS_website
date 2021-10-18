@@ -1,10 +1,10 @@
 import express from 'express';
 import { vehiclesController } from '../main';
-import { createAsyncMiddleware as CAM } from '../utils/middleware';
+import { createAsyncMiddleware } from '../utils/middleware';
 
 export const vehiclesRoutes = express.Router();
 
-vehiclesRoutes.get('/company-id/:companyId', CAM(vehiclesController.getCompanyVehicles));
-vehiclesRoutes.post('/company-id/:companyId', CAM(vehiclesController.addVehicles));
-vehiclesRoutes.put('/:vehicleId', CAM(vehiclesController.editVehicle));
-vehiclesRoutes.delete('/:vehicleId', CAM(vehiclesController.deleteVehicle));
+vehiclesRoutes.get('/company-id/:companyId', createAsyncMiddleware(vehiclesController.getCompanyVehicles));
+vehiclesRoutes.post('/company-id/:companyId', createAsyncMiddleware(vehiclesController.addVehicles));
+vehiclesRoutes.put('/:vehicleId', createAsyncMiddleware(vehiclesController.editVehicle));
+vehiclesRoutes.delete('/:vehicleId', createAsyncMiddleware(vehiclesController.deleteVehicle));
