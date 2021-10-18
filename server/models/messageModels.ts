@@ -43,6 +43,8 @@ export interface IObjectJSON {
   latitude: string;
   longitude: string;
   msgtype: string;
+  rssi?: number;
+  snr?: number;
 }
 
 // interfaces for messages themselves ----------------------------------------

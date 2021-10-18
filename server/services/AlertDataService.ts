@@ -12,7 +12,9 @@ export class AlertDataService {
     address: string,
     msg_type: string,
     battery: string,
-    data: string
+    data: string,
+    rssi?: number,
+    snr?: number
   ) => {
     return await this.knex(tables.ALERT_DATA)
       .insert({
@@ -23,6 +25,8 @@ export class AlertDataService {
         msg_type,
         battery,
         data,
+        rssi,
+        snr,
       })
       .returning<number[]>('id');
   };
@@ -44,6 +48,8 @@ export class AlertDataService {
         address: `${tables.ALERT_DATA}.address`,
         msgType: `${tables.ALERT_DATA}.msg_type`,
         battery: `${tables.ALERT_DATA}.battery`,
+        rssi: `${tables.ALERT_DATA}.rssi`,
+        snr: `${tables.ALERT_DATA}.snr`,
         receivedAt: `${tables.ALERT_DATA}.created_at`,
         deviceId: `${tables.ALERT_DATA}.device_id`,
         deviceName: `${tables.DEVICES}.device_name`,

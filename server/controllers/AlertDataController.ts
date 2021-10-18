@@ -62,7 +62,7 @@ export class AlertDataController {
       return res.status(httpStatusCodes.BAD_REQUEST).json({ message: 'Invalid device EUI.' });
 
     // handle json
-    const { battery, timestamp, latitude, longitude, msgtype }: IObjectJSON = JSON.parse(
+    const { battery, timestamp, latitude, longitude, msgtype, rssi, snr }: IObjectJSON = JSON.parse(
       data.objectJSON
     );
     const address = await gpsFetch(parseFloat(latitude), parseFloat(longitude));
@@ -79,7 +79,9 @@ export class AlertDataController {
       address ?? 'GPS NOT FOUND',
       msgtype,
       battery,
-      data.data
+      data.data,
+      rssi,
+      snr
     );
 
     // if insert failed

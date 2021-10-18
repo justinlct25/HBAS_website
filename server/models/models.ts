@@ -92,6 +92,8 @@ export interface IAlertData {
   address: string;
   msgType: string;
   battery: string;
+  rssi: number | null;
+  snr: number | null;
   receivedAt: string;
   deviceId: number;
   deviceName: string;
