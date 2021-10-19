@@ -21,6 +21,7 @@ function ProfilePage() {
   const router = useRouter();
   const history = useHistory();
   const profileList = useSelector((state: IRootState) => state.profileList.profileList);
+  const role = useSelector((state: IRootState) => state.login.role);
   const dispatch = useDispatch();
   const assignDeviceModal = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal
@@ -46,48 +47,51 @@ function ProfilePage() {
 
   return (
     <div className="flex-center pageContainer">
-      <div className="flex-center topRowContainer" style={{ justifyContent: "space-between" }}>
+      <header className="flex-center topRowContainer" style={{ justifyContent: "space-between" }}>
         <div className="flex-center" style={{ cursor: "pointer" }} onClick={handleReset}>
           <div className="flex-center">
             <BackButton />
             <div style={{ margin: "8px", fontSize: "24px" }}>BACK</div>
           </div>
         </div>
-        <div
-          className="deleteCompanyButton"
-          onClick={() => {
-            dispatch(setDeleteModalOpenAction(true, "company"));
-            dispatch(
-              setDeleteModalDataAction({
-                companyId: selectedItem.companyId,
-                companyName: selectedItem.companyName,
-              })
-            );
-          }}
-        >
-          Delete Company
-        </div>
-      </div>
+        {role === "ADMIN" && (
+          <div
+            className="deleteCompanyButton"
+            onClick={() => {
+              dispatch(setDeleteModalOpenAction(true, "company"));
+              dispatch(
+                setDeleteModalDataAction({
+                  companyId: selectedItem.companyId,
+                  companyName: selectedItem.companyName,
+                })
+              );
+            }}
+          >
+            Delete Company
+          </div>
+        )}
+      </header>
       <div className="profilePageContainer">
-        <div className="profileLeftColumn">
+        <section className="profileLeftColumn">
           <div className="flex-center" style={{ width: "100%" }}>
             <div className="titleText">Company Details</div>
-            <div
-              className="hiddenButton flex-center"
-              style={{ backgroundColor: "#8BB3FF" }}
-              onClick={() => {
-                dispatch(setAddNewFormOpenAction(true, "editCompany"));
-              }}
-            >
-              <EditIcon />
-            </div>
+            {role === "ADMIN" && (
+              <div
+                className="hiddenButton flex-center"
+                style={{ backgroundColor: "#8BB3FF" }}
+                onClick={() => {
+                  dispatch(setAddNewFormOpenAction(true, "editCompany"));
+                }}
+              >
+                <EditIcon />
+              </div>
+            )}
           </div>
           <div className="flex-center">
             <div
+              className="flex-center flex-column"
               style={{
                 alignItems: "flex-start",
-                display: "flex",
-                flexDirection: "column",
               }}
             >
               <div className="flex-center">
@@ -119,7 +123,7 @@ function ProfilePage() {
           <div className="flex-center" style={{ width: "100%", marginTop: "2vh" }}>
             <div className="titleText">Vehicle Logs</div>
           </div>
-          <div className="flex-center vehicleCardContainer">
+          <div className=" vehicleCardContainer px-4">
             {profileList.length > 0 &&
               profileList
                 .filter((i) => i.deviceId)
@@ -146,28 +150,28 @@ function ProfilePage() {
                   );
                 })}
           </div>
-        </div>
-        <div className="flex-center companyDetailsRightColumn">
+        </section>
+        <section className="flex-center companyDetailsRightColumn">
           <div className="flex-center">
             <div className="titleText">{"Devices & Vehicles"}</div>
-            <div
-              className="flex-center"
-              style={{ height: "40px", width: "40px", cursor: "pointer" }}
-              onClick={() => {
-                dispatch(setAddNewFormOpenAction(true, "addNewVehicle"));
-              }}
-            >
-              <AddIcon />
-            </div>
+            {role === "ADMIN" && (
+              <div
+                className="flex-center pointer p-1"
+                onClick={() => {
+                  dispatch(setAddNewFormOpenAction(true, "addNewVehicle"));
+                }}
+              >
+                <AddIcon />
+              </div>
+            )}
           </div>
 
           <div
+            className="relative p-2"
             style={{
-              position: "relative",
-              padding: "16px 32px 32px 32px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
-              overflowY: "scroll",
+              overflowY: "auto",
               marginBottom: "32px",
             }}
           >
@@ -177,7 +181,7 @@ function ProfilePage() {
               })}
             <div style={{ height: "32px" }}></div>
           </div>
-        </div>
+        </section>
         <AssignDeviceByVehicleModal />
         <AddNewVehicles />
         <EditCompany />

@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import "../css/NavBar.css";
 import { useRouter } from "../helpers/useRouter";
+import { setGlobalModal } from "../redux/global/action";
 import {
   expandNotificationMessageAction,
-  setNotificationAction,
   setNotificationMessage,
 } from "../redux/notification/action";
 import { IRootState } from "../redux/store";
 import { CompanyName } from "./CompanyName";
-import { NotificationAlertIcon, NotificationIcon } from "./IconsOnly";
+import { LogoutIcon, NotificationAlertIcon, NotificationIcon } from "./IconsOnly";
 import MenuButton from "./MenuButton";
 
 function NavBar() {
@@ -21,13 +21,24 @@ function NavBar() {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [notificationIds, setNotificationIds] = useState<number[]>([]);
 
-  const menuItem = [
-    { display: "Latest Locations", link: "/latest-locations" },
-    { display: "Incident Records", link: "/alert-data-page" },
-    { display: "Pulse Message", link: "/pulse-message" },
-    { display: "Manage User", link: "/manage-user" },
-    { display: "Manage Device", link: "/manage-device" },
-  ];
+  const login = useSelector((state: IRootState) => state.login);
+  const role = login.role;
+
+  const menuItem =
+    role === "ADMIN"
+      ? [
+          { display: "Latest Locations", link: "/latest-locations" },
+          { display: "Incident Records", link: "/alert-data-page" },
+          { display: "Pulse Message", link: "/pulse-message" },
+          { display: "Manage User", link: "/manage-user" },
+          { display: "Manage Device", link: "/manage-device" },
+        ]
+      : [
+          { display: "Latest Locations", link: "/latest-locations" },
+          { display: "Incident Records", link: "/alert-data-page" },
+          { display: "Pulse Message", link: "/pulse-message" },
+          { display: "View User", link: "/manage-user" },
+        ];
 
   const closePathA =
     "M28 17.5 C29.933 17.5 31.5 15.933 31.5 14C31.5 12.067 29.933 10.5 28 10.5C26.067 10.5 24.5 12.067 24.5 14C24.5 15.933 26.067 17.5 28 17.5Z M28 31.5C29.933 31.5 31.5 29.933 31.5 28C31.5 26.067 29.933 24.5 28 24.5C26.067 24.5 24.5 26.067 24.5 28C24.5 29.933 26.067 31.5 28 31.5Z M28 45.5C29.933 45.5 31.5 43.933 31.5 42C31.5 40.067 29.933 38.5 28 38.5C26.067 38.5 24.5 40.067 24.5 42C24.5 43.933 26.067 45.5 28 45.5Z";
@@ -90,15 +101,13 @@ function NavBar() {
         url.searchParams.set("min", "3.6");
         const res = await axios.get(url.toString());
         const result = res.data;
-        console.log("result");
-        console.log(result);
         dispatch(setNotificationMessage(result.data));
       } catch (error) {
         console.error(error);
       }
     };
     fetchLowBatteryNotification();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const tempArr = notification.message.map((i) => i.id);
@@ -168,7 +177,7 @@ function NavBar() {
                 right: menuIsOpen ? 0 : "-150%",
               }}
             >
-              <div className="flex-center menuItemContainer">
+              <section className="flex-center menuItemContainer">
                 {menuItem.map((item, idx) => {
                   return (
                     <Link
@@ -185,7 +194,24 @@ function NavBar() {
                     </Link>
                   );
                 })}
-              </div>
+                <div
+                  className="flex-center menuItem full-width"
+                  onClick={() => {
+                    dispatch(
+                      setGlobalModal({
+                        isOpen: true,
+                        content: "Confirm logout?",
+                        identifier: "CONFIRM_LOGOUT",
+                      })
+                    );
+                  }}
+                >
+                  <div className="mx-3">
+                    <div className="flex-center secondaryText">Logout</div>
+                  </div>
+                  <LogoutIcon />
+                </div>
+              </section>
             </div>
           </div>
 

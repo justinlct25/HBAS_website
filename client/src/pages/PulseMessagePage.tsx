@@ -76,12 +76,10 @@ function PulseMessagePage() {
 
   return (
     <div className={`${styles["flex-center"]} ${styles.pageContainer}`}>
-      <div
-        className={`${styles["flex-center"]} ${styles.topRowContainer}`}
-        style={{ justifyContent: "center" }}
-      >
+      <section className="flex-row-between full-width my-3">
+        <div className="flex1 pageTitle">Pulse Message Page</div>
         <div className="flex-center">
-          <div className="flex-center" style={{ padding: "8px" }}>
+          <div className="flex1 flex-center" style={{ padding: "8px" }}>
             <input
               className="searchInput"
               placeholder={"Search"}
@@ -103,7 +101,8 @@ function PulseMessagePage() {
             </div>
           </div>
         </div>
-      </div>
+        <div className="flex1"></div>
+      </section>
       <div
         className="table"
         style={{

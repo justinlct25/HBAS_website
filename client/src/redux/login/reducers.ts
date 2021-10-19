@@ -6,6 +6,8 @@ const initialState: ILoginState = {
   username: null,
   token: "",
   error: null,
+  role: "",
+  devices: null,
 };
 
 export function loginReducer(
@@ -17,8 +19,10 @@ export function loginReducer(
       return {
         ...state,
         isLoggedIn: true,
-        username: action.username,
-        token: action.token,
+        username: action.data.username,
+        token: action.data.token,
+        role: action.data.role,
+        devices: action.data.devices,
       };
     case "@@login/LOGIN_FAILED":
       return {

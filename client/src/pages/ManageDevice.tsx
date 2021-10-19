@@ -33,9 +33,10 @@ function ManageDevice() {
   return (
     <>
       <div className="flex-center pageContainer">
-        <div className="flex-center topRowContainer">
+        <section className="flex-row-between full-width my-3">
+          <div className="flex1 pageTitle">Manage Device Page</div>
           <div className="flex-center">
-            <div className="flex-center" style={{ padding: "8px" }}>
+            <div className="flex1 flex-center" style={{ padding: "8px" }}>
               <input
                 className="searchInput"
                 placeholder={"Search"}
@@ -59,8 +60,8 @@ function ManageDevice() {
               </div>
             </div>
           </div>
-          <div />
-        </div>
+          <div className="flex1" />
+        </section>
         <div
           className="table"
           style={{

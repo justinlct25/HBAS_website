@@ -19,6 +19,7 @@ function ManageUser() {
 
   const companiesDataList = useSelector((state: IRootState) => state.companiesDataList);
   const isOpen = useSelector((state: IRootState) => state.addNewForm.addNewForm.isOpen);
+  const role = useSelector((state: IRootState) => state.login.role);
 
   const companiesList = companiesDataList.companiesDataList;
   const activePage = companiesDataList.activePage;
@@ -31,29 +32,10 @@ function ManageUser() {
 
   return (
     <div className="flex-center pageContainer">
-      <div className="flex-center topRowContainer">
-        <div
-          className="flex-center"
-          style={{
-            position: "absolute",
-            cursor: "pointer",
-            left: 32,
-          }}
-          onClick={() => {
-            dispatch(setAddNewFormOpenAction(true, "addNew"));
-          }}
-        >
-          <AddIcon />
-          <div
-            style={{
-              paddingLeft: "8px",
-            }}
-          >
-            Add new user
-          </div>
-        </div>
+      <section className="flex-row-between full-width my-3">
+        <div className="flex1 pageTitle">Manage User Page</div>
         <div className="flex-center">
-          <div className="flex-center" style={{ padding: "8px" }}>
+          <div className="flex1 flex-center" style={{ padding: "8px" }}>
             <input
               className="searchInput"
               placeholder={"Search"}
@@ -79,8 +61,24 @@ function ManageUser() {
             </div>
           </div>
         </div>
-        <div />
-      </div>
+        {role === "ADMIN" && (
+          <div
+            className="flex-center flex1"
+            onClick={() => {
+              dispatch(setAddNewFormOpenAction(true, "addNew"));
+            }}
+          >
+            <AddIcon />
+            <div
+              style={{
+                paddingLeft: "8px",
+              }}
+            >
+              Add new user
+            </div>
+          </div>
+        )}
+      </section>
       <div
         className="table"
         style={{

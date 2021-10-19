@@ -2,13 +2,7 @@ import axios, { AxiosError } from "axios";
 import { push } from "connected-react-router";
 import httpStatusCodes from "http-status-codes";
 import { IRootState, ThunkDispatch } from "../store";
-import {
-  clearError,
-  loginError,
-  loginFailed,
-  loginSuccess,
-  logoutSuccess,
-} from "./actions";
+import { clearError, loginError, loginFailed, loginSuccess, logoutSuccess } from "./actions";
 
 export const resetState = () => {
   return async (dispatch: ThunkDispatch) => {};
@@ -17,14 +11,24 @@ export const resetState = () => {
 export function login(username: string, password: string) {
   return async (dispatch: ThunkDispatch) => {
     try {
-      const res = await axios.post<{ token: string }>(`/login`, {
-        username,
-        password,
-      });
-
+      const res = await axios.post<{ token: string; role: string; devices: number[] | null }>(
+        `/login`,
+        {
+          email: username,
+          password,
+        }
+      );
+      console.log(res.data);
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-        dispatch(loginSuccess(username, res.data.token));
+        dispatch(
+          loginSuccess({
+            username,
+            token: res.data.token,
+            role: res.data.role,
+            devices: res.data.devices,
+          })
+        );
         dispatch(push("/alert-data-page"));
       }
       dispatch(clearError());
@@ -45,6 +49,7 @@ export function login(username: string, password: string) {
 export function checkLogin() {
   return async (dispatch: ThunkDispatch) => {
     const token = localStorage.getItem("token");
+
     try {
       if (!token) {
         dispatch(logoutSuccess());
@@ -52,8 +57,16 @@ export function checkLogin() {
         return;
       }
       const res = await axios.get("/login/current-user");
-      if (res.data.username) {
-        dispatch(loginSuccess(res.data.username, token));
+      console.log(res.data);
+      if (res.data.email) {
+        dispatch(
+          loginSuccess({
+            username: res.data.email,
+            token,
+            role: res.data.role,
+            devices: res.data.devices,
+          })
+        );
       }
     } catch (e) {
       dispatch(logoutSuccess());
@@ -87,9 +100,7 @@ export const handleFetchErrors = (status: number, message: string) => {
 export const handleAxiosError = (error: Error & AxiosError) => {
   return async (dispatch: ThunkDispatch) => {
     if (error.response) {
-      dispatch(
-        handleFetchErrors(error.response.status, error.response.data.message)
-      );
+      dispatch(handleFetchErrors(error.response.status, error.response.data.message));
     } else if (error.request) {
       console.error(error.request);
     } else {

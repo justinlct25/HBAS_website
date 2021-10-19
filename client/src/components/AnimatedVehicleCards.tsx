@@ -1,9 +1,10 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAddNewFormOpenAction } from "../redux/addNewForm/action";
 import { setPopUpIsActiveAction, setSelectedItemAction } from "../redux/assignDeviceModal/action";
 import { setDeleteModalDataAction, setDeleteModalOpenAction } from "../redux/deleteModal/action";
 import { IProfile } from "../redux/profile/state";
+import { IRootState } from "../redux/store";
 import { AssignIcon, DeleteIcon, EditIcon } from "./IconsOnly";
 
 interface AnimatedVehicleCardProps {
@@ -13,6 +14,7 @@ interface AnimatedVehicleCardProps {
 export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
   const { item } = props;
   const dispatch = useDispatch();
+  const role = useSelector((state: IRootState) => state.login.role);
 
   return (
     <div className="deviceVehicleCard">
@@ -61,62 +63,64 @@ export const AnimatedVehicleCards = (props: AnimatedVehicleCardProps) => {
         </div>
         <div className="incidentReportText">{item.manufactureYear ?? " - "}</div>
       </div>
-      <div className="hiddenButtonContainer">
-        <div
-          className="hiddenButton flex-center"
-          style={{ backgroundColor: "#8BB3FF" }}
-          onClick={() => {
-            dispatch(setPopUpIsActiveAction(true));
-            dispatch(
-              setSelectedItemAction({
-                carPlate: item.carPlate,
-                vehicleId: item.vehicleId,
-                deviceEui: item.deviceEui ?? "",
-                deviceId: item.deviceId ?? -1,
-                manufactureYear: item.manufactureYear,
-                manufacturer: item.manufacturer,
-              })
-            );
-          }}
-        >
-          <AssignIcon />
+      {role === "ADMIN" && (
+        <div className="hiddenButtonContainer">
+          <div
+            className="hiddenButton flex-center"
+            style={{ backgroundColor: "#8BB3FF" }}
+            onClick={() => {
+              dispatch(setPopUpIsActiveAction(true));
+              dispatch(
+                setSelectedItemAction({
+                  carPlate: item.carPlate,
+                  vehicleId: item.vehicleId,
+                  deviceEui: item.deviceEui ?? "",
+                  deviceId: item.deviceId ?? -1,
+                  manufactureYear: item.manufactureYear,
+                  manufacturer: item.manufacturer,
+                })
+              );
+            }}
+          >
+            <AssignIcon />
+          </div>
+          <div
+            className="hiddenButton flex-center"
+            style={{ backgroundColor: "#8BB3FF" }}
+            onClick={() => {
+              dispatch(setAddNewFormOpenAction(true, "editVehicle"));
+              dispatch(
+                setSelectedItemAction({
+                  deviceId: item.deviceId ?? -1,
+                  vehicleId: item.vehicleId ?? -1,
+                  carPlate: item.carPlate ?? "",
+                  vehicleModel: item.vehicleModel ?? "",
+                  vehicleType: item.vehicleType ?? "",
+                  manufactureYear: item.manufactureYear ?? "",
+                  manufacturer: item.manufacturer ?? "",
+                })
+              );
+            }}
+          >
+            <EditIcon />
+          </div>
+          <div
+            className="hiddenButton flex-center"
+            style={{ backgroundColor: "#FF8989" }}
+            onClick={() => {
+              dispatch(setDeleteModalOpenAction(true, "vehicle"));
+              dispatch(
+                setDeleteModalDataAction({
+                  vehicleId: item.vehicleId,
+                  carPlate: item.carPlate,
+                })
+              );
+            }}
+          >
+            <DeleteIcon />
+          </div>
         </div>
-        <div
-          className="hiddenButton flex-center"
-          style={{ backgroundColor: "#8BB3FF" }}
-          onClick={() => {
-            dispatch(setAddNewFormOpenAction(true, "editVehicle"));
-            dispatch(
-              setSelectedItemAction({
-                deviceId: item.deviceId ?? -1,
-                vehicleId: item.vehicleId ?? -1,
-                carPlate: item.carPlate ?? "",
-                vehicleModel: item.vehicleModel ?? "",
-                vehicleType: item.vehicleType ?? "",
-                manufactureYear: item.manufactureYear ?? "",
-                manufacturer: item.manufacturer ?? "",
-              })
-            );
-          }}
-        >
-          <EditIcon />
-        </div>
-        <div
-          className="hiddenButton flex-center"
-          style={{ backgroundColor: "#FF8989" }}
-          onClick={() => {
-            dispatch(setDeleteModalOpenAction(true, "vehicle"));
-            dispatch(
-              setDeleteModalDataAction({
-                vehicleId: item.vehicleId,
-                carPlate: item.carPlate,
-              })
-            );
-          }}
-        >
-          <DeleteIcon />
-        </div>
-      </div>
+      )}
     </div>
   );
 };

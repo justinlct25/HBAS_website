@@ -120,6 +120,8 @@ export const CompanyName = () => {
     //     fill="#333333"
     //   />
     // </svg>
-    <div style={{ fontSize: "1.7em" }}>BEE - Handbrake Alert System</div>
+    <div style={{ fontSize: "1.5em" }}>
+      Brilliant Engineering Equipment (BEE) - Handbrake Alert System
+    </div>
   );
 };

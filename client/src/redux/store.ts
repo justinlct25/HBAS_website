@@ -28,6 +28,9 @@ import { DeleteModalState } from "./deleteModal/state";
 import { IDevicesDataActions } from "./devices/action";
 import { IDevicesDataReducer } from "./devices/reducer";
 import { IDevicesDataState } from "./devices/state";
+import { IGlobalAction } from "./global/action";
+import { IGlobalReducer } from "./global/reducer";
+import { IGlobalState } from "./global/state";
 //incidentPage
 import { IIncidentPageAction } from "./incidentPage/action";
 import { IIncidentPageReducer } from "./incidentPage/reducer";
@@ -51,6 +54,7 @@ export const history = createBrowserHistory();
 
 // IRootState
 export interface IRootState {
+  global: IGlobalState;
   login: ILoginState;
   devicesDataList: IDevicesDataState;
   companiesDataList: ICompaniesDataState;
@@ -78,13 +82,15 @@ type IRootAction =
   | AssignDeviceAction
   | AddNewFormAction
   | DeleteModalAction
-  | SetNotificationAction;
+  | SetNotificationAction
+  | IGlobalAction;
 
 // Thunk Dispatch
 export type ThunkDispatch = OldThunkDispatch<IRootState, null, IRootAction>;
 
 // createStore
 const rootReducer = combineReducers<IRootState>({
+  global: IGlobalReducer,
   login: loginReducer,
   devicesDataList: IDevicesDataReducer,
   companiesDataList: ICompaniesDataReducer,
@@ -110,8 +116,5 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // createStore
 export default createStore<IRootState, IRootAction, {}, {}>(
   rootReducer,
-  composeEnhancers(
-    applyMiddleware(thunk),
-    applyMiddleware(routerMiddleware(history))
-  )
+  composeEnhancers(applyMiddleware(thunk), applyMiddleware(routerMiddleware(history)))
 );

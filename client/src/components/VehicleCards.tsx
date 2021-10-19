@@ -11,7 +11,7 @@ export const VehicleCards = (props: VehicleProps) => {
   const { item, callFunction, cursor = "default" } = props;
 
   return (
-    <div className="deviceVehicleCard" onClick={callFunction} style={{ cursor }}>
+    <div className="deviceVehicleCard" onClick={callFunction} style={{ cursor, height: "10vh" }}>
       <h4>{item.carPlate}</h4>
       <div className="flex-center">
         <div className="incidentReportText" style={{ color: "#888" }}>
@@ -37,20 +37,6 @@ export const VehicleCards = (props: VehicleProps) => {
           }}
         >
           {item.deviceName === null ? "No device yet" : item.deviceName}
-        </div>
-      </div>
-
-      <div className="flex-center">
-        <div className="incidentReportText" style={{ color: "#888" }}>
-          Car plate:
-        </div>
-        <div
-          className="incidentReportText"
-          style={{
-            color: "#333",
-          }}
-        >
-          {item.carPlate ?? " - "}
         </div>
       </div>
     </div>

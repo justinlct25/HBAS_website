@@ -4,11 +4,15 @@ const LOGOUT_SUCCESS = "@@login/LOGOUT_SUCCESS" as const;
 const LOGIN_ERROR = "@@login/LOGIN_ERROR" as const;
 const LOGIN_CLEAR_ERROR = "@@login/LOGIN_CLEAR_ERROR" as const;
 
-export function loginSuccess(username: string, token: string) {
+export function loginSuccess(data: {
+  username: string;
+  token: string;
+  role: string;
+  devices: number[] | null;
+}) {
   return {
     type: LOGIN_SUCCESS,
-    username,
-    token,
+    data,
   };
 }
 
