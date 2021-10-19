@@ -57,7 +57,6 @@ export function checkLogin() {
         return;
       }
       const res = await axios.get("/login/current-user");
-      console.log(res.data);
       if (res.data.email) {
         dispatch(
           loginSuccess({

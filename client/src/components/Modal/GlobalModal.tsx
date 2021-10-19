@@ -33,7 +33,7 @@ function GlobalModal() {
                 dispatch(setGlobalModal({ isOpen: false }));
               }}
             >
-              CANCEL
+              {identifier ? "CANCEL" : "OK"}
             </button>
             {identifier && (
               <button className="buttonStyle w-40" onClick={handleConfirm}>

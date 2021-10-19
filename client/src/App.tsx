@@ -8,6 +8,7 @@ import NavBar from "./components/NavBar";
 import VehicleLogs from "./components/VehicleLogs";
 import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "./helpers/processEnv";
 import AlertDataPage from "./pages/AlertDataPage";
+import ChangePassword from "./pages/ChangePassword";
 import ErrorPage from "./pages/ErrorPage";
 import IncidentPage from "./pages/IncidentPage";
 import LoginPage from "./pages/LoginPage";
@@ -68,6 +69,7 @@ function App() {
           <AdminPrivateRoute path="/incident/:id" exact component={IncidentPage} />
           <AdminPrivateRoute path="/profile/:id" exact component={ProfilePage} />
           <AdminPrivateRoute path="/manage-user" exact component={ManageUser} />
+          <AdminPrivateRoute path="/change-password" exact component={ChangePassword} />
           {role === "ADMIN" &&
             adminRoutes.map((item) => {
               return <AdminPrivateRoute path={item.path} exact component={item.component} />;

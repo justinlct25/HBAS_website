@@ -32,12 +32,14 @@ function NavBar() {
           { display: "Pulse Message", link: "/pulse-message" },
           { display: "Manage User", link: "/manage-user" },
           { display: "Manage Device", link: "/manage-device" },
+          { display: "Change Password", link: "/change-password" },
         ]
       : [
           { display: "Latest Locations", link: "/latest-locations" },
           { display: "Incident Records", link: "/alert-data-page" },
           { display: "Pulse Message", link: "/pulse-message" },
           { display: "View User", link: "/manage-user" },
+          { display: "Change Password", link: "/change-password" },
         ];
 
   const closePathA =
