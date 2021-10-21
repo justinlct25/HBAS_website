@@ -75,7 +75,7 @@ export class UsersService {
   };
 
   addUser = async (username: string, email: string, role?: string) => {
-    const password = await hashPassword(email);
+    const password = await hashPassword(username);
     return await this.knex(USERS)
       .insert({ username, email, password, role })
       .returning<number[]>('id');
