@@ -37,15 +37,15 @@ export class UsersController {
     return res.status(httpStatusCodes.OK).json(data);
   };
 
-  userChecking = async (username: string, email: string, role?: string, userId?: number) => {
+  userChecking = async (username: string, role?: string, userId?: number) => {
     // check if required info is provided
-    if (!username || !email)
+    if (!username)
       return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Missing required information.' };
 
     if (!!role && role !== 'ADMIN' && role !== 'USER')
       return { statusCode: httpStatusCodes.BAD_REQUEST, message: 'Invalid role.' };
 
-    const existing = await this.usersService.checkDuplicatedUser(username, email);
+    const existing = await this.usersService.checkDuplicatedUser(username);
     if (!!existing && existing.id !== userId)
       return { statusCode: httpStatusCodes.CONFLICT, message: 'User already exists.' };
 
@@ -55,7 +55,7 @@ export class UsersController {
   addUser = async (req: Request, res: Response) => {
     const { username, email, role }: INewUser = req.body;
 
-    const checkingRes = await this.userChecking(username, email, role);
+    const checkingRes = await this.userChecking(username, role);
     if (!!checkingRes)
       return res.status(checkingRes.statusCode).json({ message: checkingRes.message });
 
@@ -77,7 +77,7 @@ export class UsersController {
     const { userId } = req.params;
     const { username, email, role }: INewUser = req.body;
 
-    const checkingRes = await this.userChecking(username, email, role, parseInt(userId));
+    const checkingRes = await this.userChecking(username, role, parseInt(userId));
     if (!!checkingRes)
       return res.status(checkingRes.statusCode).json({ message: checkingRes.message });
 

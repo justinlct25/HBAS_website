@@ -66,13 +66,11 @@ export class UsersService {
     return await query;
   };
 
-  checkDuplicatedUser = async (username: string, email: string) => {
+  checkDuplicatedUser = async (username: string) => {
     return await this.knex(USERS)
       .distinct('id')
       .where('is_active', true)
-      .andWhere((builder) => {
-        builder.where('username', 'ILIKE', username).orWhere('email', 'ILIKE', email);
-      })
+      .andWhere('username', 'ILIKE', username)
       .first();
   };
 
