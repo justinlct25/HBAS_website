@@ -12,7 +12,7 @@ export interface IUserInfo {
 
 export interface INewUser {
   username: string;
-  email: string;
+  email?: string;
   role?: string;
 }
 

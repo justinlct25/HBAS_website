@@ -74,14 +74,14 @@ export class UsersService {
       .first();
   };
 
-  addUser = async (username: string, email: string, role?: string) => {
+  addUser = async (username: string, email?: string, role?: string) => {
     const password = await hashPassword(username);
     return await this.knex(USERS)
       .insert({ username, email, password, role })
       .returning<number[]>('id');
   };
 
-  editUser = async (userId: number, username: string, email: string, role?: string) => {
+  editUser = async (userId: number, username: string, email?: string, role?: string) => {
     return await this.knex(USERS)
       .update({ username, email, role, updated_at: new Date() }, 'id')
       .where({
