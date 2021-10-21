@@ -15,7 +15,7 @@ export const isLoggedIn = async (req: Request, res: Response, next: NextFunction
     if (!token) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
     const payload = jwtSimple.decode(token, jwt.jwtSecret);
-    const user = await loginService.getUser(payload.email);
+    const user = await loginService.getUser(payload.username);
     if (!user.info) return res.status(httpStatusCodes.UNAUTHORIZED).json(authFailedRes);
 
     const { password, ...others } = user.info;

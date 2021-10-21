@@ -6,16 +6,16 @@ const { USERS, USER_DEVICES, DEVICES } = tables;
 export class LoginService {
   constructor(private knex: Knex) {}
 
-  getUser = async (email: string) => {
+  getUser = async (username: string) => {
     const info = await this.knex
       .select<{
         id: number;
-        email: string;
+        username: string;
         password: string;
         role: string;
-      }>('id', 'email', 'password', 'role')
+      }>('id', 'username', 'password', 'role')
       .from(USERS)
-      .where({ email: email, is_active: true })
+      .where({ username, is_active: true })
       .first();
 
     const tempUsers = 'temp_users';
