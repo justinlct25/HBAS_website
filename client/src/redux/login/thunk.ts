@@ -29,7 +29,7 @@ export function login(username: string, password: string) {
             devices: res.data.devices,
           })
         );
-        dispatch(push("/alert-data-page"));
+        dispatch(push("/latest-locations"));
       }
       dispatch(clearError());
     } catch (error) {

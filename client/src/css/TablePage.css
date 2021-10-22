@@ -21,7 +21,7 @@
 
 .searchInput {
   height: var(--inputHeight);
-  width: 240px;
+  width: 32vw;
   border-style: none;
   outline: none;
   border: none;

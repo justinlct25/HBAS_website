@@ -3,7 +3,7 @@ import React from "react";
 export const CompanyName = () => {
   return (
     <section className="flex-row-start">
-      <div style={{ fontSize: "2vmin" }}>
+      <div style={{ fontSize: "max(2vmin, 10px)" }}>
         Brilliant Engineering Equipment (BEE) - Handbrake Alert System
       </div>
       {/* <div className="mx-4 " style={{ transform: "translateY(2px)" }}>
