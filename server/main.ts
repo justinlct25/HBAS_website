@@ -38,7 +38,7 @@ const app = express();
 const corsOptions = {
   origin: [/localhost:\d{1,}/, process.env.CORS_ORIGIN_1 ?? '', process.env.CORS_ORIGIN_2 ?? ''],
 };
-app.use(cors());
+app.use(cors(corsOptions));
 
 //socket.io
 const server = new http.Server(app);
