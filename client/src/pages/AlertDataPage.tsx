@@ -45,7 +45,7 @@ function AlertDataPage() {
 
   return (
     <div className={`${styles["flex-center"]} ${styles.pageContainer}`}>
-      <section className="flex-row-between full-width my-3">
+      <section className="flex-row-between full-width my-3 px-4">
         <div className="flex1 pageTitle">Incident Records Page</div>
         <div className="flex-center">
           <div className="flex1 flex-center" style={{ padding: "8px" }}>

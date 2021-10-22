@@ -35,8 +35,10 @@ function ManageDevice() {
   return (
     <>
       <div className="flex-center pageContainer">
-        <section className="flex-row-between full-width my-3">
-          <div className="flex1 pageTitle">Manage Device Page</div>
+        <section className="flex-row-between full-width my-3 px-4">
+          <div className="flex1 pageTitle">
+            {role === "ADMIN" ? "Manage Device Page" : "View Device Page"}
+          </div>
           <div className="flex-center">
             <div className="flex1 flex-center" style={{ padding: "8px" }}>
               <input

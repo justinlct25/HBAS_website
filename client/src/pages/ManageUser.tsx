@@ -32,8 +32,10 @@ function ManageUser() {
 
   return (
     <div className="flex-center pageContainer">
-      <section className="flex-row-between full-width my-3">
-        <div className="flex1 pageTitle">Manage User Page</div>
+      <section className="flex-row-between full-width my-3 px-4">
+        <div className="flex1 pageTitle">
+          {role === "ADMIN" ? "Manage User Page" : "View User Page"}
+        </div>
         <div className="flex-center">
           <div className="flex1 flex-center" style={{ padding: "8px" }}>
             <input
