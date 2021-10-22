@@ -34,18 +34,6 @@ attachPaginate();
 //app
 const app = express();
 
-// cors
-const corsOptions = {
-  origin: [/localhost:\d{1,}/, process.env.CORS_ORIGIN_1 ?? '', process.env.CORS_ORIGIN_2 ?? ''],
-};
-app.use(cors());
-
-//socket.io
-const server = new http.Server(app);
-export const io = new SocketIO(server, {
-  cors: corsOptions,
-});
-
 //  sentry
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -60,6 +48,18 @@ Sentry.init({
   // of transactions for performance monitoring.
   // We recommend adjusting this value in production
   tracesSampleRate: 0.7,
+});
+
+// cors
+const corsOptions = {
+  origin: [/localhost:\d{1,}/, process.env.CORS_ORIGIN_1 ?? '', process.env.CORS_ORIGIN_2 ?? ''],
+};
+app.use(cors(corsOptions));
+
+//socket.io
+const server = new http.Server(app);
+export const io = new SocketIO(server, {
+  cors: corsOptions,
 });
 
 // info
