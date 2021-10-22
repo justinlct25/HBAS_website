@@ -14,11 +14,10 @@ export function login(username: string, password: string) {
       const res = await axios.post<{ token: string; role: string; devices: number[] | null }>(
         `/login`,
         {
-          email: username,
+          username,
           password,
         }
       );
-      console.log(res.data);
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
         dispatch(
@@ -57,10 +56,10 @@ export function checkLogin() {
         return;
       }
       const res = await axios.get("/login/current-user");
-      if (res.data.email) {
+      if (res.data.username) {
         dispatch(
           loginSuccess({
-            username: res.data.email,
+            username: res.data.username,
             token,
             role: res.data.role,
             devices: res.data.devices,

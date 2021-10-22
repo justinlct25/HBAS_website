@@ -11,26 +11,25 @@ export class LoginController {
 
   login = async (req: Request, res: Response) => {
     try {
-      const { email, password }: { email: string; password: string } = req.body;
-      if (!email || !password) {
+      const { username, password }: { username: string; password: string } = req.body;
+      if (!username || !password) {
         return res.status(httpStatusCodes.BAD_REQUEST).json({
           message: 'Missing required information.',
         });
       }
 
-      const user = await this.loginService.getUser(email);
+      const user = await this.loginService.getUser(username);
       if (!user.info || !(await checkPassword(password, user.info.password))) {
         return res.status(httpStatusCodes.UNAUTHORIZED).json({
-          message: 'Invalid email or password.',
+          message: 'Invalid username or password.',
         });
       }
 
       const { id, role } = user.info;
       const payload = {
         id,
-        email: user.info.email,
+        username,
         role,
-        devices: user.devices,
         exp: Date.now() / 1000 + 43200,
       };
 

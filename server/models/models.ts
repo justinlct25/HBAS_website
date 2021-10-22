@@ -12,7 +12,7 @@ export interface IUserInfo {
 
 export interface INewUser {
   username: string;
-  email: string;
+  email?: string;
   role?: string;
 }
 
@@ -60,6 +60,8 @@ export interface ILocationDetail {
   geolocation: string;
   msgType: string;
   battery: string;
+  rssi: number | null;
+  snr: number | null;
   carPlate: string;
   companyName: string;
 }

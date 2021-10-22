@@ -1,6 +1,6 @@
 export interface ILoginData {
   id: number;
-  email: string;
+  username: string;
   role: string;
   devices: number[] | null;
 }

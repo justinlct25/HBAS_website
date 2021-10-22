@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
+
 import express from 'express';
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
 import { logger } from './utils/logger';
 import cors from 'cors';
 import Knex from 'knex';
@@ -30,14 +33,33 @@ attachPaginate();
 
 //app
 const app = express();
-app.use(cors());
+
+// cors
+const corsOptions = {
+  origin: [/localhost:\d{1,}/, process.env.CORS_ORIGIN_1 ?? '', process.env.CORS_ORIGIN_2 ?? ''],
+};
+app.use(cors(corsOptions));
 
 //socket.io
 const server = new http.Server(app);
 export const io = new SocketIO(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-  },
+  cors: corsOptions,
+});
+
+//  sentry
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  integrations: [
+    // enable HTTP calls tracing
+    new Sentry.Integrations.Http({ tracing: true }),
+    // enable Express.js middleware tracing
+    new Tracing.Integrations.Express({ app }),
+  ],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  // We recommend adjusting this value in production
+  tracesSampleRate: 0.7,
 });
 
 // info
@@ -56,6 +78,12 @@ io.on('connection', (socket: Socket) => {
     logger.info(`socket ${socket.id} is disconnected`);
   });
 });
+
+// RequestHandler creates a separate execution context using domains, so that every
+// transaction/span/breadcrumb is attached to its own Hub instance
+app.use(Sentry.Handlers.requestHandler());
+// TracingHandler creates a trace for every incoming request
+app.use(Sentry.Handlers.tracingHandler());
 
 // create services
 export const loginService = new LoginService(knex);
@@ -78,6 +106,17 @@ import { routes } from './routes';
 
 const API_VERSION = process.env.API_VERSION ?? '/api/v2';
 app.use(API_VERSION, routes);
+
+// The error handler must be before any other error middleware and after all controllers
+app.use(
+  Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      // Capture all 404 and 500 errors
+      if (error.status === 404 || error.status === 500) return true;
+      return false;
+    },
+  })
+);
 
 // port
 const PORT = process.env.PORT || 8085;
