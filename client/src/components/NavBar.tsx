@@ -38,7 +38,7 @@ function NavBar() {
           { display: "Latest Locations", link: "/latest-locations" },
           { display: "Incident Records", link: "/alert-data-page" },
           { display: "Pulse Message", link: "/pulse-message" },
-          { display: "View User", link: "/manage-user" },
+          { display: "View Device", link: "/manage-device" },
           { display: "Change Password", link: "/change-password" },
         ];
 

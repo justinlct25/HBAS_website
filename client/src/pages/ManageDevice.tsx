@@ -16,10 +16,12 @@ export type ModalType = "company" | "carPlate" | "device";
 function ManageDevice() {
   const [searchInput, setSearchInput] = useState("");
   const devicesDataList = useSelector((state: IRootState) => state.devicesDataList);
-
   const popUpIsActive = useSelector(
     (state: IRootState) => state.assignDevice.assignDeviceModal.popUpIsActive
   );
+  const login = useSelector((state: IRootState) => state.login);
+  const role = login.role;
+
   const dispatch = useDispatch();
 
   const devicesList = devicesDataList.devicesDataList;
@@ -98,19 +100,24 @@ function ManageDevice() {
                   <div
                     key={item.deviceId}
                     className="flex-center tableRow"
-                    onClick={() => {
-                      dispatch(setPopUpIsActiveAction(true));
-                      dispatch(
-                        setSelectedItemAction({
-                          deviceId: item.deviceId,
-                          deviceEui: item.deviceEui,
-                          vehicleId: item.vehicleId ?? -1,
-                          carPlate: item.carPlate ?? "",
-                          companyId: item.companyId ?? -1,
-                          companyName: item.companyName ?? "",
-                        })
-                      );
-                    }}
+                    style={{ cursor: role === "ADMIN" ? "pointer" : "default" }}
+                    onClick={
+                      role === "ADMIN"
+                        ? () => {
+                            dispatch(setPopUpIsActiveAction(true));
+                            dispatch(
+                              setSelectedItemAction({
+                                deviceId: item.deviceId,
+                                deviceEui: item.deviceEui,
+                                vehicleId: item.vehicleId ?? -1,
+                                carPlate: item.carPlate ?? "",
+                                companyId: item.companyId ?? -1,
+                                companyName: item.companyName ?? "",
+                              })
+                            );
+                          }
+                        : () => {}
+                    }
                   >
                     <div key={idx} className="flex-center tdMainItem">
                       {item.deviceEui}

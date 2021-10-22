@@ -59,9 +59,9 @@ ul {
 }
 .flex-column-center {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 .flex-row-between {
   display: flex;
@@ -557,4 +557,15 @@ ul {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.incidentMarker {
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #00f900;
+  opacity: 0.7;
+  pointer-events: none;
+  transition: all 0.3s;
 }

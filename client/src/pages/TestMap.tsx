@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ReactMapboxGL, { Feature, Layer, Marker, Popup } from "react-mapbox-gl";
+import React, { useEffect, useState } from "react";
+import ReactMapboxGL, { Marker, Popup } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { CSSTransition } from "react-transition-group";
-import { IDataHistory, ILocationDetail } from "../models/resModels";
-import { handleAxiosError } from "../redux/login/thunk";
-import styles from "./TestMap.module.scss";
 import { CaretIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
-import { REACT_APP_API_VERSION, REACT_APP_API_SERVER } from "../helpers/processEnv";
-import { setIsLoadingAction } from "../redux/loading/action";
-import { IRootState } from "../redux/store";
 import { formatDate, formatTime } from "../helpers/date";
+import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processEnv";
+import { IDataHistory, ILocationDetail } from "../models/resModels";
+import { handleAxiosError } from "../redux/login/thunk";
+import { IRootState } from "../redux/store";
+import styles from "./TestMap.module.scss";
 
 const defaultZoom: [number] = [10.2];
 const defaultCenter: [number, number] = [114.125, 22.35];
@@ -102,16 +101,15 @@ const TestMap = () => {
       dispatch(handleAxiosError(error));
     }
   };
-
   //
 
   return (
     <>
       <Map
         // eslint-disable-next-line react/style-prop-object
+        style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
         // style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
         // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
-        style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
         zoom={defaultZoom}
         center={defaultCenter}
         containerStyle={{
@@ -152,22 +150,13 @@ const TestMap = () => {
                   coordinates={[point.geolocation.y, point.geolocation.x]}
                   anchor="center"
                   style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
-                  onClick={() => fetchAllPreviousPulse(point)}
+                  onClick={() => {
+                    fetchAllPreviousPulse(point);
+                    setDeviceData({ deviceName: point.deviceName, carPlate: point.carPlate });
+                    setHoverAnimate({ idx: -1, onHover: false });
+                  }}
                 >
-                  <div
-                    className="flex-center"
-                    style={{
-                      cursor: "pointer",
-                      height: "24px",
-                      width: "24px",
-                      borderRadius: "50%",
-                      background: "#00F900BB",
-                      pointerEvents: "none",
-                      transition: "all 0.3s",
-                    }}
-                  >
-                    {" "}
-                  </div>
+                  <div className="flex-center incidentMarker"></div>
                 </Marker>
               ))}
           <CSSTransition
@@ -202,9 +191,6 @@ const TestMap = () => {
                   <div>
                     <div>Battery:</div>
                     <div>{incidentPoints[hoverAnimate.idx].battery + "v"}</div>
-                    {/* <div>
-                    {batteryCalculation(incidentPoints[hoverAnimate.idx].battery).toFixed(2) + "%"}
-                  </div> */}
                   </div>
                   <div>
                     <div>Date:</div>
@@ -250,12 +236,9 @@ const TestMap = () => {
             <Loading />
           ) : (
             <div
-              className="flex-center"
+              className="flex-row-column-start flex-column"
               style={{
                 minWidth: "600px",
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
                 opacity: isReportOpen ? 1 : 0,
                 transition: "all 0.4s 0.2s",
                 overflowY: "auto",
@@ -277,17 +260,16 @@ const TestMap = () => {
                       <tr
                         style={{
                           display: "grid",
-                          gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                          gridTemplateColumns: "1fr 1fr 1fr",
                           width: "100%",
                         }}
                       >
                         <th className="incidentReportText">Index</th>
                         <th className="incidentReportText">Date</th>
                         <th className="incidentReportText">Battery</th>
-                        {/* <th className="incidentReportText">Message Type</th> */}
                       </tr>
                     </thead>
-                    <tbody className="flex-center" style={{ flexDirection: "column" }}>
+                    <tbody className="flex-column-center">
                       {viewHistory &&
                         viewHistory.map((item, idx) => (
                           <tr
@@ -296,7 +278,7 @@ const TestMap = () => {
                               cursor: "default",
                               background: historyHoverIndex === idx ? "#888" : "transparent",
                               display: "grid",
-                              gridTemplateColumns: "1fr 1fr 1fr 1fr",
+                              gridTemplateColumns: "1fr 1fr 1fr",
                               width: "100%",
                             }}
                             onMouseEnter={() => setHistoryHoverIndex(idx)}
@@ -307,47 +289,10 @@ const TestMap = () => {
                               {formatDate(item.date) + " " + formatTime(item.date)}
                             </td>
                             <td className="incidentReportText">{item.battery}</td>
-                            {/* <td className="incidentReportText">{item.msgType}</td> */}
                           </tr>
                         ))}
                     </tbody>
                   </table>
-                  {/* <div className="flex-center">
-                  <div className="incidentReportText">Latitude:</div>
-                  <div className="incidentReportText">
-                    { data.latitude}
-                  </div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Longitude:</div>
-                  <div className="incidentReportText">
-                    { data.longitude}
-                  </div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Device EUI:</div>
-                  <div className="incidentReportText">{data.deviceEui}</div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Device Name:</div>
-                  <div className="incidentReportText">{data.deviceName}</div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Company name:</div>
-                  <div className="incidentReportText">{data.companyName || "-"}</div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Contact person:</div>
-                  <div className="incidentReportText">{data.contactPerson || "-"}</div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Phone number:</div>
-                  <div className="incidentReportText">{data.phoneNumber || "-"}</div>
-                </div>
-                <div className="flex-center">
-                  <div className="incidentReportText">Car plate:</div>
-                  <div className="incidentReportText">{data.carPlate || "-"}</div>
-                </div> */}
                 </>
               )}
             </div>
