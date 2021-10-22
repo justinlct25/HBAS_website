@@ -54,7 +54,7 @@ Sentry.init({
 const corsOptions = {
   origin: [/localhost:\d{1,}/, process.env.CORS_ORIGIN_1 ?? '', process.env.CORS_ORIGIN_2 ?? ''],
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 //socket.io
 const server = new http.Server(app);
