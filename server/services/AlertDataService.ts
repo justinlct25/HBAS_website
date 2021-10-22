@@ -119,6 +119,8 @@ export class AlertDataService {
         geolocation: `${tables.ALERT_DATA}.geolocation`,
         msgType: `${tables.ALERT_DATA}.msg_type`,
         battery: `${tables.ALERT_DATA}.battery`,
+        rssi: `${tables.ALERT_DATA}.rssi`,
+        snr: `${tables.ALERT_DATA}.snr`,
         carPlate: `${tables.VEHICLES}.car_plate`,
         companyName: `${tables.COMPANIES}.company_name`,
       })

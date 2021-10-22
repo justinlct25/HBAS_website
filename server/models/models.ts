@@ -60,6 +60,8 @@ export interface ILocationDetail {
   geolocation: string;
   msgType: string;
   battery: string;
+  rssi: number | null;
+  snr: number | null;
   carPlate: string;
   companyName: string;
 }
