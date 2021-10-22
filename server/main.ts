@@ -59,9 +59,7 @@ app.use(cors(corsOptions));
 //socket.io
 const server = new http.Server(app);
 export const io = new SocketIO(server, {
-  cors: {
-    origin: process.env.FRONTEND_URL,
-  },
+  cors: corsOptions,
 });
 
 // info
