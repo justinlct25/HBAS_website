@@ -38,7 +38,7 @@ function NavBar() {
           { display: "Latest Locations", link: "/latest-locations" },
           { display: "Incident Records", link: "/alert-data-page" },
           { display: "Pulse Message", link: "/pulse-message" },
-          { display: "View User", link: "/manage-user" },
+          { display: "View Device", link: "/manage-device" },
           { display: "Change Password", link: "/change-password" },
         ];
 
@@ -213,9 +213,7 @@ function NavBar() {
                   }}
                 >
                   <div className="mx-3">
-                    <div className="flex-center secondaryText" style={{ fontSize: "1.7vmin" }}>
-                      Logout
-                    </div>
+                    <div className="flex-center secondaryText">Logout</div>
                   </div>
                   <LogoutIcon />
                 </div>

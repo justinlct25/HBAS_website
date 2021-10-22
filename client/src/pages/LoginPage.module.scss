@@ -1,49 +1,72 @@
 div.container {
-    display: flex;
-    justify-content: center;
-    width: 100vw;
-    height: calc(100vh - var(--topNavHeight));
-    overflow: auto;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: calc(100vh - var(--topNavHeight));
+  overflow: auto;
 
+  > div {
     > div {
-        > form {
-            --label-width: 100px;
-
-            label {
-                min-width: var(--label-width);
-                margin-right: 1em;
-                text-align: right;
-                margin-bottom: 40px;
-            }
-
-            input { 
-                width: calc(100% - var(--label-width) - 1em);
-            }
-
-            button {
-                border: none;
-            }
-        }
+      font-size: 4.5vmin;
     }
-
-    &.mobile {
-        > div {
-            width: 90%;
-
-            > form {
-                padding: 40px 10px;
-            }
+    > form {
+      > div {
+        --label-width: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        div {
+          min-width: var(--label-width);
+          font-size: max(2vmin, 16px);
+          text-align: right;
+          white-space: nowrap;
         }
-    }
-    
-    &:not(div.mobile) {
-        > div {
-            width: 50%;
-            height: 80%;
-
-            > form {
-                padding: 40px;
-            }
+        input {
+          margin-left: 4px;
+          height: 24px;
+          line-height: 24px;
+          font-size: 14px;
+          width: calc(100% - var(--label-width) - 2em);
+          max-width: 800px;
+          border: none;
+          border-bottom: solid 1px #0004;
+          outline: none;
+          background: none;
+          background-color: none;
         }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px white inset !important;
+        }
+      }
+
+      button {
+        align-self: center;
+        border: none;
+        font-size: 16px;
+        margin-top: 40px;
+      }
     }
+  }
+  &.mobile {
+    > div {
+      width: 90%;
+
+      > form {
+        padding: 40px 8px;
+      }
+    }
+  }
+  &:not(div.mobile) {
+    > div {
+      width: 50%;
+      height: 80%;
+
+      > form {
+        padding: 40px;
+      }
+    }
+  }
 }

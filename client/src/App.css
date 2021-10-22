@@ -1,6 +1,6 @@
 * {
   font-family: "Poppins";
-  font-size: 1.5vmin;
+  font-size: max(1.8vmin, 12px);
   color: var(--primaryTextColor);
 }
 html {
@@ -59,9 +59,9 @@ ul {
 }
 .flex-column-center {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 .flex-row-between {
   display: flex;
@@ -234,7 +234,7 @@ ul {
   padding: 0 16px;
 }
 .titleText {
-  font-size: 36px;
+  font-size: 4vmin;
   margin: 16px;
 }
 .popup {
@@ -557,4 +557,15 @@ ul {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.incidentMarker {
+  cursor: pointer;
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  background: #00f900;
+  opacity: 0.7;
+  pointer-events: none;
+  transition: all 0.3s;
 }

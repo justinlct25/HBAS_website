@@ -43,37 +43,43 @@ function LoginPage() {
           <Loading />
         </div>
       ) : (
-        <div>
+        <div className="full-width">
           {/* Please use semantic tags like <h1> instead...
         And fix the css on TablePage.css so it doesn't override <h1> globally... */}
-          <div className="titleText">{`${companyName} - Handbrake Alert System`}</div>
-          <div className="titleText">Admin Login</div>
+          <div>{`${companyName} - Handbrake Alert System`}</div>
+          <div>Admin Login</div>
           <form
+            className="full-width flex-column-center"
+            style={{ alignItems: "flex-start" }}
             onSubmit={(e) => {
               e.preventDefault();
               handleSubmit();
             }}
           >
-            <label>Username :</label>
-            <input
-              value={loginInput.username}
-              onChange={(e) => {
-                setLoginInput({
-                  username: e.target.value,
-                  password: loginInput.password,
-                });
-              }}
-            />
-            <label>Password :</label>
-            <input
-              type="password"
-              onChange={(e) => {
-                setLoginInput({
-                  username: loginInput.username,
-                  password: e.target.value,
-                });
-              }}
-            />
+            <div className="my-4 full-width">
+              <div>Username :</div>
+              <input
+                value={loginInput.username}
+                onChange={(e) => {
+                  setLoginInput({
+                    username: e.target.value,
+                    password: loginInput.password,
+                  });
+                }}
+              />
+            </div>
+            <div className="my-4 full-width">
+              <div>Password :</div>
+              <input
+                type="password"
+                onChange={(e) => {
+                  setLoginInput({
+                    username: loginInput.username,
+                    password: e.target.value,
+                  });
+                }}
+              />
+            </div>
             <button className="button" type="submit">
               Login
             </button>
