@@ -57,8 +57,10 @@ const TestMap = () => {
     });
 
     try {
+      // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
       const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const result = res.data.data;
+      // console.log(result);
       setIncidentPoints(result);
     } catch (error) {
       dispatch(handleAxiosError(error));
@@ -132,6 +134,7 @@ const TestMap = () => {
                     style={{
                       height: historyHoverIndex === idx ? "48px" : "24px",
                       width: historyHoverIndex === idx ? "48px" : "24px",
+                      fontSize: historyHoverIndex === idx ? "20px" : "12px",
                       borderRadius: "50%",
                       background: historyHoverIndex === idx ? "#FF6666CC" : "#00F900CC",
                       pointerEvents: "none",
@@ -214,9 +217,16 @@ const TestMap = () => {
       </Map>
       {viewHistory && (
         <div
-          style={{ zIndex: 5 }}
+          style={{
+            justifyContent: "center",
+            minWidth: isReportOpen ? "85vmin" : "40px",
+            maxWidth: isReportOpen ? "628px" : "0px",
+            transition: "all 0.4s",
+          }}
           className={
-            isReportOpen ? "flex-center caretButton" : "flex-center caretButton hiddenReport"
+            isReportOpen
+              ? "flex-row-column-start caretButton"
+              : "flex-row-column-start caretButton hiddenReport"
           }
         >
           <div
@@ -236,14 +246,14 @@ const TestMap = () => {
             <Loading />
           ) : (
             <div
-              className="flex-row-column-start flex-column"
+              className="flex-row-start flex-column"
               style={{
-                minWidth: "600px",
                 opacity: isReportOpen ? 1 : 0,
                 transition: "all 0.4s 0.2s",
                 overflowY: "auto",
-                maxHeight: "80vh",
+                maxHeight: "90vh",
                 transform: "translateY(40px)",
+                paddingBottom: "80px",
               }}
             >
               {isReportOpen && (
@@ -252,15 +262,15 @@ const TestMap = () => {
                     className="flex-center"
                     style={{ width: "100%", flexDirection: "column", marginBottom: "24px" }}
                   >
-                    <div>{"Car plate :" + deviceData.carPlate}</div>
-                    <div>{"Device Name :" + deviceData.deviceName}</div>
+                    <div>{"Car plate : " + deviceData.carPlate}</div>
+                    <div>{"Device Name : " + deviceData.deviceName}</div>
                   </div>
-                  <table style={{ minWidth: "500px", width: "100%" }}>
+                  <table>
                     <thead>
                       <tr
                         style={{
                           display: "grid",
-                          gridTemplateColumns: "1fr 1fr 1fr",
+                          gridTemplateColumns: "1.5fr 2fr 1.5fr",
                           width: "100%",
                         }}
                       >
@@ -278,7 +288,7 @@ const TestMap = () => {
                               cursor: "default",
                               background: historyHoverIndex === idx ? "#888" : "transparent",
                               display: "grid",
-                              gridTemplateColumns: "1fr 1fr 1fr",
+                              gridTemplateColumns: "1.5fr 2fr 1.5fr",
                               width: "100%",
                             }}
                             onMouseEnter={() => setHistoryHoverIndex(idx)}

@@ -1,6 +1,6 @@
 * {
   font-family: "Poppins";
-  font-size: max(1.8vmin, 12px);
+  font-size: max(1.6vmin, 12px);
   color: var(--primaryTextColor);
 }
 html {
@@ -135,9 +135,11 @@ ul {
 .caretButton {
   position: absolute;
   background: rgba(255, 255, 255, 0.85);
-  top: 0;
+  top: var(--topNavHeight);
   right: 0;
-  height: 100%;
+  height: calc(100vh - var(--topNavHeight));
+  width: 50vw;
+  z-index: 5;
   padding-left: 24px;
   transition: all 0.4s cubic-bezier(0.2, 1.1, 0.76, 1.03);
 }

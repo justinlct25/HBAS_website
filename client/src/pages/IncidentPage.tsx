@@ -237,7 +237,9 @@ function IncidentPage() {
               isReportOpen ? "flex-center caretButton" : "flex-center caretButton hiddenReport"
             }
             style={{
-              width: isReportOpen ? "480px" : "3%",
+              width: isReportOpen ? "56vmin" : "3%",
+              top: 0,
+              height: "100%",
             }}
           >
             <div
@@ -259,7 +261,7 @@ function IncidentPage() {
               <div
                 className="flex-center"
                 style={{
-                  minWidth: "400px",
+                  // minWidth: "400px",
                   flexDirection: "column",
                   alignItems: "flex-start",
                   opacity: isReportOpen ? 1 : 0,

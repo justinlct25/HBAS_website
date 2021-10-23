@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 import styles from "../css/anything.module.scss";
 import { REACT_APP_API_SERVER } from "../helpers/processEnv";
 import { getAlertDataListThunk } from "../redux/alertDataPage/thunk";
-import { setIncidentPageData, setIsGPSNotFound } from "../redux/incidentPage/action";
+import { setIsGPSNotFound } from "../redux/incidentPage/action";
 import { IRootState } from "../redux/store";
 import { pulseMessageTableHeaders } from "../table/tableHeader";
 
