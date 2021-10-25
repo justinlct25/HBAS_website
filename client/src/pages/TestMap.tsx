@@ -38,8 +38,8 @@ interface MapboxViewLocation {
 const TestMap = () => {
   const temp = localStorage.getItem("mapboxLocation");
   const defaultMapboxLocation: MapboxViewLocation = {
-    lat: 114.125,
-    lng: 22.35,
+    lng: 114.125,
+    lat: 22.35,
     zoom: 10.2,
   };
 
