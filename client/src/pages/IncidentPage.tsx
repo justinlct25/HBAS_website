@@ -138,14 +138,40 @@ function IncidentPage() {
   return (
     <div className="flex-center pageContainer">
       <div className="flex-center topRowContainer" style={{ justifyContent: "flex-start" }}>
-        <div className="flex-center" style={{ cursor: "pointer" }} onClick={() => history.goBack()}>
-          <div className="flex-center">
+        <div className="flex-center full-width" style={{ flexWrap: "wrap" }}>
+          <div className="flex-row-start pointer flex1" onClick={() => history.goBack()}>
             <BackButton />
-            <div style={{ margin: "8px", fontSize: "24px" }}>BACK</div>
+            <div style={{ margin: "8px", fontSize: "min(4vmin, 24px)" }}>BACK</div>
           </div>
+          <div className="my-2 flex-center flex1 satelliteViewButtonContainer">
+            <div
+              className="flex-center satelliteButton"
+              style={{
+                position: "relative",
+                borderRadius: "8px 0px 0px 8px",
+                color: isLiveView ? "#EEE" : "#555",
+                background: isLiveView ? "rgba(94, 147, 220, 0.76)" : "#FFF",
+              }}
+              onClick={() => setIsLiveView(true)}
+            >
+              Satellite View
+            </div>
+            <div
+              className="flex-center satelliteButton"
+              style={{
+                borderRadius: "0px 8px 8px 0px",
+                color: isLiveView ? "#555" : "#EEE",
+                background: isLiveView ? "#FFF" : "rgba(94, 147, 220, 0.76)",
+              }}
+              onClick={() => setIsLiveView(false)}
+            >
+              Map View
+            </div>
+          </div>
+          <div className="flex1" />
         </div>
       </div>
-      <div className="flex-center tableContainer">
+      <div className="flex-center tableContainer" style={{ padding: "24px 0" }}>
         <div
           style={{
             position: "relative",
@@ -153,7 +179,7 @@ function IncidentPage() {
             width: "100%",
           }}
         >
-          <div className="flex-center satelliteViewButtonContainer">
+          {/* <div className="flex-center satelliteViewButtonContainer">
             <div
               className="flex-center satelliteButton"
               style={{
@@ -176,7 +202,7 @@ function IncidentPage() {
             >
               Map View
             </div>
-          </div>
+          </div> */}
 
           {/* Map here */}
           <Map

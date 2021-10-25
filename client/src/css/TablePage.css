@@ -180,7 +180,7 @@
   padding: 40px 40px 0 40px;
   flex-direction: column;
   justify-content: flex-start;
-  width: var(--formWidth);
+  min-width: var(--formWidth);
   max-height: calc(90% - var(--topNavHeight));
   /* min-height: 80%; */
   overflow-y: scroll;

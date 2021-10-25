@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AddIcon, CloseIcon, MinusIcon } from "../components/IconsOnly";
 import "../css/TablePage.css";
-import {
-  inputCompanyDetailsAction,
-  resetAddNewFormAction,
-} from "../redux/addNewForm/action";
+import { inputCompanyDetailsAction, resetAddNewFormAction } from "../redux/addNewForm/action";
 import { postCompaniesDataThunk } from "../redux/companies/thunk";
 import { IRootState } from "../redux/store";
 
@@ -19,9 +16,7 @@ function AddNewForm() {
   >([]);
 
   const dispatch = useDispatch();
-  const addNewForm = useSelector(
-    (state: IRootState) => state.addNewForm.addNewForm
-  );
+  const addNewForm = useSelector((state: IRootState) => state.addNewForm.addNewForm);
 
   const isOpen = addNewForm.isOpen;
   const modalType = addNewForm.modalType;
@@ -32,10 +27,7 @@ function AddNewForm() {
     setTotalVehicle(newArr);
   };
   const handleAddVehicle = () => {
-    setTotalVehicle([
-      { carPlate: "", vehicleType: "", vehicleModel: "" },
-      ...totalVehicle,
-    ]);
+    setTotalVehicle([{ carPlate: "", vehicleType: "", vehicleModel: "" }, ...totalVehicle]);
   };
 
   const handleReset = () => {
@@ -117,7 +109,9 @@ function AddNewForm() {
                     onClick={() => handleAddVehicle()}
                   >
                     <AddIcon />
-                    <div style={{ marginLeft: "8px" }}>Add New Vehicle</div>
+                    <div className="pointer" style={{ marginLeft: "8px" }}>
+                      Add New Vehicle
+                    </div>
                   </div>
                 </div>
                 {totalVehicle.map((item, idx) => {

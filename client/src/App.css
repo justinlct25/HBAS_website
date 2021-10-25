@@ -120,10 +120,10 @@ ul {
   display: none;
 }
 .satelliteViewButtonContainer {
-  position: absolute;
-  top: -48px;
-  left: 50%;
-  transform: translate(-50%);
+  /* position: absolute; */
+  /* top: -48px; */
+  /* left: 50%; */
+  /* transform: translate(-50%); */
 }
 .satelliteButton {
   width: 200px;

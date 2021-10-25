@@ -53,7 +53,8 @@ function ManageUser() {
               }}
             />
             <div
-              style={{ cursor: "pointer", padding: "8px" }}
+              className="pointer"
+              style={{ padding: "8px" }}
               onClick={() =>
                 //Need Search function
                 dispatch(getCompaniesDataListThunk(1, searchInput))
@@ -71,11 +72,7 @@ function ManageUser() {
             }}
           >
             <AddIcon />
-            <div
-              style={{
-                paddingLeft: "8px",
-              }}
-            >
+            <div className="pointer" style={{ paddingLeft: "8px" }}>
               Add new user
             </div>
           </div>

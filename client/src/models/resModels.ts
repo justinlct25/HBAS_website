@@ -90,6 +90,8 @@ export interface ILocationDetail {
   msgType: string;
   carPlate: string;
   companyName: string;
+  rssi: number | null;
+  snr: number | null;
 }
 
 export interface IDeviceDetail {

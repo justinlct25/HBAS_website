@@ -12,8 +12,6 @@ import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
 import styles from "./TestMap.module.scss";
 
-const defaultZoom: [number] = [10.2];
-const defaultCenter: [number, number] = [114.125, 22.35];
 const BATTERY_MAX = 4.2;
 const BATTERY_MIN = 3.6;
 const localizationSelection = [
@@ -57,15 +55,27 @@ const TestMap = () => {
     });
 
     try {
-      // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
-      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
+      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
+      // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const result = res.data.data;
-      // console.log(result);
+      // console.log(result);r
       setIncidentPoints(result);
     } catch (error) {
       dispatch(handleAxiosError(error));
     }
   };
+
+  const temp = localStorage.getItem("mapboxLocation");
+  const defaultMapboxLocation: { lat: number; lng: number; zoom: number } = {
+    lat: 114.125,
+    lng: 22.35,
+    zoom: 10.2,
+  };
+  const mapboxLocation: { lat: number; lng: number; zoom: number } = temp
+    ? JSON.parse(temp)
+    : defaultMapboxLocation;
+  const defaultZoom: [number] = [mapboxLocation?.zoom];
+  const defaultCenter: [number, number] = [mapboxLocation?.lng, mapboxLocation?.lat];
 
   const batteryCalculation = (bat: string) => {
     const battery = parseFloat(bat);
@@ -120,6 +130,18 @@ const TestMap = () => {
           position: "absolute",
         }}
         onStyleLoad={(map) => onMapLoad(map)}
+        onZoomEnd={(e) => {
+          localStorage.setItem(
+            "mapboxLocation",
+            JSON.stringify({ lng: e.getCenter().lng, lat: e.getCenter().lat, zoom: e.getZoom() })
+          );
+        }}
+        onDragEnd={(e) =>
+          localStorage.setItem(
+            "mapboxLocation",
+            JSON.stringify({ lng: e.getCenter().lng, lat: e.getCenter().lat, zoom: e.getZoom() })
+          )
+        }
       >
         <>
           {viewHistory
@@ -207,6 +229,22 @@ const TestMap = () => {
                       {new Date(incidentPoints[hoverAnimate.idx].date).toLocaleTimeString("en-CA")}
                     </div>
                   </div>
+                  <div>
+                    <div>RSSI:</div>
+                    <div>
+                      {incidentPoints[hoverAnimate.idx].rssi === null
+                        ? " - "
+                        : incidentPoints[hoverAnimate.idx].rssi}
+                    </div>
+                  </div>
+                  <div>
+                    <div>SNR:</div>
+                    <div>
+                      {incidentPoints[hoverAnimate.idx].snr === null
+                        ? " - "
+                        : incidentPoints[hoverAnimate.idx].snr}
+                    </div>
+                  </div>
                 </div>
               </Popup>
             ) : (
@@ -262,8 +300,8 @@ const TestMap = () => {
                     className="flex-center"
                     style={{ width: "100%", flexDirection: "column", marginBottom: "24px" }}
                   >
-                    <div>{"Car plate : " + deviceData.carPlate}</div>
-                    <div>{"Device Name : " + deviceData.deviceName}</div>
+                    <div>{"Car plate : " + deviceData.carPlate ?? " - "}</div>
+                    <div>{"Device Name : " + deviceData.deviceName ?? " - "}</div>
                   </div>
                   <table>
                     <thead>

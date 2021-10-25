@@ -104,7 +104,9 @@ function AddNewVehicles() {
                     onClick={() => handleAddVehicle()}
                   >
                     <AddIcon />
-                    <div style={{ marginLeft: "8px" }}>Add New Vehicle</div>
+                    <div className="pointer" style={{ marginLeft: "8px" }}>
+                      Add New Vehicle
+                    </div>
                   </div>
                 </div>
                 {totalVehicle.map((item, idx) => {
