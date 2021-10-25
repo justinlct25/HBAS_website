@@ -29,7 +29,23 @@ const Map = ReactMapboxGL({
   accessToken: process.env.REACT_APP_MAPBOX_API_TOKEN!,
 });
 
+interface MapboxViewLocation {
+  lng: number;
+  lat: number;
+  zoom: number;
+}
+
 const TestMap = () => {
+  const temp = localStorage.getItem("mapboxLocation");
+  const defaultMapboxLocation: MapboxViewLocation = {
+    lat: 114.125,
+    lng: 22.35,
+    zoom: 10.2,
+  };
+
+  const [mapboxViewLocation, setMapboxViewLocation] = useState<MapboxViewLocation | null>(
+    temp ? JSON.parse(temp) : defaultMapboxLocation
+  );
   const [historyHoverIndex, setHistoryHoverIndex] = useState(-1);
   const [isReportOpen, setIsReportOpen] = useState(true);
   const dispatch = useDispatch();
@@ -46,6 +62,7 @@ const TestMap = () => {
   const isLoading = useSelector((state: IRootState) => state.loading.loading.isLoading);
 
   const onMapLoad = async (map: mapboxgl.Map) => {
+    console.log(temp);
     setMap(map);
 
     map.getStyle().layers?.forEach((layer) => {
@@ -64,18 +81,6 @@ const TestMap = () => {
       dispatch(handleAxiosError(error));
     }
   };
-
-  const temp = localStorage.getItem("mapboxLocation");
-  const defaultMapboxLocation: { lat: number; lng: number; zoom: number } = {
-    lat: 114.125,
-    lng: 22.35,
-    zoom: 10.2,
-  };
-  const mapboxLocation: { lat: number; lng: number; zoom: number } = temp
-    ? JSON.parse(temp)
-    : defaultMapboxLocation;
-  const defaultZoom: [number] = [mapboxLocation?.zoom];
-  const defaultCenter: [number, number] = [mapboxLocation?.lng, mapboxLocation?.lat];
 
   const batteryCalculation = (bat: string) => {
     const battery = parseFloat(bat);
@@ -96,6 +101,16 @@ const TestMap = () => {
       }
     });
   }, [map, localization]);
+
+  useEffect(() => {
+    if (!mapboxViewLocation || mapboxViewLocation.lat < -90 || mapboxViewLocation.lng < -90) return;
+    localStorage.setItem("mapboxLocation", JSON.stringify(mapboxViewLocation));
+  }, [
+    mapboxViewLocation?.lat,
+    mapboxViewLocation?.lng,
+    mapboxViewLocation?.zoom,
+    mapboxViewLocation,
+  ]);
 
   //
   const fetchAllPreviousPulse = async (point: ILocationDetail) => {
@@ -122,8 +137,12 @@ const TestMap = () => {
         style="mapbox://styles/shinji1129/ckr4cxoe30c9i17muitq9vqvo"
         // style="mapbox://styles/shinji1129/ckqyxuv0lcfmn18o9pgzhwgq4"
         // style="mapbox://styles/shinji1129/ckr4d9iy60ci317mte2mzob6k"
-        zoom={defaultZoom}
-        center={defaultCenter}
+        zoom={mapboxViewLocation?.zoom ? [mapboxViewLocation?.zoom] : [10.2]}
+        center={
+          mapboxViewLocation?.lat && mapboxViewLocation?.lng
+            ? [mapboxViewLocation.lng, mapboxViewLocation.lat]
+            : [114.125, 22.35]
+        }
         containerStyle={{
           height: "calc(100vh - var(--topNavHeight) - 32px)",
           width: "100vw",
@@ -131,17 +150,19 @@ const TestMap = () => {
         }}
         onStyleLoad={(map) => onMapLoad(map)}
         onZoomEnd={(e) => {
-          localStorage.setItem(
-            "mapboxLocation",
-            JSON.stringify({ lng: e.getCenter().lng, lat: e.getCenter().lat, zoom: e.getZoom() })
-          );
+          setMapboxViewLocation({
+            lng: e.getCenter().lng,
+            lat: e.getCenter().lat,
+            zoom: e.getZoom(),
+          });
         }}
-        onDragEnd={(e) =>
-          localStorage.setItem(
-            "mapboxLocation",
-            JSON.stringify({ lng: e.getCenter().lng, lat: e.getCenter().lat, zoom: e.getZoom() })
-          )
-        }
+        onDragEnd={(e) => {
+          setMapboxViewLocation({
+            lng: e.getCenter().lng,
+            lat: e.getCenter().lat,
+            zoom: e.getZoom(),
+          });
+        }}
       >
         <>
           {viewHistory
