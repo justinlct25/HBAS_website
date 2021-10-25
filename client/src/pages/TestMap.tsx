@@ -55,8 +55,8 @@ const TestMap = () => {
     });
 
     try {
-      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
-      // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
+      // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
+      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const result = res.data.data;
       // console.log(result);r
       setIncidentPoints(result);
@@ -203,7 +203,7 @@ const TestMap = () => {
                 <div className={`${styles.popUpContent}`}>
                   <div>
                     <div>Car Plate:</div>
-                    <div>{incidentPoints[hoverAnimate.idx].carPlate}</div>
+                    <div>{incidentPoints[hoverAnimate.idx].carPlate ?? " - "}</div>
                   </div>
                   <div>
                     <div>Device Eui:</div>
@@ -211,7 +211,7 @@ const TestMap = () => {
                   </div>
                   <div>
                     <div>Device Name:</div>
-                    <div>{incidentPoints[hoverAnimate.idx].deviceName}</div>
+                    <div>{incidentPoints[hoverAnimate.idx].deviceName ?? " - "}</div>
                   </div>
                   <div>
                     <div>Battery:</div>
