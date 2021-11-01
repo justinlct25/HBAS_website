@@ -75,7 +75,6 @@ const TestMap = () => {
       // const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data`);
       const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const result = res.data.data;
-      // console.log(result);r
       setIncidentPoints(result);
     } catch (error) {
       dispatch(handleAxiosError(error));
@@ -122,7 +121,16 @@ const TestMap = () => {
       url.searchParams.set("date", point.date.toString().substr(0, 10));
       const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
       const result = res.data;
-      setViewHistory(result.data.filter((i) => i.address !== "GPS NOT FOUND"));
+      const filtered = result.data.filter((i) => i.address !== "GPS NOT FOUND");
+      const tempArr: IDataHistory[] = [];
+      let mark = filtered[filtered.length - 1].date;
+      for (let i = filtered.length - 1; i >= 0; i--) {
+        if (new Date(filtered[i].date).valueOf() >= new Date(mark).valueOf() + 1000 * 60 * 60) {
+          tempArr.push(filtered[i]);
+          mark = filtered[i].date;
+        }
+      }
+      setViewHistory(tempArr);
       setIsReportOpen(true);
     } catch (error) {
       dispatch(handleAxiosError(error));
@@ -166,28 +174,31 @@ const TestMap = () => {
       >
         <>
           {viewHistory
-            ? viewHistory.map((point, idx) => (
-                <Marker
-                  coordinates={[point.geolocation.y, point.geolocation.x]}
-                  anchor="center"
-                  style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
-                >
-                  <div
-                    className="flex-center"
-                    style={{
-                      height: historyHoverIndex === idx ? "48px" : "24px",
-                      width: historyHoverIndex === idx ? "48px" : "24px",
-                      fontSize: historyHoverIndex === idx ? "20px" : "12px",
-                      borderRadius: "50%",
-                      background: historyHoverIndex === idx ? "#FF6666CC" : "#00F900CC",
-                      pointerEvents: "none",
-                      transition: "all 0.3s",
-                    }}
+            ? viewHistory.map((point, idx) => {
+                return (
+                  <Marker
+                    coordinates={[point.geolocation.y, point.geolocation.x]}
+                    anchor="center"
+                    style={{ zIndex: historyHoverIndex === idx ? 4 : 0 }}
                   >
-                    {idx + 1}
-                  </div>
-                </Marker>
-              ))
+                    <div
+                      className="flex-center"
+                      style={{
+                        height: historyHoverIndex === idx ? "48px" : "24px",
+                        width: historyHoverIndex === idx ? "48px" : "24px",
+                        fontSize: historyHoverIndex === idx ? "20px" : "12px",
+                        borderRadius: "50%",
+                        background: historyHoverIndex === idx ? "#FF6666CC" : "#00F900CC",
+                        pointerEvents: "none",
+                        transition: "all 0.3s",
+                      }}
+                    >
+                      {idx + 1}
+                    </div>
+                  </Marker>
+                );
+                // }
+              })
             : incidentPoints.map((point, idx) => (
                 <Marker
                   key={point.deviceId + idx}

@@ -44,8 +44,6 @@ function LoginPage() {
         </div>
       ) : (
         <div className="full-width">
-          {/* Please use semantic tags like <h1> instead...
-        And fix the css on TablePage.css so it doesn't override <h1> globally... */}
           <div>{`${companyName} - Handbrake Alert System`}</div>
           <div>Admin Login</div>
           <form

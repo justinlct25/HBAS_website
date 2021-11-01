@@ -7,7 +7,7 @@ div.container {
 
   > div {
     > div {
-      font-size: 4.5vmin;
+      font-size: min(4vmin, 40px);
     }
     > form {
       > div {
