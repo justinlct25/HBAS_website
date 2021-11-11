@@ -190,6 +190,7 @@ export class AlertDataService {
         device_id: deviceId,
       })
       .andWhere(dateQuery)
+      .andWhereNot(`${tables.ALERT_DATA}.address`, 'GPS NOT FOUND')
       .orderBy('date', 'desc');
   };
 
