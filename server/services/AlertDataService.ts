@@ -98,10 +98,14 @@ export class AlertDataService {
     };
 
     if (!!id) query.andWhere(`${tables.ALERT_DATA}.id`, id);
-    if (!!msgType) query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType.toUpperCase());
     if (!!searchString) query.andWhere(searchQuery);
     if (!!startDate) query.andWhere(dateQuery);
     if (!!devicesList) query.whereIn(`${tables.ALERT_DATA}.device_id`, devicesList);
+    if (!!msgType) {
+      msgType === 'A'
+        ? query.andWhere(`${tables.ALERT_DATA}.msg_type`, msgType)
+        : query.andWhereNot(`${tables.ALERT_DATA}.msg_type`, msgType);
+    }
     return await query.paginate<IAlertData[]>({ perPage, currentPage, isLengthAware: true });
   };
 

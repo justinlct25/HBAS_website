@@ -109,7 +109,7 @@ export class AlertDataController {
     const data = await this.alertDataService.getData(
       req.user.devices,
       !!dataId ? parseInt(String(dataId)) : null,
-      !!msgType ? (msgType as msgType) : null,
+      !!msgType ? (String(msgType).toUpperCase() as msgType) : null,
       !!perPage ? parseInt(String(perPage)) : 20,
       !!currentPage ? parseInt(String(currentPage)) : 1,
       !!searchString ? `%${String(searchString)}%` : null,

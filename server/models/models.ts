@@ -1,5 +1,5 @@
 export type direction = 'asc' | 'desc';
-export type msgType = 'A' | 'B';
+export type msgType = 'A' | 'B' | 'S';
 export type Roles = 'ADMIN' | 'USER';
 
 export interface IUserInfo {
