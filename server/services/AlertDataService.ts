@@ -1,5 +1,6 @@
 import { Knex } from 'knex';
 import { IAlertData, IDataHistory, ILocationDetail, msgType } from '../models/models';
+import { setTimeToDateEnd, setTimeToDateStart } from '../utils/helperFunctions';
 import { tables } from './../utils/table_model';
 
 export class AlertDataService {
@@ -92,8 +93,8 @@ export class AlertDataService {
 
     const dateQuery = (builder: Knex.QueryBuilder) => {
       builder.whereBetween(`${tables.ALERT_DATA}.date`, [
-        new Date(`${startDate} 00:00:00`).toISOString(),
-        !!endDate ? new Date(`${endDate} 23:59:59`).toISOString() : new Date().toISOString(),
+        setTimeToDateStart(new Date(startDate!)),
+        !!endDate ? setTimeToDateEnd(new Date(endDate)) : new Date().toISOString(),
       ]);
     };
 
@@ -167,6 +168,13 @@ export class AlertDataService {
   };
 
   getHistoryByDeviceAndDate = async (deviceId: number, date: string | null) => {
+    const dateQuery = (builder: Knex.QueryBuilder) => {
+      builder.whereBetween(`${tables.ALERT_DATA}.date`, [
+        setTimeToDateStart(!!date ? new Date(date) : new Date()),
+        setTimeToDateEnd(!!date ? new Date(date) : new Date()),
+      ]);
+    };
+
     return await this.knex(tables.ALERT_DATA)
       .select<IDataHistory[]>({
         id: 'id',
@@ -181,11 +189,7 @@ export class AlertDataService {
         is_active: true,
         device_id: deviceId,
       })
-      .andWhereRaw(`date_trunc('day', date) = ?`, [
-        !!date
-          ? new Date(`${date} 00:00:00`).toISOString()
-          : new Date(`${new Date(Date.now()).toLocaleDateString('en-CA')} 00:00:00`).toISOString(),
-      ])
+      .andWhere(dateQuery)
       .orderBy('date', 'desc');
   };
 
