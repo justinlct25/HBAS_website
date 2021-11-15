@@ -38,16 +38,6 @@ interface MapboxViewLocation {
 
 const TestMap = () => {
   const [socket] = useState(io(REACT_APP_API_SERVER!));
-
-  useEffect(() => {
-    socket.on("connect", () => console.log("Connected to socket.io!"));
-  
-    socket.on("new-data-type-A", async () => {
-      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
-      setIncidentPoints(res.data.data);
-    });
-  }, []);
-
   const temp = localStorage.getItem("mapboxLocation");
   const defaultMapboxLocation: MapboxViewLocation = {
     lng: 114.125,
@@ -104,6 +94,37 @@ const TestMap = () => {
     }
     return percentage;
   };
+
+  useEffect(() => {
+    const onSocketConnect = () => console.log("Connected to socket.io!");
+    socket.on("connect", onSocketConnect);
+  
+    const onAccidentEvent = async () => {
+      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
+      const diff = res.data.data.filter(
+        i => incidentPoints.findIndex(j => j.deviceEui === i.deviceEui) === -1
+      );
+
+      if (diff.length) {
+        fetchAllPreviousPulse(diff[0]);
+        setDeviceData({ deviceName: diff[0].deviceName, carPlate: diff[0].carPlate });
+        setHoverAnimate({ idx: -1, onHover: false });
+      }
+
+      setIncidentPoints(
+        incidentPoints
+          .filter(i => res.data.data.findIndex(j => j.deviceEui === i.deviceEui) === -1)
+          .concat(res.data.data)
+      );
+    };
+
+    socket.on("new-data-type-A", onAccidentEvent);
+
+    return () => {
+      socket.off("connect", onSocketConnect);
+      socket.off("new-data-type-A", onAccidentEvent);
+    };
+  }, [incidentPoints, socket]);
 
   useEffect(() => {
     map?.getStyle().layers?.forEach((layer) => {
