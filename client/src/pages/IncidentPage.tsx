@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Item } from "react-bootstrap/lib/Pagination";
 import ReactMapboxGL, { Marker } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -85,7 +84,7 @@ function IncidentPage() {
           `${REACT_APP_API_VERSION}/alert-data/history/${incidentPageData.deviceId}`,
           REACT_APP_API_SERVER
         );
-        url.searchParams.set("date", new Date(incidentPageData.date).toLocaleDateString("en-CA"));
+        url.searchParams.set("date", new Date(incidentPageData.date).toISOString());
         const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
         const result = res.data.data;
         setLocationHistory(

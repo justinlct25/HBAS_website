@@ -112,7 +112,7 @@ export class AlertDataService {
 
   getLatestLocations = async (devicesList: number[] | null) => {
     const d = new Date();
-    d.setHours(d.getHours() - 168);
+    d.setHours(d.getHours() - 168);   // 24 hours * 7 days = 168
 
     const query = this.knex(tables.ALERT_DATA)
       .distinctOn(`${tables.ALERT_DATA}.device_id`)

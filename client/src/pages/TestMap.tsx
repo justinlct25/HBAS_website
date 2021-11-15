@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import ReactMapboxGL, { Marker, Popup } from "react-mapbox-gl";
 import { useDispatch, useSelector } from "react-redux";
 import { CSSTransition } from "react-transition-group";
+import { io } from "socket.io-client";
 import { CaretIcon } from "../components/IconsOnly";
 import Loading from "../components/Loading";
 import { formatDate, formatTime } from "../helpers/date";
@@ -10,7 +11,6 @@ import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processE
 import { IDataHistory, ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
-import { io } from "socket.io-client";
 import styles from "./TestMap.module.scss";
 
 const BATTERY_MAX = 4.2;
@@ -98,11 +98,11 @@ const TestMap = () => {
   useEffect(() => {
     const onSocketConnect = () => console.log("Connected to socket.io!");
     socket.on("connect", onSocketConnect);
-  
+
     const onAccidentEvent = async () => {
       const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
       const diff = res.data.data.filter(
-        i => incidentPoints.findIndex(j => j.deviceEui === i.deviceEui) === -1
+        (i) => incidentPoints.findIndex((j) => j.deviceEui === i.deviceEui) === -1
       );
 
       if (diff.length) {
@@ -113,7 +113,7 @@ const TestMap = () => {
 
       setIncidentPoints(
         incidentPoints
-          .filter(i => res.data.data.findIndex(j => j.deviceEui === i.deviceEui) === -1)
+          .filter((i) => res.data.data.findIndex((j) => j.deviceEui === i.deviceEui) === -1)
           .concat(res.data.data)
       );
     };
@@ -151,11 +151,11 @@ const TestMap = () => {
         `${REACT_APP_API_VERSION}/alert-data/history/${point.deviceId}`,
         REACT_APP_API_SERVER
       );
-      url.searchParams.set("date", point.date.toString().substr(0, 10));
+      url.searchParams.set("date", new Date(point.date).toISOString());
       const res = await axios.get<{ data: IDataHistory[] }>(url.toString());
       const result = res.data;
       const filtered = result.data.filter((i) => i.address !== "GPS NOT FOUND");
-      const tempArr: IDataHistory[] = [];
+      const tempArr: IDataHistory[] = [filtered[filtered.length - 1]];
       let mark = filtered[filtered.length - 1].date;
       for (let i = filtered.length - 1; i >= 0; i--) {
         if (new Date(filtered[i].date).valueOf() >= new Date(mark).valueOf() + 1000 * 60 * 60) {
@@ -246,7 +246,15 @@ const TestMap = () => {
                     setHoverAnimate({ idx: -1, onHover: false });
                   }}
                 >
-                  <div className={["flex-center", styles["incident-marker"], point.msgType === "A" ? styles.accident : ""].join(" ").trim()}/>
+                  <div
+                    className={[
+                      "flex-center",
+                      styles["incident-marker"],
+                      point.msgType === "A" ? styles.accident : "",
+                    ]
+                      .join(" ")
+                      .trim()}
+                  />
                 </Marker>
               ))}
           <CSSTransition
