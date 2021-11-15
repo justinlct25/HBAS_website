@@ -10,6 +10,7 @@ import { REACT_APP_API_SERVER, REACT_APP_API_VERSION } from "../helpers/processE
 import { IDataHistory, ILocationDetail } from "../models/resModels";
 import { handleAxiosError } from "../redux/login/thunk";
 import { IRootState } from "../redux/store";
+import { io } from "socket.io-client";
 import styles from "./TestMap.module.scss";
 
 const BATTERY_MAX = 4.2;
@@ -36,6 +37,17 @@ interface MapboxViewLocation {
 }
 
 const TestMap = () => {
+  const [socket] = useState(io(REACT_APP_API_SERVER!));
+
+  useEffect(() => {
+    socket.on("connect", () => console.log("Connected to socket.io!"));
+  
+    socket.on("new-data-type-A", async () => {
+      const res = await axios.get<{ data: ILocationDetail[] }>(`/alert-data/latest-locations`);
+      setIncidentPoints(res.data.data);
+    });
+  }, []);
+
   const temp = localStorage.getItem("mapboxLocation");
   const defaultMapboxLocation: MapboxViewLocation = {
     lng: 114.125,
@@ -213,7 +225,7 @@ const TestMap = () => {
                     setHoverAnimate({ idx: -1, onHover: false });
                   }}
                 >
-                  <div className="flex-center incidentMarker"></div>
+                  <div className={["flex-center", styles["incident-marker"], point.msgType === "A" ? styles.accident : ""].join(" ").trim()}/>
                 </Marker>
               ))}
           <CSSTransition

@@ -561,14 +561,3 @@ ul {
     transform: translateY(0);
   }
 }
-
-.incidentMarker {
-  cursor: pointer;
-  height: 24px;
-  width: 24px;
-  border-radius: 50%;
-  background: #00f900;
-  opacity: 0.7;
-  pointer-events: none;
-  transition: all 0.3s;
-}

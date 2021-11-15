@@ -30,3 +30,18 @@ ul#localization {
     }
   }
 }
+
+div.incident-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #00f900;
+  opacity: 0.7;
+  cursor: pointer;
+  pointer-events: none;
+  transition: all 0.3s;
+
+  &.accident {
+    background: #ff4545;
+  }
+}
