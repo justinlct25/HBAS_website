@@ -87,7 +87,7 @@ export interface ILocationDetail {
   deviceEui: string;
   date: string;
   geolocation: { x: number; y: number };
-  msgType: string;
+  msgType: "A" | "B" | "S";
   carPlate: string;
   companyName: string;
   rssi: number | null;
